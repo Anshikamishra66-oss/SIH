@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext';
 const SocketContext = createContext(null);
 
 const configuredSocketUrl = import.meta.env.VITE_SOCKET_URL;
-const SOCKET_URL = import.meta.env.PROD && (!configuredSocketUrl || configuredSocketUrl.includes('localhost'))
+const SOCKET_URL = import.meta.env.PROD
   ? 'https://sih-duw3.vercel.app'
   : configuredSocketUrl || 'http://localhost:5000';
 

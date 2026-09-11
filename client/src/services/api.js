@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const configuredApiUrl = import.meta.env.VITE_API_URL;
-const API_BASE_URL = import.meta.env.PROD && (!configuredApiUrl || configuredApiUrl.includes('localhost'))
+const API_BASE_URL = import.meta.env.PROD
   ? 'https://sih-duw3.vercel.app/api'
   : configuredApiUrl || 'http://localhost:5000/api';
 
