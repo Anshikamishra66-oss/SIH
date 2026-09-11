@@ -166,7 +166,16 @@ class Query {
 }
 
 class PostgresModel {
-  constructor(name, defaults = {}, methods = {}) { this.name = name; this.defaults = defaults; this.methods = methods; registry.set(name, this); }
+  constructor(name, defaults = {}, methods = {}) {
+    this.name = name;
+    const snakeName = name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
+    this.tableName = snakeName.endsWith('y') && !/[aeiou]y$/.test(snakeName)
+      ? `${snakeName.slice(0, -1)}ies`
+      : `${snakeName}s`;
+    this.defaults = defaults;
+    this.methods = methods;
+    registry.set(name, this);
+  }
 
   _document(data) {
     if (data instanceof Document) return data;
@@ -176,16 +185,16 @@ class PostgresModel {
   }
 
   async _all() {
-    const { rows } = await pool.query('SELECT data FROM documents WHERE collection = $1', [this.name]);
+    const { rows } = await pool.query(`SELECT data FROM ${this.tableName}`);
     return rows.map((row) => this._document(row.data));
   }
 
   async _write(document) {
     await pool.query(
-      `INSERT INTO documents (id, collection, data, created_at, updated_at)
-       VALUES ($1, $2, $3::jsonb, $4, $5)
+      `INSERT INTO ${this.tableName} (id, data, created_at, updated_at)
+       VALUES ($1, $2::jsonb, $3, $4)
        ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at`,
-      [document._id, this.name, JSON.stringify(document.toObject()), document.createdAt, document.updatedAt]
+      [document._id, JSON.stringify(document.toObject()), document.createdAt, document.updatedAt]
     );
   }
 
@@ -212,7 +221,7 @@ class PostgresModel {
   insertMany(data) { return this.create(data); }
   async deleteMany(filter = {}) {
     const items = (await this._all()).filter((item) => matches(item, filter));
-    if (items.length) await pool.query('DELETE FROM documents WHERE collection = $1 AND id = ANY($2)', [this.name, items.map((item) => item._id)]);
+    if (items.length) await pool.query(`DELETE FROM ${this.tableName} WHERE id = ANY($1)`, [items.map((item) => item._id)]);
     return { deletedCount: items.length };
   }
   async _update(filter, update, options = {}) {
