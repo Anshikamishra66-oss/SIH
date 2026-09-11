@@ -96,9 +96,19 @@ class Document {
   }
 
   toObject() {
-    const copy = JSON.parse(JSON.stringify(this));
-    delete copy._model;
-    return copy;
+    const copyValue = (value, seen = new WeakSet()) => {
+      if (value instanceof Date) return value.toISOString();
+      if (value === null || typeof value !== 'object') return typeof value === 'function' ? undefined : value;
+      if (seen.has(value)) return undefined;
+      seen.add(value);
+      if (Array.isArray(value)) return value.map((item) => copyValue(item, seen));
+      return Object.fromEntries(
+        Object.entries(value)
+          .filter(([key, item]) => key !== '_model' && typeof item !== 'function')
+          .map(([key, item]) => [key, copyValue(item, seen)])
+      );
+    };
+    return copyValue(this);
   }
 
   toJSON() {

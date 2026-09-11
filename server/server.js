@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -93,11 +93,13 @@ app.use(errorHandler);
 socketHandler(io);
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
-  console.log(`\n🚀 Kisan Procurement Connect Server`);
-  console.log(`   Running on: http://localhost:${PORT}`);
-  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`   API Docs: http://localhost:${PORT}/api/health\n`);
-});
+if (!process.env.VERCEL) {
+  server.listen(PORT, () => {
+    console.log(`\n🚀 Kisan Procurement Connect Server`);
+    console.log(`   Running on: http://localhost:${PORT}`);
+    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`   API Docs: http://localhost:${PORT}/api/health\n`);
+  });
+}
 
-module.exports = { app, server };
+module.exports = process.env.VERCEL ? app : { app, server };
