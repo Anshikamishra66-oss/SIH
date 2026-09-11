@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const paymentSchema = new mongoose.Schema(
   {
@@ -62,4 +63,4 @@ const paymentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Payment', paymentSchema);
+module.exports = new PostgresModel('Payment', { status: 'pending', paymentMethod: 'bank_transfer', isDemoPayment: true });

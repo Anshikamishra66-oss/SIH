@@ -1,4 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = {
+  startSession: async () => ({
+    startTransaction() {},
+    async commitTransaction() {},
+    async abortTransaction() {},
+    endSession() {},
+  }),
+};
 const Booking = require('../models/Booking.model');
 const Slot = require('../models/Slot.model');
 const QueueEntry = require('../models/QueueEntry.model');

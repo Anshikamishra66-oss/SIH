@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const officerProfileSchema = new mongoose.Schema(
   {
@@ -28,4 +29,4 @@ const officerProfileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('OfficerProfile', officerProfileSchema);
+module.exports = new PostgresModel('OfficerProfile');

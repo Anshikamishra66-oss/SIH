@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const slotSchema = new mongoose.Schema(
   {
@@ -55,4 +56,4 @@ slotSchema.pre('save', function () {
   }
 });
 
-module.exports = mongoose.model('Slot', slotSchema);
+module.exports = new PostgresModel('Slot', { booked: 0, status: 'available' });

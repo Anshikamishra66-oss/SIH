@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const farmerProfileSchema = new mongoose.Schema(
   {
@@ -49,4 +50,4 @@ const farmerProfileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('FarmerProfile', farmerProfileSchema);
+module.exports = new PostgresModel('FarmerProfile', { crops: [], isProfileComplete: false });

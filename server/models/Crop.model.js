@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const cropSchema = new mongoose.Schema(
   {
@@ -40,4 +41,4 @@ const cropSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Crop', cropSchema);
+module.exports = new PostgresModel('Crop', { unit: 'quintal', season: 'All', category: 'Cereal', isActive: true });

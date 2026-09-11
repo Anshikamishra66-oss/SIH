@@ -6,7 +6,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 
-const connectDB = require('./config/db');
+const { connectDB } = require('./config/db');
 const socketHandler = require('./sockets/socket.handler');
 const { errorHandler, notFound } = require('./middleware/error.middleware');
 

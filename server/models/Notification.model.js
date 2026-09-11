@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const notificationSchema = new mongoose.Schema(
   {
@@ -57,4 +58,4 @@ const notificationSchema = new mongoose.Schema(
 notificationSchema.index({ userId: 1, createdAt: -1 });
 notificationSchema.index({ userId: 1, isRead: 1 });
 
-module.exports = mongoose.model('Notification', notificationSchema);
+module.exports = new PostgresModel('Notification', { isRead: false, deliveryStatus: { inApp: true, sms: false, push: false } });

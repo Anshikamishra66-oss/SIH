@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const BOOKING_STATUSES = [
   'booked',
@@ -12,7 +13,11 @@ const BOOKING_STATUSES = [
   'cancelled',
 ];
 
-const bookingSchema = new mongoose.Schema(
+/*
+  The document adapter keeps the route contract while PostgreSQL stores each
+  model document in JSONB. Relational migration can happen independently.
+*/
+const bookingSchema =
   {
     bookingId: {
       type: String,
@@ -70,15 +75,8 @@ const bookingSchema = new mongoose.Schema(
     cancelledAt: Date,
     cancellationReason: String,
     notes: String,
-  },
-  { timestamps: true }
-);
+  };
 
 // Prevent the same farmer from booking the same slot twice
-bookingSchema.index(
-  { farmerId: 1, slotId: 1 },
-  { unique: true, partialFilterExpression: { status: { $ne: 'cancelled' } } }
-);
-
-module.exports = mongoose.model('Booking', bookingSchema);
+module.exports = new PostgresModel('Booking', { status: 'booked', unit: 'quintal' });
 module.exports.BOOKING_STATUSES = BOOKING_STATUSES;

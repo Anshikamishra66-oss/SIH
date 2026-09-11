@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const queueEntrySchema = new mongoose.Schema(
   {
@@ -58,4 +59,4 @@ const queueEntrySchema = new mongoose.Schema(
 queueEntrySchema.index({ centreId: 1, queueDate: 1, position: 1 });
 queueEntrySchema.index({ centreId: 1, queueDate: 1, status: 1 });
 
-module.exports = mongoose.model('QueueEntry', queueEntrySchema);
+module.exports = new PostgresModel('QueueEntry', { status: 'waiting' });

@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
 
@@ -14,12 +13,10 @@ const Procurement = require('../models/Procurement.model');
 const Payment = require('../models/Payment.model');
 const Notification = require('../models/Notification.model');
 const { generateToken, generateBookingId, startOfDay } = require('../utils/helpers');
-
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/kisan-connect';
+const { connectDB, closeDB } = require('../config/db');
 
 async function seed() {
-  await mongoose.connect(MONGO_URI);
-  console.log('✅ Connected to MongoDB');
+  await connectDB();
 
   // Clear existing data
   console.log('🗑️  Clearing existing data...');
@@ -452,8 +449,8 @@ async function seed() {
   console.log('   Email: farmer@example.com');
   console.log('   ========================================\n');
 
-  await mongoose.disconnect();
-  console.log('🔌 Disconnected from MongoDB');
+  await closeDB();
+  console.log('🔌 Disconnected from PostgreSQL');
   process.exit(0);
 }
 

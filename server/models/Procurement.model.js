@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { PostgresModel } = require('../utils/postgresModel');
 
 const procurementSchema = new mongoose.Schema(
   {
@@ -56,4 +57,4 @@ const procurementSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Procurement', procurementSchema);
+module.exports = new PostgresModel('Procurement');

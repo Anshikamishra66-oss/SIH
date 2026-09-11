@@ -4,14 +4,8 @@ const ApiError = require('../utils/ApiError');
 const errorHandler = (err, req, res, next) => {
   let error = err;
 
-  // Handle Mongoose duplicate key error
-  if (err.code === 11000) {
-    const field = Object.keys(err.keyValue || {})[0] || 'field';
-    const value = err.keyValue ? err.keyValue[field] : '';
-    error = new ApiError(409, `${field} '${value}' is already registered.`);
-  }
+  if (err.code === '23505') error = new ApiError(409, 'The value is already registered.');
 
-  // Handle Mongoose validation error
   if (err.name === 'ValidationError') {
     const messages = Object.values(err.errors).map((e) => ({
       field: e.path,
@@ -20,10 +14,6 @@ const errorHandler = (err, req, res, next) => {
     error = new ApiError(400, 'Validation failed', messages);
   }
 
-  // Handle Mongoose cast error (invalid ObjectId)
-  if (err.name === 'CastError') {
-    error = new ApiError(400, `Invalid ID format.`);
-  }
 
   const statusCode = error.statusCode || 500;
   const message =
