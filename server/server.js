@@ -1,0 +1,103 @@
+require('dotenv').config();
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+
+const connectDB = require('./config/db');
+const socketHandler = require('./sockets/socket.handler');
+const { errorHandler, notFound } = require('./middleware/error.middleware');
+
+// Routes
+const authRoutes = require('./routes/auth.routes');
+const farmerRoutes = require('./routes/farmer.routes');
+const centreRoutes = require('./routes/centre.routes');
+const bookingRoutes = require('./routes/booking.routes');
+const queueRoutes = require('./routes/queue.routes');
+const procurementRoutes = require('./routes/procurement.routes');
+const paymentRoutes = require('./routes/payment.routes');
+const notificationRoutes = require('./routes/notification.routes');
+const officerRoutes = require('./routes/officer.routes');
+const adminRoutes = require('./routes/admin.routes');
+const cropRoutes = require('./routes/crop.routes');
+
+const app = express();
+const server = http.createServer(app);
+
+// Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+  pingTimeout: 60000,
+  pingInterval: 25000,
+});
+
+// Make io accessible in routes
+app.set('io', io);
+
+// Connect DB
+connectDB();
+
+// Security middleware
+app.use(helmet({ contentSecurityPolicy: false }));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  })
+);
+
+// Parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Logging (minimal in production)
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    message: 'Kisan Procurement Connect API is running',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/farmers', farmerRoutes);
+app.use('/api/centres', centreRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/queue', queueRoutes);
+app.use('/api/procurements', procurementRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/officer', officerRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/crops', cropRoutes);
+
+// 404 and error handlers
+app.use(notFound);
+app.use(errorHandler);
+
+// Initialize Socket.IO handler
+socketHandler(io);
+
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`\n🚀 Kisan Procurement Connect Server`);
+  console.log(`   Running on: http://localhost:${PORT}`);
+  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`   API Docs: http://localhost:${PORT}/api/health\n`);
+});
+
+module.exports = { app, server };

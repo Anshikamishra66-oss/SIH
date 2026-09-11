@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kisan Procurement Connect — SIH Project Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@400;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f5f7fa;
+      color: #1a202c;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    /* ─── PAGE SETUP ─── */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 12mm;
+      background: #fff;
+      padding: 14mm 16mm;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ─── PAGE 1 — COVER ─── */
+    .cover {
+      background: linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 70%, #059669 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20mm 16mm;
+      position: relative;
+    }
+    .cover::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .cover-badge {
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 100px;
+      padding: 5px 18px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .cover-emoji { font-size: 64px; margin-bottom: 10px; }
+    .cover h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      text-align: center;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+    .cover-sub {
+      font-size: 13px;
+      opacity: 0.85;
+      text-align: center;
+      margin-bottom: 28px;
+      font-style: italic;
+    }
+    .cover-tagline {
+      background: rgba(255,255,255,0.12);
+      border-left: 4px solid #6ee7b7;
+      padding: 10px 18px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      max-width: 420px;
+      margin-bottom: 30px;
+    }
+    .cover-meta {
+      display: flex;
+      gap: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .cover-meta-item {
+      text-align: center;
+      background: rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 10px 18px;
+    }
+    .cover-meta-item .val {
+      font-size: 22px; font-weight: 800; display: block;
+    }
+    .cover-meta-item .lbl {
+      font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .cover-footer {
+      position: absolute; bottom: 12mm; left: 0; right: 0;
+      text-align: center; font-size: 10px; opacity: 0.6;
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d1fae5;
+    }
+    .section-header .icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: linear-gradient(135deg, #064e3b, #059669);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: #064e3b;
+    }
+
+    /* ─── PAGE HEADER (non-cover pages) ─── */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #d1fae5;
+      margin-bottom: 14px;
+    }
+    .page-header .brand {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      color: #064e3b;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .page-header .pg { font-size: 10px; color: #6b7280; }
+
+    /* ─── PROBLEM CARDS ─── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+    .problem-card {
+      background: linear-gradient(135deg, #fef2f2, #fff);
+      border: 1px solid #fecaca;
+      border-radius: 9px;
+      padding: 10px;
+    }
+    .problem-card .p-icon { font-size: 20px; margin-bottom: 4px; }
+    .problem-card h4 { font-size: 11px; font-weight: 700; color: #991b1b; margin-bottom: 4px; }
+    .problem-card p { font-size: 10px; color: #4b5563; line-height: 1.5; }
+
+    /* ─── SOLUTION CARDS ─── */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+    .solution-card {
+      background: linear-gradient(135deg, #f0fdf4, #fff);
+      border: 1px solid #86efac;
+      border-radius: 9px;
+      padding: 11px;
+    }
+    .solution-card .s-num {
+      background: #064e3b;
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 100px;
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+    .solution-card h4 { font-size: 11px; font-weight: 700; color: #064e3b; margin-bottom: 4px; }
+    .solution-card p { font-size: 10px; color: #374151; line-height: 1.5; }
+
+    /* ─── TECH TABLE ─── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 11px;
+    }
+    thead tr { background: linear-gradient(90deg, #064e3b, #059669); color: #fff; }
+    thead th { padding: 8px 10px; text-align: left; font-weight: 600; font-size: 10.5px; }
+    tbody tr:nth-child(even) { background: #f0fdf4; }
+    tbody tr:nth-child(odd) { background: #fff; }
+    tbody td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; }
+    tbody td:first-child { font-weight: 600; color: #064e3b; }
+    .badge {
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 100px;
+    }
+
+    /* ─── ARCHITECTURE ─── */
+    .arch-box {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 10px;
+    }
+    .arch-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .arch-layer {
+      flex: 1;
+      border-radius: 9px;
+      padding: 9px 12px;
+      text-align: center;
+    }
+    .arch-layer h4 { font-size: 10.5px; font-weight: 700; margin-bottom: 3px; }
+    .arch-layer p { font-size: 9.5px; opacity: 0.85; }
+    .layer-green { background: linear-gradient(135deg, #064e3b, #047857); color: #fff; }
+    .layer-blue { background: linear-gradient(135deg, #1e3a5f, #1d4ed8); color: #fff; }
+    .layer-amber { background: linear-gradient(135deg, #78350f, #d97706); color: #fff; }
+    .layer-purple { background: linear-gradient(135deg, #4c1d95, #7c3aed); color: #fff; }
+    .arch-arrow { font-size: 18px; color: #6b7280; flex-shrink: 0; }
+
+    /* ─── DATA MODELS ─── */
+    .models-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px;
+      margin-top: 10px;
+    }
+    .model-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 9px;
+      border-top: 3px solid #059669;
+    }
+    .model-card h4 { font-size: 10.5px; font-weight: 700; color: #064e3b; margin-bottom: 5px; }
+    .model-card .field { font-size: 9.5px; color: #4b5563; padding: 1px 0; border-bottom: 1px dashed #e5e7eb; }
+    .model-card .field:last-child { border-bottom: none; }
+
+    /* ─── WEBSOCKET EVENTS ─── */
+    .ws-table { font-size: 10.5px; }
+    .ws-dir {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 100px;
+    }
+    .ws-c2s { background: #dbeafe; color: #1e40af; }
+    .ws-s2c { background: #fef3c7; color: #92400e; }
+
+    /* ─── RBAC ─── */
+    .rbac-table { font-size: 10.5px; }
+    .rbac-table thead tr { background: linear-gradient(90deg, #1e1b4b, #4338ca); }
+    .check { color: #16a34a; font-size: 14px; }
+    .cross { color: #dc2626; font-size: 14px; }
+    .rbac-table td { text-align: center; }
+    .rbac-table td:first-child { text-align: left; }
+
+    /* ─── API ROUTES ─── */
+    .api-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+    .api-group {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 9px;
+      padding: 10px;
+      border-top: 3px solid;
+    }
+    .api-group.auth { border-top-color: #6366f1; }
+    .api-group.farmer { border-top-color: #059669; }
+    .api-group.officer { border-top-color: #d97706; }
+    .api-group.admin { border-top-color: #dc2626; }
+    .api-group.queue { border-top-color: #0891b2; }
+    .api-group.payment { border-top-color: #7c3aed; }
+    .api-group h4 { font-size: 11px; font-weight: 700; color: #1a202c; margin-bottom: 6px; }
+    .api-route { display: flex; align-items: flex-start; gap: 5px; margin-bottom: 4px; }
+    .method {
+      font-size: 8px; font-weight: 800;
+      padding: 2px 5px; border-radius: 4px;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .get { background: #dbeafe; color: #1e40af; }
+    .post { background: #dcfce7; color: #166534; }
+    .put { background: #fef3c7; color: #92400e; }
+    .del { background: #fee2e2; color: #991b1b; }
+    .api-path { font-size: 9.5px; color: #374151; font-family: monospace; }
+
+    /* ─── FLOW DIAGRAM ─── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      justify-content: center;
+    }
+    .flow-step {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1.5px solid #86efac;
+      border-radius: 9px;
+      padding: 8px 12px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .flow-step .fs-num {
+      background: #064e3b; color: #fff;
+      font-size: 9px; font-weight: 800;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-bottom: 3px;
+    }
+    .flow-step h5 { font-size: 9.5px; font-weight: 700; color: #064e3b; }
+    .flow-arrow { font-size: 16px; color: #059669; }
+
+    /* ─── STATS ─── */
+    .stats-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .stat-card {
+      flex: 1;
+      background: linear-gradient(135deg, #064e3b, #059669);
+      border-radius: 12px;
+      padding: 14px;
+      color: #fff;
+      text-align: center;
+    }
+    .stat-card .val { font-size: 28px; font-weight: 900; display: block; }
+    .stat-card .lbl { font-size: 10px; opacity: 0.8; margin-top: 2px; }
+
+    /* ─── INFO BOX ─── */
+    .info-box {
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      border: 1px solid #93c5fd;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+    .info-box h4 { font-size: 12px; font-weight: 700; color: #1e40af; margin-bottom: 6px; }
+    .info-box p, .info-box li { font-size: 10.5px; color: #1e3a8a; line-height: 1.7; }
+    .info-box ul { padding-left: 16px; }
+
+    .warn-box {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 1px solid #fcd34d;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 10px;
+    }
+    .warn-box h4 { font-size: 12px; font-weight: 700; color: #92400e; margin-bottom: 6px; }
+    .warn-box p, .warn-box li { font-size: 10.5px; color: #78350f; line-height: 1.7; }
+    .warn-box ul { padding-left: 16px; }
+
+    /* ─── CREDS TABLE ─── */
+    .creds-table thead tr { background: linear-gradient(90deg, #1e1b4b, #4338ca); }
+
+    /* ─── PAGE FOOTER ─── */
+    .page-footer {
+      position: absolute;
+      bottom: 8mm;
+      left: 16mm;
+      right: 16mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: #9ca3af;
+      border-top: 1px solid #e5e7eb;
+      padding-top: 5px;
+    }
+
+    /* ─── PRINT ─── */
+    @media print {
+      body { background: white; }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        page-break-after: always;
+        page-break-inside: avoid;
+      }
+      .cover { page-break-after: always; }
+      @page { margin: 0; size: A4; }
+    }
+    @media screen {
+      body { padding: 10mm 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 1 — COVER PAGE                                        -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page cover">
+  <div class="cover-badge">🏆 Smart India Hackathon 2024</div>
+  <div class="cover-emoji">🌾</div>
+  <h1>Kisan Procurement<br>Connect</h1>
+  <p class="cover-sub">National Agricultural Digital Platform</p>
+  <div class="cover-tagline">
+    "Book your slot. Know your turn.<br>Track your procurement. Track your payment."
+  </div>
+  <div class="cover-meta">
+    <div class="cover-meta-item">
+      <span class="val">3</span>
+      <span class="lbl">User Roles</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="val">11</span>
+      <span class="lbl">Data Models</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="val">40+</span>
+      <span class="lbl">REST API Routes</span>
+    </div>
+    <div class="cover-meta-item">
+      <span class="val">Real-Time</span>
+      <span class="lbl">WebSocket Engine</span>
+    </div>
+  </div>
+  <div class="cover-footer">
+    Full-Stack MERN Application &nbsp;|&nbsp; React 19 + Node.js + MongoDB + Socket.IO
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 2 — PROBLEM STATEMENT + SOLUTION                      -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 2 of 8</span>
+  </div>
+
+  <!-- PROBLEM -->
+  <div class="section-header">
+    <div class="icon">⚠️</div>
+    <h2>Problem Statement</h2>
+  </div>
+  <p style="font-size:11px;color:#374151;margin-bottom:10px;">
+    Government APMC Mandis are the lifeline for millions of Indian farmers seeking Minimum Support Price (MSP) compensation. However, the current physical procurement system is severely plagued by the following issues:
+  </p>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="p-icon">🚜</div>
+      <h4>Mandi Congestion</h4>
+      <p>Thousands of tractor-trolleys arriving simultaneously, causing kilometers-long traffic bottlenecks and severe chaos.</p>
+    </div>
+    <div class="problem-card">
+      <div class="p-icon">⏳</div>
+      <h4>Exhausting Waiting</h4>
+      <p>Farmers forced to camp at mandi yards for 24–72 hours awaiting their turn with no visibility into queue status.</p>
+    </div>
+    <div class="problem-card">
+      <div class="p-icon">🌧️</div>
+      <h4>Grain Spoilage</h4>
+      <p>Open grain bags exposed to sudden rains, moisture, pests, and pilferage during prolonged waiting periods.</p>
+    </div>
+    <div class="problem-card">
+      <div class="p-icon">👁️</div>
+      <h4>No Queue Visibility</h4>
+      <p>Zero visibility into queue status leads to farmer anxiety, gate-rushing, and frequent disputes at mandis.</p>
+    </div>
+    <div class="problem-card">
+      <div class="p-icon">💳</div>
+      <h4>Payment Opacity</h4>
+      <p>Uncertainty about DBT timelines, UTR issuance, and bank credit causes financial stress for farmers.</p>
+    </div>
+    <div class="problem-card">
+      <div class="p-icon">📋</div>
+      <h4>Officer Overload</h4>
+      <p>Mandi officers overwhelmed by manual token registers, weighing slips, and paper-based tally sheets.</p>
+    </div>
+  </div>
+
+  <!-- SOLUTION -->
+  <div class="section-header" style="margin-top:18px;">
+    <div class="icon">💡</div>
+    <h2>Core Solution & Innovations</h2>
+  </div>
+  <div class="solution-grid">
+    <div class="solution-card">
+      <span class="s-num">01</span>
+      <h4>📅 Guaranteed Time-Slot Reservation</h4>
+      <p>Farmers select their nearest APMC Mandi and book a convenient 1-hour time window. Mandi intake is hard-capped per slot, eliminating overbooking. Generates a digital Token (TK-1001) with QR code & SMS confirmation.</p>
+    </div>
+    <div class="solution-card">
+      <span class="s-num">02</span>
+      <h4>⏱️ Real-Time Queue & Turn Tracker</h4>
+      <p>Farmers monitor the live token being served on their mobile phone. Displays exact number of farmers ahead and an AI-calibrated Estimated Turn Time so farmers arrive 15 minutes before their turn.</p>
+    </div>
+    <div class="solution-card">
+      <span class="s-num">03</span>
+      <h4>🏢 Mandi Officer Operations Console</h4>
+      <p>Counter-specific announcer panel with one-click "Call Next Token". Digital gate check-in and produce grading modal records weight, quality grade (A/B/C), moisture %, and calculates official MSP payout.</p>
+    </div>
+    <div class="solution-card">
+      <span class="s-num">04</span>
+      <h4>💳 DBT Payout Pipeline & Analytics</h4>
+      <p>Automatic payment initialization on procurement completion. 8-stage visual progress timeline from slot reservation to bank credit. State & District Command Dashboard with live tonnage analytics and CSV exports.</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>Empowering Indian Agriculture with Digital Transparency</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 3 — TECHNOLOGY STACK                                   -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 3 of 8</span>
+  </div>
+
+  <div class="section-header">
+    <div class="icon">🚀</div>
+    <h2>Complete Technology Stack</h2>
+  </div>
+
+  <p style="font-size:11px;color:#374151;margin-bottom:10px;font-weight:600;">⚛️ Frontend Architecture</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Technology</th>
+        <th>Version</th>
+        <th>Purpose & Key Features</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>React</td>
+        <td><span class="badge">v19.2.8</span></td>
+        <td>Core UI library utilizing modern concurrent rendering and hook primitives.</td>
+      </tr>
+      <tr>
+        <td>Vite</td>
+        <td><span class="badge">v8.2.2</span></td>
+        <td>Ultra-fast build tool and Hot Module Replacement (HMR) development server.</td>
+      </tr>
+      <tr>
+        <td>TailwindCSS</td>
+        <td><span class="badge">v3.4.19</span></td>
+        <td>Utility-first CSS with Indian agricultural palettes (emerald, amber, wheat).</td>
+      </tr>
+      <tr>
+        <td>React Router</td>
+        <td><span class="badge">v7.18.3</span></td>
+        <td>Client-side routing with role-based ProtectedRoute guards for all user roles.</td>
+      </tr>
+      <tr>
+        <td>Socket.IO Client</td>
+        <td><span class="badge">v4.8.3</span></td>
+        <td>Real-time bi-directional WebSocket client for sub-second queue synchronization.</td>
+      </tr>
+      <tr>
+        <td>Axios</td>
+        <td><span class="badge">v1.20.0</span></td>
+        <td>HTTP client with centralized interceptors for JWT header injection & refresh.</td>
+      </tr>
+      <tr>
+        <td>Recharts</td>
+        <td><span class="badge">v3.10.1</span></td>
+        <td>Analytical visualization for mandi utilization, volume metrics, and payment audits.</td>
+      </tr>
+      <tr>
+        <td>React Icons / Lucide</td>
+        <td><span class="badge">v5.7.0 / v1.44.0</span></td>
+        <td>Comprehensive SVG icon systems for navigation, stats cards, and action menus.</td>
+      </tr>
+      <tr>
+        <td>React Hot Toast</td>
+        <td><span class="badge">v2.6.0</span></td>
+        <td>Lightweight, accessible notification toasts for real-time event alerts.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:11px;color:#374151;margin:14px 0 10px;font-weight:600;">⚙️ Backend Architecture</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Technology</th>
+        <th>Version</th>
+        <th>Purpose & Key Features</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Node.js</td>
+        <td><span class="badge">≥ v18.0</span></td>
+        <td>High-performance asynchronous JavaScript runtime environment.</td>
+      </tr>
+      <tr>
+        <td>Express</td>
+        <td><span class="badge">v5.2.1</span></td>
+        <td>Next-generation web framework for REST routing and middleware pipelines.</td>
+      </tr>
+      <tr>
+        <td>Socket.IO</td>
+        <td><span class="badge">v4.8.3</span></td>
+        <td>Real-time event multicasting with room-based isolation (centre:&lt;id&gt;, user:&lt;id&gt;).</td>
+      </tr>
+      <tr>
+        <td>MongoDB</td>
+        <td><span class="badge">≥ v6.0</span></td>
+        <td>Scalable NoSQL document database for flexible agricultural data schemas.</td>
+      </tr>
+      <tr>
+        <td>Mongoose</td>
+        <td><span class="badge">v9.9.5</span></td>
+        <td>ODM with strict schema definitions, compound indexing, and pre-save middleware.</td>
+      </tr>
+      <tr>
+        <td>JSON Web Tokens</td>
+        <td><span class="badge">v9.0.3</span></td>
+        <td>Stateless authentication tokens with 7-day automatic expiration.</td>
+      </tr>
+      <tr>
+        <td>Bcrypt.js</td>
+        <td><span class="badge">v3.0.3</span></td>
+        <td>Cryptographic password hashing with 12 salt rounds for maximum security.</td>
+      </tr>
+      <tr>
+        <td>Express Validator</td>
+        <td><span class="badge">v7.3.2</span></td>
+        <td>Strict server-side request sanitization and input validation pipeline.</td>
+      </tr>
+      <tr>
+        <td>Jest</td>
+        <td><span class="badge">v30.5.1</span></td>
+        <td>Automated unit testing for business logic, JWT, bcrypt, and queue calculations.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>MERN Stack + Socket.IO + TailwindCSS</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 4 — SYSTEM ARCHITECTURE + WORKFLOW                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 4 of 8</span>
+  </div>
+
+  <div class="section-header">
+    <div class="icon">🏗️</div>
+    <h2>System Architecture</h2>
+  </div>
+
+  <div class="arch-box">
+    <div class="arch-row">
+      <div class="arch-layer layer-green">
+        <h4>🌾 Farmer Portal</h4>
+        <p>React 19 + Vite + TailwindCSS<br>Mobile-first responsive web app</p>
+      </div>
+      <div class="arch-arrow">⇆</div>
+      <div class="arch-layer layer-amber">
+        <h4>👮 Officer Console</h4>
+        <p>React 19 + Socket.IO Client<br>Counter calling & weighing panel</p>
+      </div>
+      <div class="arch-arrow">⇆</div>
+      <div class="arch-layer layer-purple">
+        <h4>🛡️ Admin Dashboard</h4>
+        <p>React 19 + Recharts<br>System-wide command & analytics</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:22px;color:#059669;margin:6px 0;">↕ REST API (Axios) &nbsp;&nbsp; ↕ WebSocket (Socket.IO)</div>
+
+    <div class="arch-row" style="margin-bottom:8px;">
+      <div class="arch-layer layer-blue" style="flex:2;">
+        <h4>⚙️ Core Backend — Node.js 20 + Express 5</h4>
+        <p>Auth & RBAC Middleware &nbsp;|&nbsp; Atomic Slot Lock Engine &nbsp;|&nbsp; Queue State Machine &nbsp;|&nbsp; DBT Payment Engine</p>
+      </div>
+      <div class="arch-arrow">⇆</div>
+      <div class="arch-layer" style="background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;flex:1;">
+        <h4>⚡ Socket.IO Engine</h4>
+        <p>Room: centre:&lt;id&gt;<br>Room: user:&lt;id&gt;</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;font-size:22px;color:#059669;margin:6px 0;">↕ Mongoose ODM</div>
+
+    <div class="arch-row" style="margin-bottom:0;">
+      <div class="arch-layer" style="background:linear-gradient(135deg,#1e293b,#334155);color:#fff;flex:1;">
+        <h4>🗄️ MongoDB Database</h4>
+        <p>Users & Profiles &nbsp;|&nbsp; Mandis & Slots &nbsp;|&nbsp; Bookings & Queue &nbsp;|&nbsp; Procurement & Payments</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FARMER JOURNEY FLOW -->
+  <div class="section-header" style="margin-top:18px;">
+    <div class="icon">🚜</div>
+    <h2>Farmer Journey — End-to-End Flow</h2>
+  </div>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="fs-num">1</div>
+      <h5>Register & KYC</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">2</div>
+      <h5>Select Mandi</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">3</div>
+      <h5>Book Time Slot</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">4</div>
+      <h5>Get Token TK-XXXX</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">5</div>
+      <h5>Track Live Queue</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">6</div>
+      <h5>Gate Check-In</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">7</div>
+      <h5>Weigh & Grade</h5>
+    </div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">
+      <div class="fs-num">8</div>
+      <h5>DBT Bank Credit</h5>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <span class="val">40+</span>
+      <span class="lbl">REST API Endpoints</span>
+    </div>
+    <div class="stat-card">
+      <span class="val">7</span>
+      <span class="lbl">Socket.IO Events</span>
+    </div>
+    <div class="stat-card">
+      <span class="val">11</span>
+      <span class="lbl">Database Models</span>
+    </div>
+    <div class="stat-card">
+      <span class="val">3</span>
+      <span class="lbl">User Roles (RBAC)</span>
+    </div>
+    <div class="stat-card">
+      <span class="val">8</span>
+      <span class="lbl">Payment Stages</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>Full-Stack MERN + Real-Time Architecture</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 5 — DATABASE MODELS                                    -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 5 of 8</span>
+  </div>
+
+  <div class="section-header">
+    <div class="icon">🗄️</div>
+    <h2>Database Architecture — 11 Mongoose Data Models</h2>
+  </div>
+
+  <div class="models-grid">
+    <div class="model-card">
+      <h4>👤 User.model.js</h4>
+      <div class="field">name, mobile (unique index)</div>
+      <div class="field">email, password (bcrypt hashed)</div>
+      <div class="field">role: farmer | officer | admin</div>
+      <div class="field">isActive, lastLogin</div>
+      <div class="field">pre('save') auto password hash</div>
+    </div>
+    <div class="model-card">
+      <h4>🧑‍🌾 FarmerProfile.model.js</h4>
+      <div class="field">userId (ref: User)</div>
+      <div class="field">address: village, district, state</div>
+      <div class="field">landDetails: area, surveyNo</div>
+      <div class="field">bankDetails: accountNo, IFSC</div>
+      <div class="field">crops[] (array of crop refs)</div>
+    </div>
+    <div class="model-card">
+      <h4>👮 OfficerProfile.model.js</h4>
+      <div class="field">userId (ref: User)</div>
+      <div class="field">centreId (ref: ProcurementCentre)</div>
+      <div class="field">employeeId, designation</div>
+    </div>
+    <div class="model-card">
+      <h4>🏢 ProcurementCentre.model.js</h4>
+      <div class="field">name, code (unique uppercase)</div>
+      <div class="field">address, geoCoordinates</div>
+      <div class="field">dailyCapacity (quintals)</div>
+      <div class="field">counters, operatingHours</div>
+      <div class="field">slotDurationMinutes, availableCrops</div>
+    </div>
+    <div class="model-card">
+      <h4>🌾 Crop.model.js</h4>
+      <div class="field">name, season</div>
+      <div class="field">(Rabi | Kharif | Zaid | Annual)</div>
+      <div class="field">mspPrice (INR per quintal)</div>
+      <div class="field">unit, isActive</div>
+    </div>
+    <div class="model-card">
+      <h4>📅 Slot.model.js</h4>
+      <div class="field">centreId, date, startTime, endTime</div>
+      <div class="field">capacity, booked</div>
+      <div class="field">status: available | full | closed</div>
+      <div class="field">Compound index: {centreId, date, time}</div>
+      <div class="field">Auto-transition available → full</div>
+    </div>
+    <div class="model-card">
+      <h4>🎫 Booking.model.js</h4>
+      <div class="field">bookingId, token (TK-XXXX)</div>
+      <div class="field">farmerId, centreId, slotId, cropId</div>
+      <div class="field">quantity, unit, bookingDate</div>
+      <div class="field">status: booked → arrived → verified</div>
+      <div class="field">→ procurement → payment_completed</div>
+    </div>
+    <div class="model-card">
+      <h4>🚦 QueueEntry.model.js</h4>
+      <div class="field">centreId, bookingId, farmerId</div>
+      <div class="field">token, queueDate, position (int)</div>
+      <div class="field">counter, calledAt, completedAt</div>
+      <div class="field">status: waiting | called | serving</div>
+      <div class="field">Index: {centreId, queueDate, pos}</div>
+    </div>
+    <div class="model-card">
+      <h4>⚖️ Procurement.model.js</h4>
+      <div class="field">bookingId, farmerId, centreId</div>
+      <div class="field">quantity (quintals), pricePerUnit (MSP)</div>
+      <div class="field">totalAmount, grade (A | B | C)</div>
+      <div class="field">moisture %, qualityNotes</div>
+      <div class="field">officerId, procurementDate</div>
+    </div>
+    <div class="model-card">
+      <h4>💳 Payment.model.js</h4>
+      <div class="field">procurementId, bookingId, farmerId</div>
+      <div class="field">amount, currency</div>
+      <div class="field">method: DBT_NEFT | DBT_RTGS | PFMS</div>
+      <div class="field">utrNumber, status: pending → paid</div>
+      <div class="field">initiatedAt, completedAt</div>
+    </div>
+    <div class="model-card">
+      <h4>🔔 Notification.model.js</h4>
+      <div class="field">userId, title, message</div>
+      <div class="field">type: slot_reminder | queue_approaching</div>
+      <div class="field">| token_called | payment_completed</div>
+      <div class="field">relatedId, isRead</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>MongoDB + Mongoose ODM — 11 Schema Definitions</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 6 — REST API + WEBSOCKET EVENTS                       -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 6 of 8</span>
+  </div>
+
+  <div class="section-header">
+    <div class="icon">📋</div>
+    <h2>REST API Reference</h2>
+  </div>
+
+  <div class="api-grid">
+    <div class="api-group auth">
+      <h4>🔐 Authentication (/api/auth)</h4>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/auth/register — Farmer self-registration (KYC)</span></div>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/auth/login — JWT token + user profile</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/auth/me — Current authenticated user</span></div>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/auth/logout — Clear session</span></div>
+    </div>
+    <div class="api-group farmer">
+      <h4>🚜 Farmer Services (/api/farmers)</h4>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/farmers/profile — Land & bank info</span></div>
+      <div class="api-route"><span class="method put">PUT</span><span class="api-path">/api/farmers/profile — Update land & crops</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/farmers/history — Procurement & payment history</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/bookings — Active & past bookings</span></div>
+    </div>
+    <div class="api-group queue">
+      <h4>🚦 Live Queue (/api/queue)</h4>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/queue/:centreId/live — Live queue state</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/queue/:centreId/position — Farmer position</span></div>
+      <div class="api-route"><span class="method put">PUT</span><span class="api-path">/api/queue/:token/arrived — Gate check-in</span></div>
+      <div class="api-route"><span class="method put">PUT</span><span class="api-path">/api/queue/:token/call — Call token to counter</span></div>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/queue/call-next — Auto call next in line</span></div>
+    </div>
+    <div class="api-group officer">
+      <h4>⚖️ Procurement (/api/procurements)</h4>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/procurements/:id — Weighing slip & grade</span></div>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/procurements — Create procurement record</span></div>
+      <div class="api-route"><span class="method put">PUT</span><span class="api-path">/api/procurements/:id/status — Submit grade & payout</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/centres/:id/slots — Available slots & capacity</span></div>
+    </div>
+    <div class="api-group payment">
+      <h4>💳 Payments & DBT (/api/payments)</h4>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/payments/my — All farmer transfers</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/payments/:id — UTR settlement data</span></div>
+      <div class="api-route"><span class="method put">PUT</span><span class="api-path">/api/payments/:id/status — Update payment state</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/notifications — In-app alerts & unread count</span></div>
+    </div>
+    <div class="api-group admin">
+      <h4>🛡️ Admin Command (/api/admin)</h4>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/admin/dashboard — System KPIs & trends</span></div>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/admin/slots/generate — Bulk slot generator</span></div>
+      <div class="api-route"><span class="method post">POST</span><span class="api-path">/api/admin/officers — Create & assign officer</span></div>
+      <div class="api-route"><span class="method get">GET</span><span class="api-path">/api/admin/analytics — 30/90-day volume audit</span></div>
+    </div>
+  </div>
+
+  <!-- WEBSOCKET -->
+  <div class="section-header" style="margin-top:16px;">
+    <div class="icon">⚡</div>
+    <h2>Real-Time WebSocket Events (Socket.IO)</h2>
+  </div>
+
+  <table class="ws-table">
+    <thead>
+      <tr>
+        <th>Event Name</th>
+        <th>Direction</th>
+        <th>Payload</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>join:farmer</td>
+        <td><span class="ws-dir ws-c2s">Client → Server</span></td>
+        <td>{ userId, centreId }</td>
+        <td>Subscribe farmer to personal & mandi room</td>
+      </tr>
+      <tr>
+        <td>join:officer</td>
+        <td><span class="ws-dir ws-c2s">Client → Server</span></td>
+        <td>{ centreId }</td>
+        <td>Subscribe officer to mandi room for live events</td>
+      </tr>
+      <tr>
+        <td>queue:updated</td>
+        <td><span class="ws-dir ws-s2c">Server → Client</span></td>
+        <td>{ centreId, token, status, counter }</td>
+        <td>Broadcast when token is called or completed</td>
+      </tr>
+      <tr>
+        <td>booking:arrived</td>
+        <td><span class="ws-dir ws-s2c">Server → Client</span></td>
+        <td>{ bookingId, token, centreId }</td>
+        <td>Alert officers when farmer checks in at gate</td>
+      </tr>
+      <tr>
+        <td>booking:created</td>
+        <td><span class="ws-dir ws-s2c">Server → Client</span></td>
+        <td>{ bookingId, centreId }</td>
+        <td>Alert officers when new slot is reserved</td>
+      </tr>
+      <tr>
+        <td>procurement:updated</td>
+        <td><span class="ws-dir ws-s2c">Server → Client</span></td>
+        <td>{ procurementId, status, paymentId }</td>
+        <td>Emitted to farmer when produce is weighed & payout approved</td>
+      </tr>
+      <tr>
+        <td>notification:new</td>
+        <td><span class="ws-dir ws-s2c">Server → Client</span></td>
+        <td>{ notification }</td>
+        <td>Emitted to farmer's personal room for real-time alerts</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>40+ REST API Routes + 7 Socket.IO Events</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 7 — RBAC + SECURITY + TESTING                         -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 7 of 8</span>
+  </div>
+
+  <div class="section-header">
+    <div class="icon">👥</div>
+    <h2>Role-Based Access Control (RBAC)</h2>
+  </div>
+
+  <table class="rbac-table">
+    <thead>
+      <tr>
+        <th style="text-align:left;">Feature / Capability</th>
+        <th>🧑‍🌾 Farmer</th>
+        <th>👮 Officer</th>
+        <th>🛡️ Admin</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Reserve Mandi Time Slot</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td></tr>
+      <tr><td>Track Live Turn Queue</td><td><span class="check">✅</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>View Payment Timeline</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Cancel a Booking</td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Digital Gate Check-In</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Call Next Token to Counter</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+      <tr><td>Weigh & Grade Produce</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="cross">❌</span></td></tr>
+      <tr><td>Approve MSP Payout</td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Generate Mandi Slot Schedule</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Update MSP Crop Price Rates</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Export Audit Data (CSV)</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+      <tr><td>Suspend / Reactivate Accounts</td><td><span class="cross">❌</span></td><td><span class="cross">❌</span></td><td><span class="check">✅</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- SECURITY -->
+  <div class="section-header" style="margin-top:16px;">
+    <div class="icon">🔐</div>
+    <h2>Security Architecture</h2>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:8px;">
+    <div class="info-box">
+      <h4>🔑 JWT Authentication</h4>
+      <ul>
+        <li>Stateless tokens signed with secret key</li>
+        <li>Automatic 7-day expiration policy</li>
+        <li>Axios interceptor for automatic header injection</li>
+        <li>401 auto-refresh and re-login redirect</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <h4>🔒 Password Security</h4>
+      <ul>
+        <li>Bcrypt.js with 12 salt rounds</li>
+        <li>Pre-save Mongoose middleware hashing</li>
+        <li>toJSON suppression (never exposed in API)</li>
+        <li>Express Validator sanitizes all inputs</li>
+      </ul>
+    </div>
+    <div class="warn-box">
+      <h4>🛡️ Middleware Security</h4>
+      <ul>
+        <li>Helmet.js sets secure HTTP headers</li>
+        <li>CORS policy restricts allowed origins</li>
+        <li>Rate limiting on auth endpoints</li>
+        <li>Role middleware enforces RBAC on every route</li>
+      </ul>
+    </div>
+    <div class="warn-box">
+      <h4>⚛️ Atomic Slot Locking</h4>
+      <ul>
+        <li>MongoDB findOneAndUpdate with $inc operator</li>
+        <li>Prevents race condition on simultaneous bookings</li>
+        <li>Duplicate booking check before slot reservation</li>
+        <li>Automatic status transition: available → full</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TESTING -->
+  <div class="section-header" style="margin-top:14px;">
+    <div class="icon">🧪</div>
+    <h2>Testing & Quality Assurance (Jest)</h2>
+  </div>
+
+  <table style="font-size:10.5px;">
+    <thead>
+      <tr><th>Test Suite</th><th>Test Cases</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>ApiResponse & ApiError Utilities</td><td>✓ Valid ApiResponse objects &nbsp;|&nbsp; ✓ ApiError stack & status</td><td><span class="badge">PASS</span></td></tr>
+      <tr><td>JWT & Auth Security Logic</td><td>✓ Sign & verify valid JWT &nbsp;|&nbsp; ✓ Bcrypt hash & verify</td><td><span class="badge">PASS</span></td></tr>
+      <tr><td>Queue & Wait Time Calculation</td><td>✓ Accurate wait estimate &nbsp;|&nbsp; ✓ 0 min at position 0</td><td><span class="badge">PASS</span></td></tr>
+      <tr><td><strong>Total: 1 Suite</strong></td><td><strong>6 Tests</strong></td><td><span class="badge">✅ ALL PASS</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>JWT + Bcrypt + Helmet + CORS + Express Validator</span>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- PAGE 8 — SETUP GUIDE + CREDENTIALS + CONCLUSION            -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="page-header">
+    <div class="brand">🌾 Kisan Procurement Connect</div>
+    <span class="pg">Page 8 of 8</span>
+  </div>
+
+  <div class="section-header">
+    <div class="icon">🛠️</div>
+    <h2>Quick Start & Installation Guide</h2>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;">
+    <div>
+      <p style="font-size:11px;font-weight:700;color:#064e3b;margin-bottom:6px;">📦 Prerequisites</p>
+      <table style="font-size:10.5px;">
+        <thead><tr><th>Requirement</th><th>Version</th></tr></thead>
+        <tbody>
+          <tr><td>Node.js</td><td><span class="badge">v18.0+</span></td></tr>
+          <tr><td>MongoDB Community</td><td><span class="badge">v6.0+ (port 27017)</span></td></tr>
+          <tr><td>npm</td><td><span class="badge">v9.0+</span></td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:11px;font-weight:700;color:#064e3b;margin:10px 0 6px;">⚡ Run the Project (One Command)</p>
+      <div style="background:#1e293b;border-radius:8px;padding:10px 12px;font-family:monospace;font-size:10px;color:#e2e8f0;line-height:1.8;">
+        <span style="color:#6ee7b7;"># 1. Install all dependencies</span><br>
+        npm install && cd server && npm install<br>
+        cd ../client && npm install && cd ..<br><br>
+        <span style="color:#6ee7b7;"># 2. Seed demo database</span><br>
+        npm run seed<br><br>
+        <span style="color:#6ee7b7;"># 3. Run backend + frontend simultaneously</span><br>
+        npm run dev<br><br>
+        <span style="color:#fbbf24;">🌐 Frontend: http://localhost:5173</span><br>
+        <span style="color:#fbbf24;">⚙️ Backend:  http://localhost:5000</span>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:11px;font-weight:700;color:#064e3b;margin-bottom:6px;">📁 Project Directory Structure</p>
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px;font-family:monospace;font-size:9.5px;line-height:1.9;color:#374151;">
+        Project-SIH/<br>
+        ├── package.json &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># Root (concurrently)</span><br>
+        ├── client/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># React 19 + Vite</span><br>
+        │&nbsp;&nbsp; ├── src/context/&nbsp;<span style="color:#9ca3af;"># Auth + Socket</span><br>
+        │&nbsp;&nbsp; ├── src/pages/ &nbsp;&nbsp;<span style="color:#9ca3af;"># Farmer/Officer/Admin</span><br>
+        │&nbsp;&nbsp; └── src/services/<span style="color:#9ca3af;"># Axios API modules</span><br>
+        └── server/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># Node.js + Express</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; ├── models/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># 11 Mongoose models</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; ├── routes/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># 11 REST route files</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; ├── sockets/ &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># Socket.IO events</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; ├── services/ &nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># Queue state machine</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; ├── seed/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># Database seeder</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp; └── tests/ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#9ca3af;"># Jest test suite</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEMO CREDENTIALS -->
+  <div class="section-header" style="margin-top:14px;">
+    <div class="icon">🔑</div>
+    <h2>Pre-Seeded Demo Credentials</h2>
+  </div>
+
+  <table class="creds-table" style="font-size:11px;margin-top:8px;">
+    <thead>
+      <tr>
+        <th>Portal / Role</th>
+        <th>Mobile Number</th>
+        <th>Password</th>
+        <th>Assigned Duties & Location</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>🛡️ System Admin</td>
+        <td><strong>9000000001</strong></td>
+        <td><code style="background:#f3f4f6;padding:2px 5px;border-radius:4px;">Admin@123</code></td>
+        <td>Full command: slot generator, MSP pricing, analytics, CSV export</td>
+      </tr>
+      <tr>
+        <td>👮 Procurement Officer</td>
+        <td><strong>9810000001</strong></td>
+        <td><code style="background:#f3f4f6;padding:2px 5px;border-radius:4px;">Officer@123</code></td>
+        <td>Ludhiana Central Mandi: check-in, counter calling, weighing & payment</td>
+      </tr>
+      <tr>
+        <td>🧑‍🌾 Registered Farmer</td>
+        <td><strong>9751000001</strong></td>
+        <td><code style="background:#f3f4f6;padding:2px 5px;border-radius:4px;">Farmer@123</code></td>
+        <td>Active slot booking, live queue tracking, payment status timeline</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- CONCLUSION -->
+  <div style="background:linear-gradient(135deg,#064e3b,#047857);border-radius:12px;padding:14px 18px;margin-top:14px;color:#fff;">
+    <h3 style="font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px;">🌾 Impact & Vision</h3>
+    <p style="font-size:10.5px;line-height:1.8;opacity:0.92;">
+      <strong>Kisan Procurement Connect</strong> is built to empower Indian agriculture with transparent, corruption-free, and dignified procurement for every farmer across the nation.
+      By replacing chaotic manual processes with a fully digital, real-time platform, it eliminates the 24–72 hour waiting crisis, prevents grain spoilage, ensures guaranteed MSP payments via
+      Direct Benefit Transfer, and provides measurable accountability at every stage — from slot booking to bank account credit.
+      This is the future of agricultural procurement in India.
+    </p>
+    <div style="display:flex;gap:16px;margin-top:10px;font-size:10px;opacity:0.8;">
+      <span>✅ React 19 + Vite</span>
+      <span>✅ Node.js + Express 5</span>
+      <span>✅ MongoDB + Mongoose</span>
+      <span>✅ Socket.IO Real-Time</span>
+      <span>✅ JWT + Bcrypt Security</span>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Smart India Hackathon 2024 — Kisan Procurement Connect</span>
+    <span>Built to empower Indian Agriculture 🇮🇳</span>
+  </div>
+</div>
+
+<!-- PRINT BUTTON -->
+<div style="text-align:center;padding:12px 0 24px;font-family:Inter,sans-serif;">
+  <button onclick="window.print()"
+    style="background:linear-gradient(135deg,#064e3b,#059669);color:#fff;border:none;
+    padding:12px 36px;border-radius:100px;font-size:14px;font-weight:700;
+    cursor:pointer;box-shadow:0 4px 20px rgba(5,150,105,0.4);letter-spacing:0.5px;">
+    🖨️ &nbsp; Save as PDF (Ctrl+P)
+  </button>
+  <p style="margin-top:8px;font-size:11px;color:#6b7280;">
+    In Print dialog → Destination → "Save as PDF" → Layout: Portrait → Paper: A4
+  </p>
+</div>
+
+</body>
+</html>
