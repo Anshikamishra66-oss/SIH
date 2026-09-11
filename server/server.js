@@ -25,11 +25,20 @@ const cropRoutes = require('./routes/crop.routes');
 
 const app = express();
 const server = http.createServer(app);
+const allowedOrigins = new Set([
+  'http://localhost:5173',
+  'https://sih-omega-three.vercel.app',
+  process.env.CLIENT_URL,
+].filter(Boolean));
+const corsOrigin = (origin, callback) => {
+  if (!origin || allowedOrigins.has(origin)) return callback(null, true);
+  return callback(new Error('Origin is not allowed by CORS'));
+};
 
 // Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: corsOrigin,
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -47,7 +56,7 @@ connectDB();
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: corsOrigin,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   })
