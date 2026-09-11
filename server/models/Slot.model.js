@@ -56,4 +56,4 @@ slotSchema.pre('save', function () {
   }
 });
 
-module.exports = new PostgresModel('Slot', { booked: 0, status: 'available' });
+module.exports = new PostgresModel('Slot', { booked: 0, status: 'available' }, {}, slotSchema);

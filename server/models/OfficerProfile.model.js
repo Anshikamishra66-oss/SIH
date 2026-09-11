@@ -29,4 +29,4 @@ const officerProfileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('OfficerProfile');
+module.exports = new PostgresModel('OfficerProfile', {}, {}, officerProfileSchema);

@@ -59,4 +59,4 @@ const queueEntrySchema = new mongoose.Schema(
 queueEntrySchema.index({ centreId: 1, queueDate: 1, position: 1 });
 queueEntrySchema.index({ centreId: 1, queueDate: 1, status: 1 });
 
-module.exports = new PostgresModel('QueueEntry', { status: 'waiting' });
+module.exports = new PostgresModel('QueueEntry', { status: 'waiting' }, {}, queueEntrySchema);

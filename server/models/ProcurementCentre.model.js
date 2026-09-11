@@ -80,4 +80,4 @@ const procurementCentreSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('ProcurementCentre', { operatingHours: { start: '09:00', end: '17:00' }, dailyCapacity: 100, slotDurationMinutes: 60, avgServiceTimeMinutes: 8, cancellationCutoffHours: 12, availableCrops: [], officerIds: [], eligibilityDistricts: [], isActive: true, facilities: [] });
+module.exports = new PostgresModel('ProcurementCentre', { operatingHours: { start: '09:00', end: '17:00' }, dailyCapacity: 100, slotDurationMinutes: 60, avgServiceTimeMinutes: 8, cancellationCutoffHours: 12, availableCrops: [], officerIds: [], eligibilityDistricts: [], isActive: true, facilities: [] }, {}, procurementCentreSchema);

@@ -50,4 +50,4 @@ const farmerProfileSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('FarmerProfile', { crops: [], isProfileComplete: false });
+module.exports = new PostgresModel('FarmerProfile', { crops: [], isProfileComplete: false }, {}, farmerProfileSchema);

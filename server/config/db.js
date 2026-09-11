@@ -29,23 +29,15 @@ const connectDB = async () => {
     `);
     await pool.query('CREATE INDEX IF NOT EXISTS documents_collection_idx ON documents (collection)');
 
-    for (const model of registry.values()) {
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS ${model.tableName} (
-          id TEXT PRIMARY KEY,
-          data JSONB NOT NULL,
-          created_at TIMESTAMPTZ NOT NULL,
-          updated_at TIMESTAMPTZ NOT NULL
-        )
-      `);
-      await pool.query(`
-        INSERT INTO ${model.tableName} (id, data, created_at, updated_at)
-        SELECT id, data, created_at, updated_at
-        FROM documents
-        WHERE collection = $1
-        ON CONFLICT (id) DO NOTHING
-      `, [model.name]);
+    for (const model of registry.values()) await model.ensureTable();
+
+    const { rows: legacyDocuments } = await pool.query('SELECT collection, data FROM documents');
+    for (const legacyDocument of legacyDocuments) {
+      const model = registry.get(legacyDocument.collection);
+      if (model) await model._write(model._document(legacyDocument.data));
     }
+
+    await pool.query('DROP TABLE IF EXISTS documents');
 
     await pool.query('DROP TABLE IF EXISTS documents');
 

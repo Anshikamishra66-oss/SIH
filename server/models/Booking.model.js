@@ -78,5 +78,5 @@ const bookingSchema =
   };
 
 // Prevent the same farmer from booking the same slot twice
-module.exports = new PostgresModel('Booking', { status: 'booked', unit: 'quintal' });
+module.exports = new PostgresModel('Booking', { status: 'booked', unit: 'quintal' }, {}, bookingSchema);
 module.exports.BOOKING_STATUSES = BOOKING_STATUSES;

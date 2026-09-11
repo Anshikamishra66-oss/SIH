@@ -63,4 +63,4 @@ const paymentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('Payment', { status: 'pending', paymentMethod: 'bank_transfer', isDemoPayment: true });
+module.exports = new PostgresModel('Payment', { status: 'pending', paymentMethod: 'bank_transfer', isDemoPayment: true }, {}, paymentSchema);

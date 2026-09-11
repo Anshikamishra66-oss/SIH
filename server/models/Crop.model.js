@@ -41,4 +41,4 @@ const cropSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('Crop', { unit: 'quintal', season: 'All', category: 'Cereal', isActive: true });
+module.exports = new PostgresModel('Crop', { unit: 'quintal', season: 'All', category: 'Cereal', isActive: true }, {}, cropSchema);

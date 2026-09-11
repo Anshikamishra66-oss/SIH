@@ -57,4 +57,4 @@ const procurementSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('Procurement');
+module.exports = new PostgresModel('Procurement', {}, {}, procurementSchema);

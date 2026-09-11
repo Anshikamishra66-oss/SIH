@@ -19,6 +19,42 @@ const associationMap = {
   availableCrops: 'Crop',
 };
 
+const sqlIdentifier = (value) => `"${value.replace(/"/g, '""')}"`;
+const postgresType = (instance) => ({
+  String: 'TEXT',
+  Number: 'DOUBLE PRECISION',
+  Boolean: 'BOOLEAN',
+  Date: 'TIMESTAMPTZ',
+  ObjectId: 'TEXT',
+}[instance] || 'JSONB');
+const jsonKey = (field) => `'${field.replace(/'/g, "''")}'`;
+
+function addSchemaFields(fields, schema) {
+  if (schema?.paths) {
+    for (const [path, definition] of Object.entries(schema.paths)) {
+      if (path === '_id' || path === '__v') continue;
+      const root = path.split('.')[0];
+      if (path.includes('.') || definition.instance === 'Array' || definition.instance === 'Embedded') {
+        fields.set(root, 'JSONB');
+      } else {
+        fields.set(root, postgresType(definition.instance));
+      }
+    }
+    return;
+  }
+
+  for (const [path, definition] of Object.entries(schema || {})) {
+    const root = path.split('.')[0];
+    const type = definition?.type;
+    if (Array.isArray(definition) || (type && Array.isArray(type)) || (typeof definition === 'object' && !type)) {
+      fields.set(root, 'JSONB');
+    } else {
+      const instance = type?.name || type?.instance || (typeof type === 'function' ? type.name : type);
+      fields.set(root, postgresType(instance));
+    }
+  }
+}
+
 const idValue = (value) => (value && value._id ? value._id : value);
 const valuesEqual = (left, right) => String(idValue(left)) === String(idValue(right));
 
@@ -166,7 +202,7 @@ class Query {
 }
 
 class PostgresModel {
-  constructor(name, defaults = {}, methods = {}) {
+  constructor(name, defaults = {}, methods = {}, schema = null) {
     this.name = name;
     const snakeName = name.replace(/([a-z])([A-Z])/g, '$1_$2').toLowerCase();
     this.tableName = snakeName.endsWith('y') && !/[aeiou]y$/.test(snakeName)
@@ -174,7 +210,51 @@ class PostgresModel {
       : `${snakeName}s`;
     this.defaults = defaults;
     this.methods = methods;
+    this.fields = new Map([
+      ['_id', 'TEXT'],
+      ['createdAt', 'TIMESTAMPTZ'],
+      ['updatedAt', 'TIMESTAMPTZ'],
+    ]);
+    addSchemaFields(this.fields, schema);
+    Object.keys(defaults).forEach((key) => {
+      if (!this.fields.has(key)) this.fields.set(key, defaults[key] && typeof defaults[key] === 'object' ? 'JSONB' : postgresType(typeof defaults[key] === 'number' ? 'Number' : typeof defaults[key] === 'boolean' ? 'Boolean' : 'String'));
+    });
     registry.set(name, this);
+  }
+
+  async ensureTable() {
+    const columns = [...this.fields.entries()].map(([field, type]) => `${sqlIdentifier(field === '_id' ? 'id' : field)} ${type}`).join(', ');
+    await pool.query(`CREATE TABLE IF NOT EXISTS ${sqlIdentifier(this.tableName)} (${columns}, PRIMARY KEY ("id"))`);
+
+    for (const [field, type] of this.fields) {
+      if (field !== '_id') await pool.query(`ALTER TABLE ${sqlIdentifier(this.tableName)} ADD COLUMN IF NOT EXISTS ${sqlIdentifier(field)} ${type}`);
+    }
+
+    const { rows } = await pool.query(
+      `SELECT 1 FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = $1 AND column_name = 'data'`,
+      [this.tableName]
+    );
+    if (rows.length) {
+      for (const [field, type] of this.fields) {
+        if (field === '_id') continue;
+        const expression = type === 'JSONB' ? `data->${jsonKey(field)}` : `NULLIF(data->>${jsonKey(field)}, '')::${type}`;
+        await pool.query(`UPDATE ${sqlIdentifier(this.tableName)} SET ${sqlIdentifier(field)} = ${expression} WHERE ${sqlIdentifier(field)} IS NULL AND data ? ${jsonKey(field)}`);
+      }
+      await pool.query(`ALTER TABLE ${sqlIdentifier(this.tableName)} DROP COLUMN data`);
+    }
+
+    const legacyColumns = await pool.query(
+      `SELECT column_name FROM information_schema.columns WHERE table_schema = current_schema() AND table_name = $1 AND column_name IN ('created_at', 'updated_at')`,
+      [this.tableName]
+    );
+    if (legacyColumns.rows.some(({ column_name }) => column_name === 'created_at')) {
+      await pool.query(`UPDATE ${sqlIdentifier(this.tableName)} SET "createdAt" = "created_at" WHERE "createdAt" IS NULL`);
+      await pool.query(`ALTER TABLE ${sqlIdentifier(this.tableName)} DROP COLUMN "created_at"`);
+    }
+    if (legacyColumns.rows.some(({ column_name }) => column_name === 'updated_at')) {
+      await pool.query(`UPDATE ${sqlIdentifier(this.tableName)} SET "updatedAt" = "updated_at" WHERE "updatedAt" IS NULL`);
+      await pool.query(`ALTER TABLE ${sqlIdentifier(this.tableName)} DROP COLUMN "updated_at"`);
+    }
   }
 
   _document(data) {
@@ -185,16 +265,23 @@ class PostgresModel {
   }
 
   async _all() {
-    const { rows } = await pool.query(`SELECT data FROM ${this.tableName}`);
-    return rows.map((row) => this._document(row.data));
+    const { rows } = await pool.query(`SELECT * FROM ${sqlIdentifier(this.tableName)}`);
+    return rows.map((row) => this._document(Object.fromEntries([...this.fields].map(([field]) => [field, row[field === '_id' ? 'id' : field]]))));
   }
 
   async _write(document) {
+    const fields = [...this.fields.keys()];
+    const columns = fields.map((field) => sqlIdentifier(field === '_id' ? 'id' : field)).join(', ');
+    const values = fields.map((_, index) => `$${index + 1}`).join(', ');
+    const updates = fields.filter((field) => field !== '_id').map((field) => `${sqlIdentifier(field)} = EXCLUDED.${sqlIdentifier(field)}`).join(', ');
+    const data = document.toObject();
+    const parameters = fields.map((field) => {
+      const value = data[field];
+      return this.fields.get(field) === 'JSONB' && value !== undefined ? JSON.stringify(value) : value;
+    });
     await pool.query(
-      `INSERT INTO ${this.tableName} (id, data, created_at, updated_at)
-       VALUES ($1, $2::jsonb, $3, $4)
-       ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at`,
-      [document._id, JSON.stringify(document.toObject()), document.createdAt, document.updatedAt]
+      `INSERT INTO ${sqlIdentifier(this.tableName)} (${columns}) VALUES (${values}) ON CONFLICT ("id") DO UPDATE SET ${updates}`,
+      parameters
     );
   }
 
