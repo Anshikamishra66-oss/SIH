@@ -7,6 +7,7 @@ import { IoClose } from 'react-icons/io5';
 import AdminLayout from '../../layouts/AdminLayout';
 import { adminService, cropService } from '../../services';
 import { extractError } from '../../utils/constants';
+import { INDIAN_STATES, STATE_DISTRICTS } from '../../utils/locations';
 
 const CentreManagementPage = () => {
   const [centres, setCentres] = useState([]);
@@ -268,26 +269,29 @@ const CentreManagementPage = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="font-bold text-gray-700">District</label>
-                    <input
-                      type="text"
+                    <label className="font-bold text-gray-700">State</label>
+                    <select
                       required
-                      placeholder="Karnal"
+                      value={centreForm.address.state}
+                      onChange={(e) => setCentreForm({ ...centreForm, address: { ...centreForm.address, state: e.target.value, district: '' } })}
+                      className="mt-1 w-full p-2 rounded-lg border border-gray-300"
+                    >
+                      <option value="">Select State</option>
+                      {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="font-bold text-gray-700">District</label>
+                    <select
+                      required
                       value={centreForm.address.district}
                       onChange={(e) => setCentreForm({ ...centreForm, address: { ...centreForm.address, district: e.target.value } })}
                       className="mt-1 w-full p-2 rounded-lg border border-gray-300"
-                    />
-                  </div>
-                  <div>
-                    <label className="font-bold text-gray-700">State</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Haryana"
-                      value={centreForm.address.state}
-                      onChange={(e) => setCentreForm({ ...centreForm, address: { ...centreForm.address, state: e.target.value } })}
-                      className="mt-1 w-full p-2 rounded-lg border border-gray-300"
-                    />
+                      disabled={!centreForm.address.state}
+                    >
+                      <option value="">Select District</option>
+                      {(STATE_DISTRICTS[centreForm.address.state] || []).map((d) => <option key={d} value={d}>{d}</option>)}
+                    </select>
                   </div>
                 </div>
 

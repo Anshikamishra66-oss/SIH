@@ -9,13 +9,7 @@ import Input, { Select } from '../../components/common/Input';
 import { CardSkeleton } from '../../components/common/Spinner';
 import toast from 'react-hot-toast';
 
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-];
+import { INDIAN_STATES, STATE_DISTRICTS } from '../../utils/locations';
 
 const ProfilePage = () => {
   const { user } = useAuth();
@@ -143,18 +137,24 @@ const ProfilePage = () => {
               <Select
                 label="State"
                 value={form.state}
-                onChange={(e) => setForm({ ...form, state: e.target.value })}
+                onChange={(e) => setForm({ ...form, state: e.target.value, district: '' })}
                 required
               >
                 <option value="">Select state</option>
                 {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
               </Select>
-              <Input
+              <Select
                 label="District"
                 value={form.district}
                 onChange={(e) => setForm({ ...form, district: e.target.value })}
                 required
-              />
+                disabled={!form.state}
+              >
+                <option value="">Select district</option>
+                {(STATE_DISTRICTS[form.state] || []).map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </Select>
               <Input
                 label="Village / Town"
                 value={form.village}

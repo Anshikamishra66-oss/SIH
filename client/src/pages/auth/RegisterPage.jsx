@@ -7,13 +7,7 @@ import toast from 'react-hot-toast';
 import Button from '../../components/common/Button';
 import Input, { Select } from '../../components/common/Input';
 
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-  'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-  'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-  'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-];
+import { INDIAN_STATES, STATE_DISTRICTS } from '../../utils/locations';
 
 const RegisterPage = () => {
   const [step, setStep] = useState(1);
@@ -164,18 +158,26 @@ const RegisterPage = () => {
               <div className="space-y-4">
                 <Select
                   id="state" label="State" value={form.state}
-                  onChange={(e) => update('state', e.target.value)}
+                  onChange={(e) => {
+                    update('state', e.target.value);
+                    update('district', ''); // reset district when state changes
+                  }}
                   error={errors.state} required
                 >
                   <option value="">Select your state</option>
                   {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
                 </Select>
-                <Input
-                  id="district" label="District" placeholder="e.g., Ludhiana"
+                <Select
+                  id="district" label="District"
                   value={form.district} onChange={(e) => update('district', e.target.value)}
                   error={errors.district} required
-                  leftIcon={<MapPin className="w-4 h-4" />}
-                />
+                  disabled={!form.state}
+                >
+                  <option value="">Select your district</option>
+                  {(STATE_DISTRICTS[form.state] || []).map((d) => (
+                    <option key={d} value={d}>{d}</option>
+                  ))}
+                </Select>
                 <Input
                   id="village" label="Village / Town (Optional)" placeholder="e.g., Doraha"
                   value={form.village} onChange={(e) => update('village', e.target.value)}
