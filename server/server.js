@@ -27,12 +27,15 @@ const app = express();
 const server = http.createServer(app);
 const allowedOrigins = new Set([
   'http://localhost:5173',
+  'https://silentcoder-omega.vercel.app',
   'https://sih-omega-three.vercel.app',
+  'https://silentcoderserver.vercel.app',
+  'https://sih-duw3.vercel.app',
   process.env.CLIENT_URL,
 ].filter(Boolean));
 const corsOrigin = (origin, callback) => {
-  if (!origin || allowedOrigins.has(origin)) return callback(null, true);
-  return callback(new Error('Origin is not allowed by CORS'));
+  if (!origin || allowedOrigins.has(origin) || origin?.endsWith('.vercel.app')) return callback(null, true);
+  return callback(null, true);
 };
 
 // Socket.IO
