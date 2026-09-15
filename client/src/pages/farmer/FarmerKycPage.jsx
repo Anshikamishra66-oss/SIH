@@ -35,10 +35,15 @@ const FarmerKycPage = () => {
   // Gateway Configuration Notice Modal
   const [configModal, setConfigModal] = useState(null);
 
-  // Kisan ID Verification Details
+  // Kisan ID Verification Details with OTP
   const [kisanId, setKisanId] = useState('');
   const [kisanVerified, setKisanVerified] = useState(false);
-  const [verifyingKisan, setVerifyingKisan] = useState(false);
+  const [sendingKisanOtp, setSendingKisanOtp] = useState(false);
+  const [verifyingKisanOtp, setVerifyingKisanOtp] = useState(false);
+  const [kisanOtpModal, setKisanOtpModal] = useState(false);
+  const [kisanOtp, setKisanOtp] = useState('');
+  const [kisanOtpCooldown, setKisanOtpCooldown] = useState(0);
+  const [kisanMaskedMobile, setKisanMaskedMobile] = useState('');
   const [kisanDetails, setKisanDetails] = useState(null);
   const [submittingKyc, setSubmittingKyc] = useState(false);
 
@@ -95,6 +100,17 @@ const FarmerKycPage = () => {
     }
     return () => clearInterval(timer);
   }, [otpCooldown]);
+
+  // Timer for Kisan ID OTP resend cooldown
+  useEffect(() => {
+    let timer;
+    if (kisanOtpCooldown > 0) {
+      timer = setInterval(() => {
+        setKisanOtpCooldown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [kisanOtpCooldown]);
 
   // Fetch current KYC status on mount
   const fetchKycStatus = async () => {
@@ -186,9 +202,8 @@ const FarmerKycPage = () => {
     }
   };
 
-  // Document upload simulation
-  // Step 2: Verify Kisan ID from Government Farmer Registry
-  const handleVerifyKisanId = async () => {
+  // Step 2: Request OTP for Kisan ID Verification
+  const handleRequestKisanOtp = async () => {
     const clean = kisanId.trim().toUpperCase();
     if (!clean) {
       toast.error('Please enter your Kisan ID / Farmer Registration Number.');
@@ -199,26 +214,56 @@ const FarmerKycPage = () => {
       return;
     }
 
-    setVerifyingKisan(true);
+    setSendingKisanOtp(true);
     try {
-      const res = await farmerService.verifyKisanId({ kisanId: clean });
+      const res = await farmerService.sendKisanIdOtp({ kisanId: clean });
+      const data = res.data?.data;
+      setKisanMaskedMobile(data?.maskedMobile || `+91 ******${String(user?.mobile || '3210').slice(-4)}`);
+      setKisanOtpModal(true);
+      setKisanOtpCooldown(60);
+      toast.success(res.data?.message || 'OTP sent to mobile linked with Kisan ID! (Demo OTP: 123456)');
+    } catch (err) {
+      toast.error(extractError(err));
+    } finally {
+      setSendingKisanOtp(false);
+    }
+  };
+
+  // Step 2b: Verify Kisan ID using entered OTP
+  const handleVerifyKisanOtp = async () => {
+    const cleanOtp = kisanOtp.trim();
+    if (!cleanOtp || cleanOtp.length !== 6) {
+      toast.error('Please enter the 6-digit OTP sent to your linked mobile number.');
+      return;
+    }
+
+    setVerifyingKisanOtp(true);
+    try {
+      const res = await farmerService.verifyKisanIdOtp({
+        kisanId: kisanId.trim().toUpperCase(),
+        otp: cleanOtp,
+      });
+
       const details = res.data?.data?.kisanDetails || {
-        kisanId: clean,
+        kisanId: kisanId.trim().toUpperCase(),
         farmerName: user?.name,
         state: user?.state,
         district: user?.district,
+        linkedMobile: kisanMaskedMobile || `+91 ******${String(user?.mobile || '3210').slice(-4)}`,
         landHolding: '4.25 Acres (Verified in Farmer Registry)',
         pmKisanStatus: 'Active & DBT Linked ✓',
-        issuingAuthority: 'Department of Agriculture & Farmers Welfare',
+        issuingAuthority: `${user?.state || 'State'} Dept. of Agriculture`,
         status: 'Verified ✓',
       };
       setKisanDetails(details);
       setKisanVerified(true);
-      toast.success('Kisan ID verified successfully from Government Farmer Registry!');
+      setKisanOtpModal(false);
+      setKisanOtp('');
+      toast.success('Kisan ID verified successfully with OTP from Government Farmer Registry!');
     } catch (err) {
       toast.error(extractError(err));
     } finally {
-      setVerifyingKisan(false);
+      setVerifyingKisanOtp(false);
     }
   };
 
@@ -498,17 +543,17 @@ const FarmerKycPage = () => {
                       <Button
                         type="button"
                         variant="primary"
-                        onClick={handleVerifyKisanId}
-                        loading={verifyingKisan}
-                        disabled={!kisanId.trim() || verifyingKisan}
+                        onClick={handleRequestKisanOtp}
+                        loading={sendingKisanOtp}
+                        disabled={!kisanId.trim() || sendingKisanOtp}
                         className="shadow-sm font-semibold"
                       >
-                        Verify Kisan ID
+                        Send OTP to Verify
                       </Button>
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] text-gray-500 mt-1.5">
-                      <span>Enter your State Agriculture Department Registration ID or PM-KISAN ID.</span>
+                      <span>An OTP will be sent to the mobile registered with your Kisan ID in PM-KISAN / State Registry.</span>
                       <button
                         type="button"
                         onClick={() => setKisanId('KSN-UP-2024-8849')}
@@ -525,7 +570,7 @@ const FarmerKycPage = () => {
                   <div className="flex items-center justify-between text-xs text-emerald-900 font-semibold border-b border-emerald-200/60 pb-2">
                     <span className="flex items-center gap-1.5">
                       <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                      State Agriculture Farmer Registry Record
+                      State Agriculture Farmer Registry Record (OTP Verified)
                     </span>
                     <div className="flex items-center gap-2">
                       <span className="font-mono font-bold">{kisanId}</span>
@@ -535,7 +580,7 @@ const FarmerKycPage = () => {
                           onClick={() => setKisanVerified(false)}
                           className="text-[11px] text-primary-700 hover:underline font-semibold ml-2"
                         >
-                          Change ID
+                          Change ID / Re-verify
                         </button>
                       )}
                     </div>
@@ -547,6 +592,10 @@ const FarmerKycPage = () => {
                       <span className="font-mono font-bold text-gray-900">{kisanId}</span>
                     </div>
                     <div>
+                      <span className="text-gray-500 block">Registry Mobile (OTP Verified):</span>
+                      <span className="font-semibold text-emerald-800">{kisanDetails?.linkedMobile || kisanMaskedMobile || `+91 ******${String(user?.mobile || '3210').slice(-4)}`} ✓</span>
+                    </div>
+                    <div>
                       <span className="text-gray-500 block">Registry Land Holdings:</span>
                       <span className="font-semibold text-gray-900">{kisanDetails?.landHolding || '4.25 Acres (Verified in Farmer Registry)'}</span>
                     </div>
@@ -554,7 +603,7 @@ const FarmerKycPage = () => {
                       <span className="text-gray-500 block">PM-KISAN DBT Linkage:</span>
                       <span className="font-semibold text-emerald-700">{kisanDetails?.pmKisanStatus || 'Active & DBT Linked ✓'}</span>
                     </div>
-                    <div>
+                    <div className="sm:col-span-2">
                       <span className="text-gray-500 block">Registry Issuing Authority:</span>
                       <span className="font-semibold text-gray-900">{kisanDetails?.issuingAuthority || `${user?.state || 'State'} Dept. of Agriculture`}</span>
                     </div>
@@ -837,6 +886,91 @@ const FarmerKycPage = () => {
                   className="flex-1 text-xs font-bold"
                 >
                   Verify & Fetch Details
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Kisan ID OTP Verification Modal */}
+        {kisanOtpModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-white max-w-md w-full rounded-3xl p-6 shadow-2xl border border-gray-100 space-y-4 animate-scaleUp">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <KeyRound className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-gray-900 text-sm">Verify Kisan ID via OTP</h3>
+                    <p className="text-xs text-gray-500">
+                      Sent to linked mobile: <span className="font-semibold text-emerald-800">{kisanMaskedMobile || `+91 ******${String(user?.mobile || '3210').slice(-4)}`}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setKisanOtp('123456')}
+                  className="text-xs font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-1 rounded-lg transition"
+                >
+                  Demo: 123456
+                </button>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="block text-xs font-semibold text-gray-700">
+                    Enter 6-Digit OTP for {kisanId}:
+                  </label>
+                  <span className="text-[11px] text-gray-500">Valid for 10 minutes</span>
+                </div>
+                <input
+                  type="text"
+                  placeholder="------"
+                  value={kisanOtp}
+                  onChange={(e) => setKisanOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  maxLength={6}
+                  autoFocus
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-center text-lg font-mono font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <div className="flex justify-between items-center text-xs text-gray-500 pt-1">
+                  <span>Farmer Registry Verification</span>
+                  {kisanOtpCooldown > 0 ? (
+                    <span className="text-amber-600 font-medium">Resend in {kisanOtpCooldown}s</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleRequestKisanOtp}
+                      disabled={sendingKisanOtp}
+                      className="text-primary-700 font-semibold hover:underline"
+                    >
+                      Resend OTP
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setKisanOtpModal(false);
+                    setKisanOtp('');
+                  }}
+                  className="flex-1 py-2.5 border border-gray-300 hover:bg-gray-100 text-gray-700 rounded-xl font-medium text-xs transition"
+                >
+                  Cancel
+                </button>
+                <Button
+                  type="button"
+                  variant="primary"
+                  loading={verifyingKisanOtp}
+                  disabled={kisanOtp.trim().length !== 6 || verifyingKisanOtp}
+                  onClick={handleVerifyKisanOtp}
+                  className="flex-1 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  Verify Kisan ID
                 </Button>
               </div>
             </div>

@@ -6,6 +6,8 @@ const {
   getProcurementHistory,
   sendAadhaarOtp,
   verifyAadhaarOtp,
+  sendKisanIdOtp,
+  verifyKisanIdOtp,
   verifyKisanId,
   submitKyc,
   getKycStatus,
@@ -22,8 +24,10 @@ router.get('/history', getProcurementHistory);
 router.post('/aadhaar/send-otp', sendAadhaarOtp);
 router.post('/aadhaar/verify-otp', verifyAadhaarOtp);
 
-// Kisan ID verification & KYC submission
-router.post('/verify-kisan-id', verifyKisanId);
+// Kisan ID verification with OTP & KYC submission
+router.post('/kisan-id/send-otp', sendKisanIdOtp);
+router.post('/kisan-id/verify-otp', verifyKisanIdOtp);
+router.post('/verify-kisan-id', verifyKisanIdOtp);
 router.post('/submit-kyc', submitKyc);
 router.get('/kyc-status', getKycStatus);
 
