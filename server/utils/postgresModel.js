@@ -296,8 +296,11 @@ class PostgresModel {
     const columns = [...this.fields.entries()].map(([field, type]) => `${sqlIdentifier(field === '_id' ? 'id' : field)} ${type}`).join(', ');
     await pool.query(`CREATE TABLE IF NOT EXISTS ${sqlIdentifier(this.tableName)} (${columns}, PRIMARY KEY ("id"))`);
 
-    for (const [field, type] of this.fields) {
-      if (field !== '_id') await pool.query(`ALTER TABLE ${sqlIdentifier(this.tableName)} ADD COLUMN IF NOT EXISTS ${sqlIdentifier(field)} ${type}`);
+    const alterCols = [...this.fields.entries()]
+      .filter(([field]) => field !== '_id')
+      .map(([field, type]) => `ADD COLUMN IF NOT EXISTS ${sqlIdentifier(field)} ${type}`);
+    if (alterCols.length) {
+      await pool.query(`ALTER TABLE ${sqlIdentifier(this.tableName)} ${alterCols.join(', ')}`);
     }
 
     const { rows } = await pool.query(
@@ -394,11 +397,20 @@ class PostgresModel {
   }
   insertMany(data) { return this.create(data); }
   async deleteMany(filter = {}) {
+    const db = getDb();
+    if (Object.keys(filter).length === 0) {
+      if (db.isConnected && db.isConnected()) {
+        await db.pool.query(`DELETE FROM ${sqlIdentifier(this.tableName)}`);
+      } else {
+        localDbData[this.tableName] = [];
+        saveLocalDb();
+      }
+      return { deletedCount: 0 };
+    }
     const items = (await this._all()).filter((item) => matches(item, filter));
     if (items.length) {
-      const db = getDb();
       if (db.isConnected && db.isConnected()) {
-        await db.pool.query(`DELETE FROM ${this.tableName} WHERE id = ANY($1)`, [items.map((item) => item._id)]);
+        await db.pool.query(`DELETE FROM ${sqlIdentifier(this.tableName)} WHERE id = ANY($1)`, [items.map((item) => item._id)]);
       } else {
         const idsToDelete = new Set(items.map((item) => String(item._id)));
         localDbData[this.tableName] = (localDbData[this.tableName] || []).filter((item) => !idsToDelete.has(String(item._id)));
