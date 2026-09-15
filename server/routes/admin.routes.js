@@ -6,7 +6,7 @@ const {
   getAnalytics, toggleFarmerStatus,
 } = require('../controllers/admin.controller');
 const { authenticate } = require('../middleware/auth.middleware');
-const { requireAdmin } = require('../middleware/role.middleware');
+const { requireAdmin, requireOfficerOrAbove } = require('../middleware/role.middleware');
 
 router.use(authenticate, requireAdmin);
 router.get('/dashboard', getAdminDashboard);

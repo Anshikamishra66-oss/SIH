@@ -1,6 +1,41 @@
 const { randomUUID } = require('crypto');
-const { pool } = require('../config/db');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
+
+const DATA_DIR = path.join(__dirname, '../data');
+const DB_FILE = path.join(DATA_DIR, 'local_db.json');
+let localDbData = {};
+
+function initLocalStorage() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    if (fs.existsSync(DB_FILE)) {
+      const content = fs.readFileSync(DB_FILE, 'utf-8');
+      localDbData = JSON.parse(content || '{}');
+    } else {
+      localDbData = {};
+      fs.writeFileSync(DB_FILE, JSON.stringify(localDbData, null, 2), 'utf-8');
+    }
+  } catch (err) {
+    localDbData = {};
+  }
+}
+
+function saveLocalDb() {
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+    fs.writeFileSync(DB_FILE, JSON.stringify(localDbData, null, 2), 'utf-8');
+  } catch (err) {
+    // silent
+  }
+}
+
+const getDb = () => require('../config/db');
 
 const registry = new Map();
 
@@ -78,12 +113,43 @@ function matchesValue(value, expected) {
       if (operator === '$ne') return !valuesEqual(value, operand);
       if (operator === '$in') return operand.some((item) => Array.isArray(value) ? value.some((entry) => valuesEqual(entry, item)) : valuesEqual(value, item));
       if (operator === '$nin') return !operand.some((item) => valuesEqual(value, item));
-      if (operator === '$gte') return value >= operand;
-      if (operator === '$gt') return value > operand;
-      if (operator === '$lte') return value <= operand;
-      if (operator === '$lt') return value < operand;
+      if (operator === '$gte' || operator === '$gt' || operator === '$lte' || operator === '$lt') {
+        const toNum = (val) => {
+          if (val instanceof Date) return val.getTime();
+          if (typeof val === 'string' && val.includes('-') && !isNaN(Date.parse(val))) return Date.parse(val);
+          const num = Number(val);
+          return isNaN(num) ? val : num;
+        };
+        const v = toNum(value);
+        const o = toNum(operand);
+        if (operator === '$gte') return v >= o;
+        if (operator === '$gt') return v > o;
+        if (operator === '$lte') return v <= o;
+        if (operator === '$lt') return v < o;
+      }
       if (operator === '$exists') return operand ? value !== undefined : value === undefined;
-      if (operator === '$elemMatch') return Array.isArray(value) && value.some((item) => matches(item, operand));
+      if (operator === '$regex') {
+        try {
+          const flags = expected.$options || '';
+          const re = new RegExp(operand, flags);
+          return Array.isArray(value)
+            ? value.some((item) => re.test(String(item || '')))
+            : re.test(String(value || ''));
+        } catch {
+          return false;
+        }
+      }
+      if (operator === '$options') return true;
+      if (operator === '$size') {
+        return Array.isArray(value) && value.length === Number(operand);
+      }
+      if (operator === '$elemMatch') {
+        if (!Array.isArray(value)) return false;
+        return value.some((item) => {
+          if (item && typeof item === 'object') return matches(item, operand);
+          return matchesValue(item, operand);
+        });
+      }
       return valuesEqual(value, expected);
     });
   }
@@ -223,6 +289,10 @@ class PostgresModel {
   }
 
   async ensureTable() {
+    const db = getDb();
+    if (!db.isConnected || !db.isConnected()) return;
+    const pool = db.pool;
+
     const columns = [...this.fields.entries()].map(([field, type]) => `${sqlIdentifier(field === '_id' ? 'id' : field)} ${type}`).join(', ');
     await pool.query(`CREATE TABLE IF NOT EXISTS ${sqlIdentifier(this.tableName)} (${columns}, PRIMARY KEY ("id"))`);
 
@@ -265,24 +335,41 @@ class PostgresModel {
   }
 
   async _all() {
-    const { rows } = await pool.query(`SELECT * FROM ${sqlIdentifier(this.tableName)}`);
-    return rows.map((row) => this._document(Object.fromEntries([...this.fields].map(([field]) => [field, row[field === '_id' ? 'id' : field]]))));
+    const db = getDb();
+    if (db.isConnected && db.isConnected()) {
+      const { rows } = await db.pool.query(`SELECT * FROM ${sqlIdentifier(this.tableName)}`);
+      return rows.map((row) => this._document(Object.fromEntries([...this.fields].map(([field]) => [field, row[field === '_id' ? 'id' : field]]))));
+    }
+    const tableData = localDbData[this.tableName] || [];
+    return tableData.map((doc) => this._document({ ...doc }));
   }
 
   async _write(document) {
-    const fields = [...this.fields.keys()];
-    const columns = fields.map((field) => sqlIdentifier(field === '_id' ? 'id' : field)).join(', ');
-    const values = fields.map((_, index) => `$${index + 1}`).join(', ');
-    const updates = fields.filter((field) => field !== '_id').map((field) => `${sqlIdentifier(field)} = EXCLUDED.${sqlIdentifier(field)}`).join(', ');
     const data = document.toObject();
-    const parameters = fields.map((field) => {
-      const value = data[field];
-      return this.fields.get(field) === 'JSONB' && value !== undefined ? JSON.stringify(value) : value;
-    });
-    await pool.query(
-      `INSERT INTO ${sqlIdentifier(this.tableName)} (${columns}) VALUES (${values}) ON CONFLICT ("id") DO UPDATE SET ${updates}`,
-      parameters
-    );
+    const db = getDb();
+    if (db.isConnected && db.isConnected()) {
+      const fields = [...this.fields.keys()];
+      const columns = fields.map((field) => sqlIdentifier(field === '_id' ? 'id' : field)).join(', ');
+      const values = fields.map((_, index) => `$${index + 1}`).join(', ');
+      const updates = fields.filter((field) => field !== '_id').map((field) => `${sqlIdentifier(field)} = EXCLUDED.${sqlIdentifier(field)}`).join(', ');
+      const parameters = fields.map((field) => {
+        const value = data[field];
+        return this.fields.get(field) === 'JSONB' && value !== undefined ? JSON.stringify(value) : value;
+      });
+      await db.pool.query(
+        `INSERT INTO ${sqlIdentifier(this.tableName)} (${columns}) VALUES (${values}) ON CONFLICT ("id") DO UPDATE SET ${updates}`,
+        parameters
+      );
+    } else {
+      if (!localDbData[this.tableName]) localDbData[this.tableName] = [];
+      const idx = localDbData[this.tableName].findIndex((item) => String(item._id) === String(data._id));
+      if (idx >= 0) {
+        localDbData[this.tableName][idx] = data;
+      } else {
+        localDbData[this.tableName].push(data);
+      }
+      saveLocalDb();
+    }
   }
 
   _query(filter = {}, many = false) {
@@ -308,7 +395,16 @@ class PostgresModel {
   insertMany(data) { return this.create(data); }
   async deleteMany(filter = {}) {
     const items = (await this._all()).filter((item) => matches(item, filter));
-    if (items.length) await pool.query(`DELETE FROM ${this.tableName} WHERE id = ANY($1)`, [items.map((item) => item._id)]);
+    if (items.length) {
+      const db = getDb();
+      if (db.isConnected && db.isConnected()) {
+        await db.pool.query(`DELETE FROM ${this.tableName} WHERE id = ANY($1)`, [items.map((item) => item._id)]);
+      } else {
+        const idsToDelete = new Set(items.map((item) => String(item._id)));
+        localDbData[this.tableName] = (localDbData[this.tableName] || []).filter((item) => !idsToDelete.has(String(item._id)));
+        saveLocalDb();
+      }
+    }
     return { deletedCount: items.length };
   }
   async _update(filter, update, options = {}) {
@@ -351,4 +447,4 @@ class PostgresModel {
   }
 }
 
-module.exports = { PostgresModel, registry };
+module.exports = { PostgresModel, registry, initLocalStorage };

@@ -21,6 +21,7 @@ const notificationSchema = new mongoose.Schema(
         'payment_completed',
         'booking_cancelled',
         'schedule_changed',
+        'kyc_submitted',
         'general',
       ],
       required: true,

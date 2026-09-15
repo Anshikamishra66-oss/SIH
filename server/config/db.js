@@ -14,42 +14,34 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,
 });
 
+let isConnected = false;
+
 const connectDB = async () => {
   try {
-    const { registry } = require('../utils/postgresModel');
+    const { registry, initLocalStorage } = require('../utils/postgresModel');
 
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS documents (
-        id TEXT PRIMARY KEY,
-        collection TEXT NOT NULL,
-        data JSONB NOT NULL,
-        created_at TIMESTAMPTZ NOT NULL,
-        updated_at TIMESTAMPTZ NOT NULL
-      )
-    `);
-    await pool.query('CREATE INDEX IF NOT EXISTS documents_collection_idx ON documents (collection)');
+    // Test connection
+    await pool.query('SELECT 1');
+    isConnected = true;
 
-    for (const model of registry.values()) await model.ensureTable();
-
-    const { rows: legacyDocuments } = await pool.query('SELECT collection, data FROM documents');
-    for (const legacyDocument of legacyDocuments) {
-      const model = registry.get(legacyDocument.collection);
-      if (model) await model._write(model._document(legacyDocument.data));
+    for (const model of registry.values()) {
+      await model.ensureTable();
     }
-
-    await pool.query('DROP TABLE IF EXISTS documents');
-
-    await pool.query('DROP TABLE IF EXISTS documents');
 
     console.log(`✅ PostgreSQL connected to ${process.env.PGDATABASE || 'configured database'}`);
   } catch (error) {
-    console.error('❌ PostgreSQL connection error:', error.message);
-    process.exit(1);
+    isConnected = false;
+    console.warn(`⚠️ PostgreSQL connection failed (${error.message}).`);
+    console.log('📦 Using Local File Storage fallback (server/data/local_db.json).');
+    const { initLocalStorage } = require('../utils/postgresModel');
+    await initLocalStorage();
   }
 };
 
 const closeDB = async () => {
-  await pool.end();
+  if (isConnected) {
+    await pool.end();
+  }
 };
 
-module.exports = { connectDB, closeDB, pool };
+module.exports = { connectDB, closeDB, pool, isConnected: () => isConnected };

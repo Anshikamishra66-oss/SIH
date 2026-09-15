@@ -114,6 +114,18 @@ class NotificationService {
       { bookingId: booking._id?.toString(), token: booking.token }
     );
   }
+
+  async kycSubmitted(userId, mobile) {
+    const message = 'Your KYC application has been successfully submitted. Your KYC will be updated within 2 working days.';
+    console.log(`\n📱 [SMS DISPATCHED to +91 ${mobile}]: "${message}"\n`);
+    return this.send(
+      userId,
+      'kyc_submitted',
+      'KYC Application Submitted',
+      message,
+      { mobile, event: 'kyc_submitted' }
+    );
+  }
 }
 
 // Singleton instance

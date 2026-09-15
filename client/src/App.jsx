@@ -16,6 +16,8 @@ import BookingDetailPage from './pages/farmer/BookingDetailPage';
 import ProcurementHistoryPage from './pages/farmer/ProcurementHistoryPage';
 import NotificationsPage from './pages/farmer/NotificationsPage';
 import ProfilePage from './pages/farmer/ProfilePage';
+import AiAssistantPage from './pages/farmer/AiAssistantPage';
+import FarmerKycPage from './pages/farmer/FarmerKycPage';
 
 // Officer Pages
 import OfficerDashboard from './pages/officer/OfficerDashboard';
@@ -29,6 +31,14 @@ import CentreManagementPage from './pages/admin/CentreManagementPage';
 import BookingManagementPage from './pages/admin/BookingManagementPage';
 import CropManagementPage from './pages/admin/CropManagementPage';
 import AnalyticsPage from './pages/admin/AnalyticsPage';
+import StaffManagementPage from './pages/admin/StaffManagementPage';
+import ProcurementManagementPage from './pages/admin/ProcurementManagementPage';
+import StatePerformancePage from './pages/admin/StatePerformancePage';
+import ApprovalsPage from './pages/admin/ApprovalsPage';
+import PaymentsMonitoringPage from './pages/admin/PaymentsMonitoringPage';
+import AlertsPage from './pages/admin/AlertsPage';
+import SettingsHelpPage from './pages/admin/SettingsHelpPage';
+import { OFFICER_ROLES, ADMIN_ROLES, CREATOR_ROLES } from './context/AuthContext';
 
 // 404 Page
 const NotFoundPage = () => (
@@ -129,12 +139,28 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/farmer/ai-assistant"
+              element={
+                <ProtectedRoute allowedRoles={['farmer']}>
+                  <AiAssistantPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/farmer/kyc"
+              element={
+                <ProtectedRoute allowedRoles={['farmer']}>
+                  <FarmerKycPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* Officer Protected Routes */}
             <Route
               path="/officer/dashboard"
               element={
-                <ProtectedRoute allowedRoles={['officer']}>
+                <ProtectedRoute allowedRoles={OFFICER_ROLES}>
                   <OfficerDashboard />
                 </ProtectedRoute>
               }
@@ -142,8 +168,16 @@ function App() {
             <Route
               path="/officer/bookings"
               element={
-                <ProtectedRoute allowedRoles={['officer']}>
+                <ProtectedRoute allowedRoles={OFFICER_ROLES}>
                   <OfficerBookingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/officer/staff"
+              element={
+                <ProtectedRoute allowedRoles={OFFICER_ROLES}>
+                  <StaffManagementPage />
                 </ProtectedRoute>
               }
             />
@@ -152,15 +186,23 @@ function App() {
             <Route
               path="/admin/dashboard"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/staff"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <StaffManagementPage />
                 </ProtectedRoute>
               }
             />
             <Route
               path="/admin/farmers"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <FarmerManagementPage />
                 </ProtectedRoute>
               }
@@ -168,7 +210,7 @@ function App() {
             <Route
               path="/admin/officers"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <OfficerManagementPage />
                 </ProtectedRoute>
               }
@@ -176,7 +218,7 @@ function App() {
             <Route
               path="/admin/centres"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <CentreManagementPage />
                 </ProtectedRoute>
               }
@@ -184,7 +226,7 @@ function App() {
             <Route
               path="/admin/bookings"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <BookingManagementPage />
                 </ProtectedRoute>
               }
@@ -192,7 +234,7 @@ function App() {
             <Route
               path="/admin/crops"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <CropManagementPage />
                 </ProtectedRoute>
               }
@@ -200,8 +242,64 @@ function App() {
             <Route
               path="/admin/analytics"
               element={
-                <ProtectedRoute allowedRoles={['admin']}>
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
                   <AnalyticsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/procurement"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <ProcurementManagementPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/states"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <StatePerformancePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/approvals"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <ApprovalsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/payments"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <PaymentsMonitoringPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/alerts"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <AlertsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/settings"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <SettingsHelpPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/help"
+              element={
+                <ProtectedRoute allowedRoles={ADMIN_ROLES}>
+                  <SettingsHelpPage />
                 </ProtectedRoute>
               }
             />

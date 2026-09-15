@@ -2,11 +2,11 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Calendar, Ticket, MapPin, Clock, Users, CreditCard, ArrowRight,
-  Plus, Bell, CheckCircle, AlertCircle, Package
+  Plus, Bell, CheckCircle, AlertCircle, Package, Sparkles, Bot, ShieldCheck
 } from 'lucide-react';
 import { FaHandPaper } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
-import { bookingService, notificationService } from '../../services';
+import { bookingService, notificationService, farmerService } from '../../services';
 import { formatDate, formatTime, formatCurrency, formatWaitTime, extractError } from '../../utils/constants';
 import FarmerLayout from '../../layouts/FarmerLayout';
 import Badge from '../../components/common/Badge';
@@ -16,6 +16,7 @@ import { CardSkeleton, StatCardSkeleton } from '../../components/common/Spinner'
 import EmptyState from '../../components/common/EmptyState';
 import Button from '../../components/common/Button';
 import toast from 'react-hot-toast';
+import AiAssistantModal from '../../components/ai/AiAssistantModal';
 
 const StatCard = ({ label, value, icon: Icon, color = 'primary', sub }) => (
   <div className="stat-card">
@@ -38,16 +39,20 @@ const FarmerDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeBooking, setActiveBooking] = useState(null);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [kycData, setKycData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bookingsRes, notifRes] = await Promise.all([
+        const [bookingsRes, notifRes, kycRes] = await Promise.all([
           bookingService.getBookings({ limit: 5 }),
           notificationService.getNotifications({ limit: 5, unreadOnly: 'true' }),
+          farmerService.getKycStatus().catch(() => ({ data: { data: null } })),
         ]);
         const allBookings = bookingsRes.data.data.bookings;
         setBookings(allBookings);
+        setKycData(kycRes.data?.data || null);
 
         // Find the most recent active booking
         const active = allBookings.find((b) =>
@@ -70,14 +75,113 @@ const FarmerDashboard = () => {
   return (
     <FarmerLayout>
       {/* Welcome header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-          <span>Welcome, {firstName}</span>
-          <FaHandPaper className="text-amber-500 w-5 h-5 inline transform rotate-12" />
-        </h1>
-        <p className="text-gray-500 text-sm mt-0.5">
-          {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <span>Welcome, {firstName}</span>
+            <FaHandPaper className="text-amber-500 w-5 h-5 inline transform rotate-12" />
+          </h1>
+          <p className="text-gray-500 text-sm mt-0.5">
+            {new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
+        </div>
+
+        {/* AI Assistant header button */}
+        <button
+          type="button"
+          onClick={() => setAiModalOpen(true)}
+          className="flex items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl shadow-sm text-xs sm:text-sm font-semibold transition-all hover:shadow-md self-start sm:self-auto"
+        >
+          <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+          <span>AI Assistant</span>
+          <span className="text-[10px] bg-white/20 px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold">
+            Gemini
+          </span>
+        </button>
+      </div>
+
+      {/* Farmer KYC Status Banner */}
+      {kycData && (
+        <div className="mb-6">
+          {kycData.kycStatus === 'Verified' ? (
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center justify-between gap-3 text-xs text-emerald-900 shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+                <div>
+                  <span className="font-bold">Farmer KYC Verified:</span> Aadhaar Seeded & NPCI DBT Active.
+                </div>
+              </div>
+              <Link to="/farmer/kyc" className="font-semibold text-emerald-700 hover:underline">
+                View KYC Details →
+              </Link>
+            </div>
+          ) : kycData.kycStatus === 'Pending' ? (
+            <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-2xl flex items-center justify-between gap-3 text-xs text-amber-900 shadow-sm">
+              <div className="flex items-center gap-2.5">
+                <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 animate-pulse" />
+                <div>
+                  <span className="font-bold">KYC Application Pending:</span> Submitted successfully. Your KYC will be updated within 2 working days.
+                </div>
+              </div>
+              <Link to="/farmer/kyc" className="font-bold text-amber-800 hover:underline px-3 py-1 bg-amber-200/70 rounded-lg">
+                Check Status →
+              </Link>
+            </div>
+          ) : (
+            <div className="p-4 bg-gradient-to-r from-amber-50 via-orange-50 to-primary-50 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-gray-800 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="font-bold text-gray-900 text-sm">Farmer KYC Pending Completion</p>
+                  <p className="text-gray-600 mt-0.5">
+                    Complete your Aadhaar e-KYC & Khatauni land verification to ensure smooth slot booking and direct DBT payments.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/farmer/kyc"
+                className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold rounded-xl shadow-sm text-xs whitespace-nowrap self-stretch sm:self-auto text-center"
+              >
+                Complete KYC Now
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Kisan AI Assistant Banner Card */}
+      <div className="card p-4 sm:p-5 bg-gradient-to-r from-emerald-50 via-teal-50/60 to-primary-50 border border-emerald-200 shadow-sm relative overflow-hidden mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+              <Bot className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-sm sm:text-base font-bold text-gray-900">Kisan AI Assistant (24/7 Sahayak)</h2>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                  Google Gemini
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 mt-1">
+                Have questions about 2026 MSP rates, slot booking, required documents, token queue, or DBT payments? Ask in Hindi or English.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setAiModalOpen(true)}
+              leftIcon={<Sparkles className="w-4 h-4 text-amber-300" />}
+              className="w-full sm:w-auto shadow-sm"
+            >
+              Ask AI Assistant
+            </Button>
+          </div>
+        </div>
       </div>
 
       {loading ? (
@@ -230,6 +334,17 @@ const FarmerDashboard = () => {
               <div className="card p-5">
                 <h3 className="text-sm font-semibold text-gray-900 mb-3">Quick Actions</h3>
                 <div className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setAiModalOpen(true)}
+                    className="w-full flex items-center justify-between p-3 rounded-lg bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-2.5 text-sm font-medium">
+                      <Sparkles className="w-4 h-4 text-emerald-600" />
+                      AI Assistant (24/7 Sahayak)
+                    </div>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                   <Link
                     to="/farmer/book"
                     className="flex items-center justify-between p-3 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors"
@@ -266,6 +381,20 @@ const FarmerDashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Floating AI Button */}
+      <button
+        type="button"
+        onClick={() => setAiModalOpen(true)}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-white/50"
+        title="Chat with Kisan AI Assistant"
+      >
+        <Sparkles className="w-5 h-5 text-amber-300 animate-pulse" />
+        <span className="font-semibold text-sm hidden sm:inline">AI Assistant</span>
+      </button>
+
+      {/* AI Assistant Modal */}
+      <AiAssistantModal isOpen={aiModalOpen} onClose={() => setAiModalOpen(false)} />
     </FarmerLayout>
   );
 };

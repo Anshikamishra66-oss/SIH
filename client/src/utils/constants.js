@@ -112,3 +112,15 @@ export const extractError = (error) => {
   if (error?.message === 'Network Error') return 'Unable to connect to the server. Please check your connection.';
   return error?.message || 'An unexpected error occurred. Please try again.';
 };
+
+export const formatAddress = (addr) => {
+  if (!addr) return '';
+  if (typeof addr === 'string') return addr;
+  if (typeof addr === 'object') {
+    return [addr.line1 || addr.street, addr.village, addr.district, addr.state, addr.pincode]
+      .filter(Boolean)
+      .join(', ');
+  }
+  return String(addr);
+};
+

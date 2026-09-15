@@ -14,6 +14,7 @@ const Payment = require('../models/Payment.model');
 const Notification = require('../models/Notification.model');
 const { generateToken, generateBookingId, startOfDay } = require('../utils/helpers');
 const { connectDB, closeDB } = require('../config/db');
+const { ROLES, ROLE_LEVELS, ROLE_LABELS, DEFAULT_PASSWORD } = require('../utils/roleHierarchy');
 
 async function seed() {
   await connectDB();
@@ -35,7 +36,7 @@ async function seed() {
   ]);
   console.log('✅ Data cleared');
 
-  // ---- CROPS ----
+  // ── CROPS ──────────────────────────────────────────
   console.log('🌾 Seeding crops...');
   const crops = await Crop.insertMany([
     { name: 'Wheat', nameHindi: 'गेहूं', mspPrice: 2275, unit: 'quintal', season: 'Rabi', category: 'Cereal', isActive: true },
@@ -48,18 +49,107 @@ async function seed() {
   ]);
   console.log(`✅ ${crops.length} crops seeded`);
 
-  // ---- ADMIN ----
-  console.log('👤 Seeding admin...');
-  const admin = await User.create({
-    name: 'System Administrator',
+  // ══════════════════════════════════════════════════
+  //  LEVEL 1 — CENTRAL PROCUREMENT ORGANIZATION
+  // ══════════════════════════════════════════════════
+  console.log('\n🏛️  Seeding Level 1 — Central Procurement Organization...');
+  const centralAdmin = await User.create({
+    name: 'Dr. Ramesh Kumar',
     mobile: '9000000001',
-    email: 'admin@kisanconnect.gov.in',
+    email: 'central@kisanconnect.gov.in',
     password: 'Admin@123',
-    role: 'admin',
+    role: ROLES.CENTRAL_ADMIN,
+    level: ROLE_LEVELS[ROLES.CENTRAL_ADMIN],
+    employeeId: 'CPO-001',
     isActive: true,
+    mustChangePassword: false,
+  });
+  console.log(`  ✅ Central Admin: CPO-001 (${centralAdmin.name})`);
+
+  // ══════════════════════════════════════════════════
+  //  LEVEL 2 — STATE PROCUREMENT / NODAL DEPARTMENT
+  // ══════════════════════════════════════════════════
+  console.log('🏢 Seeding Level 2 — State Officers...');
+  const statePunjab = await User.create({
+    name: 'Sardar Jaspreet Singh',
+    mobile: '9100000001',
+    email: 'punjab@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.STATE_OFFICER,
+    level: ROLE_LEVELS[ROLES.STATE_OFFICER],
+    employeeId: 'SPO-PUN-001',
+    parentId: centralAdmin._id,
+    state: 'Punjab',
+    isActive: true,
+    mustChangePassword: false,
   });
 
-  // ---- CENTRES ----
+  const stateMP = await User.create({
+    name: 'Shri Dinesh Verma',
+    mobile: '9100000002',
+    email: 'mp@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.STATE_OFFICER,
+    level: ROLE_LEVELS[ROLES.STATE_OFFICER],
+    employeeId: 'SPO-MP-001',
+    parentId: centralAdmin._id,
+    state: 'Madhya Pradesh',
+    isActive: true,
+    mustChangePassword: false,
+  });
+  console.log(`  ✅ State Officers: SPO-PUN-001 (Punjab), SPO-MP-001 (MP)`);
+
+  // ══════════════════════════════════════════════════
+  //  LEVEL 3 — DISTRICT NODAL OFFICERS
+  // ══════════════════════════════════════════════════
+  console.log('🏘️  Seeding Level 3 — District Nodal Officers...');
+  const districtLudhiana = await User.create({
+    name: 'Gurpreet Kaur Bajwa',
+    mobile: '9200000001',
+    email: 'dno.ludhiana@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.DISTRICT_OFFICER,
+    level: ROLE_LEVELS[ROLES.DISTRICT_OFFICER],
+    employeeId: 'DNO-LDH-001',
+    parentId: statePunjab._id,
+    state: 'Punjab',
+    district: 'Ludhiana',
+    isActive: true,
+    mustChangePassword: false,
+  });
+
+  const districtAmritsar = await User.create({
+    name: 'Harmanpreet Singh Gill',
+    mobile: '9200000002',
+    email: 'dno.amritsar@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.DISTRICT_OFFICER,
+    level: ROLE_LEVELS[ROLES.DISTRICT_OFFICER],
+    employeeId: 'DNO-AMR-001',
+    parentId: statePunjab._id,
+    state: 'Punjab',
+    district: 'Amritsar',
+    isActive: true,
+    mustChangePassword: false,
+  });
+
+  const districtPatiala = await User.create({
+    name: 'Navjot Singh Sidhu',
+    mobile: '9200000003',
+    email: 'dno.patiala@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.DISTRICT_OFFICER,
+    level: ROLE_LEVELS[ROLES.DISTRICT_OFFICER],
+    employeeId: 'DNO-PTL-001',
+    parentId: statePunjab._id,
+    state: 'Punjab',
+    district: 'Patiala',
+    isActive: true,
+    mustChangePassword: false,
+  });
+  console.log(`  ✅ District Officers: DNO-LDH-001, DNO-AMR-001, DNO-PTL-001`);
+
+  // ── CENTRES ────────────────────────────────────────
   console.log('🏢 Seeding procurement centres...');
   const [centre1, centre2, centre3] = await ProcurementCentre.insertMany([
     {
@@ -125,58 +215,127 @@ async function seed() {
   ]);
   console.log('✅ 3 centres seeded');
 
-  // ---- OFFICERS ----
-  console.log('👮 Seeding officers...');
-  const officer1 = await User.create({
-    name: 'Gurpreet Singh',
-    mobile: '9810000001',
-    email: 'officer1@kisanconnect.gov.in',
-    password: 'Officer@123',
-    role: 'officer',
-    isActive: true,
-  });
-  await OfficerProfile.create({
-    userId: officer1._id,
+  // ══════════════════════════════════════════════════
+  //  LEVEL 4 — CENTRE HEADS (Procurement Center Head)
+  // ══════════════════════════════════════════════════
+  console.log('👔 Seeding Level 4 — Centre Heads...');
+  const centreHead1 = await User.create({
+    name: 'Amarjit Singh Bhullar',
+    mobile: '9300000001',
+    email: 'pch.ludhiana@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.CENTRE_HEAD,
+    level: ROLE_LEVELS[ROLES.CENTRE_HEAD],
+    employeeId: 'PCH-LDH-001',
+    parentId: districtLudhiana._id,
+    state: 'Punjab',
+    district: 'Ludhiana',
     centreId: centre1._id,
-    employeeId: 'EMP-LDH-001',
-    designation: 'Senior Procurement Officer',
-  });
-  await ProcurementCentre.findByIdAndUpdate(centre1._id, { $push: { officerIds: officer1._id } });
-
-  const officer2 = await User.create({
-    name: 'Harmandeep Kaur',
-    mobile: '9820000002',
-    email: 'officer2@kisanconnect.gov.in',
-    password: 'Officer@123',
-    role: 'officer',
     isActive: true,
+    mustChangePassword: false,
   });
-  await OfficerProfile.create({
-    userId: officer2._id,
+  await OfficerProfile.create({ userId: centreHead1._id, centreId: centre1._id, employeeId: 'PCH-LDH-001', designation: ROLE_LABELS[ROLES.CENTRE_HEAD] });
+
+  const centreHead2 = await User.create({
+    name: 'Kuldeep Singh Mann',
+    mobile: '9300000002',
+    email: 'pch.amritsar@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.CENTRE_HEAD,
+    level: ROLE_LEVELS[ROLES.CENTRE_HEAD],
+    employeeId: 'PCH-AMR-001',
+    parentId: districtAmritsar._id,
+    state: 'Punjab',
+    district: 'Amritsar',
     centreId: centre2._id,
-    employeeId: 'EMP-AMR-001',
-    designation: 'Procurement Officer',
-  });
-  await ProcurementCentre.findByIdAndUpdate(centre2._id, { $push: { officerIds: officer2._id } });
-
-  const officer3 = await User.create({
-    name: 'Balwinder Singh',
-    mobile: '9830000003',
-    email: 'officer3@kisanconnect.gov.in',
-    password: 'Officer@123',
-    role: 'officer',
     isActive: true,
+    mustChangePassword: false,
   });
-  await OfficerProfile.create({
-    userId: officer3._id,
-    centreId: centre3._id,
-    employeeId: 'EMP-PTL-001',
-    designation: 'Procurement Officer',
-  });
-  await ProcurementCentre.findByIdAndUpdate(centre3._id, { $push: { officerIds: officer3._id } });
-  console.log('✅ 3 officers seeded');
+  await OfficerProfile.create({ userId: centreHead2._id, centreId: centre2._id, employeeId: 'PCH-AMR-001', designation: ROLE_LABELS[ROLES.CENTRE_HEAD] });
 
-  // ---- FARMERS (15) ----
+  const centreHead3 = await User.create({
+    name: 'Harinder Kaur Sandhu',
+    mobile: '9300000003',
+    email: 'pch.patiala@kisanconnect.gov.in',
+    password: DEFAULT_PASSWORD,
+    role: ROLES.CENTRE_HEAD,
+    level: ROLE_LEVELS[ROLES.CENTRE_HEAD],
+    employeeId: 'PCH-PTL-001',
+    parentId: districtPatiala._id,
+    state: 'Punjab',
+    district: 'Patiala',
+    centreId: centre3._id,
+    isActive: true,
+    mustChangePassword: false,
+  });
+  await OfficerProfile.create({ userId: centreHead3._id, centreId: centre3._id, employeeId: 'PCH-PTL-001', designation: ROLE_LABELS[ROLES.CENTRE_HEAD] });
+  console.log(`  ✅ Centre Heads: PCH-LDH-001, PCH-AMR-001, PCH-PTL-001`);
+
+  // ══════════════════════════════════════════════════
+  //  LEVEL 5 — PROCUREMENT OFFICERS, QUALITY & WEIGHING, DATA/SYSTEM STAFF
+  // ══════════════════════════════════════════════════
+  console.log('👮 Seeding Level 5 — Officers & Staff...');
+
+  // Helper to create centre-level staff
+  async function createCentreStaff(name, mobile, email, role, empId, parentUser, centre) {
+    const user = await User.create({
+      name, mobile, email: email || undefined,
+      password: DEFAULT_PASSWORD,
+      role,
+      level: ROLE_LEVELS[role],
+      employeeId: empId,
+      parentId: parentUser._id,
+      state: centre.state || 'Punjab',
+      district: centre.district,
+      centreId: centre._id,
+      isActive: true,
+      mustChangePassword: false,
+    });
+    await OfficerProfile.create({
+      userId: user._id,
+      centreId: centre._id,
+      employeeId: empId,
+      designation: ROLE_LABELS[role],
+    });
+    await ProcurementCentre.findByIdAndUpdate(centre._id, { $addToSet: { officerIds: user._id } });
+    return user;
+  }
+
+  // Ludhiana Centre staff
+  const po1 = await createCentreStaff('Gurpreet Singh', '9810000001', 'officer1@kisanconnect.gov.in', ROLES.PROCUREMENT_OFFICER, 'PO-LDH-001', centreHead1, centre1);
+  const po2 = await createCentreStaff('Mandeep Kaur', '9810000002', null, ROLES.PROCUREMENT_OFFICER, 'PO-LDH-002', centreHead1, centre1);
+  const qw1 = await createCentreStaff('Bhagwant Singh', '9810000003', null, ROLES.QUALITY_STAFF, 'QWS-LDH-001', centreHead1, centre1);
+  const ds1 = await createCentreStaff('Ravinder Kumar', '9810000004', null, ROLES.DATA_STAFF, 'DSS-LDH-001', centreHead1, centre1);
+
+  // Amritsar Centre staff
+  const po3 = await createCentreStaff('Harmandeep Kaur', '9820000002', 'officer2@kisanconnect.gov.in', ROLES.PROCUREMENT_OFFICER, 'PO-AMR-001', centreHead2, centre2);
+  const po4 = await createCentreStaff('Sukhdev Singh', '9820000003', null, ROLES.PROCUREMENT_OFFICER, 'PO-AMR-002', centreHead2, centre2);
+  const qw2 = await createCentreStaff('Preetinder Kaur', '9820000004', null, ROLES.QUALITY_STAFF, 'QWS-AMR-001', centreHead2, centre2);
+  const ds2 = await createCentreStaff('Amandeep Singh', '9820000005', null, ROLES.DATA_STAFF, 'DSS-AMR-001', centreHead2, centre2);
+
+  // Patiala Centre staff
+  const po5 = await createCentreStaff('Balwinder Singh', '9830000003', 'officer3@kisanconnect.gov.in', ROLES.PROCUREMENT_OFFICER, 'PO-PTL-001', centreHead3, centre3);
+  const po6 = await createCentreStaff('Jaswinder Kaur', '9830000004', null, ROLES.PROCUREMENT_OFFICER, 'PO-PTL-002', centreHead3, centre3);
+  const qw3 = await createCentreStaff('Lakhvir Singh', '9830000005', null, ROLES.QUALITY_STAFF, 'QWS-PTL-001', centreHead3, centre3);
+  const ds3 = await createCentreStaff('Kamaljit Kaur', '9830000006', null, ROLES.DATA_STAFF, 'DSS-PTL-001', centreHead3, centre3);
+
+  console.log('  ✅ 6 Procurement Officers, 3 Quality Staff, 3 Data Staff seeded');
+
+  // ══════════════════════════════════════════════════
+  //  LEVEL 6 — GATE / VERIFICATION STAFF
+  // ══════════════════════════════════════════════════
+  console.log('🚪 Seeding Level 6 — Gate/Verification Staff...');
+  const gv1 = await createCentreStaff('Harbhajan Singh', '9840000001', null, ROLES.GATE_STAFF, 'GVS-LDH-001', centreHead1, centre1);
+  const gv2 = await createCentreStaff('Sarabjit Kaur', '9840000002', null, ROLES.GATE_STAFF, 'GVS-LDH-002', centreHead1, centre1);
+  const gv3 = await createCentreStaff('Paramjit Singh', '9840000003', null, ROLES.GATE_STAFF, 'GVS-AMR-001', centreHead2, centre2);
+  const gv4 = await createCentreStaff('Dalbir Kaur', '9840000004', null, ROLES.GATE_STAFF, 'GVS-AMR-002', centreHead2, centre2);
+  const gv5 = await createCentreStaff('Ranjit Singh', '9840000005', null, ROLES.GATE_STAFF, 'GVS-PTL-001', centreHead3, centre3);
+  const gv6 = await createCentreStaff('Gurmeet Kaur', '9840000006', null, ROLES.GATE_STAFF, 'GVS-PTL-002', centreHead3, centre3);
+  console.log('  ✅ 6 Gate/Verification Staff seeded');
+
+  // ══════════════════════════════════════════════════
+  //  LEVEL 7 — FARMERS (self-registration)
+  // ══════════════════════════════════════════════════
   console.log('🌾 Seeding 15 farmers...');
   const farmerData = [
     { name: 'Rajveer Singh', mobile: '9751000001', email: 'farmer@example.com', district: 'Ludhiana', village: 'Doraha', farmerId: 'FMR-LDH-001' },
@@ -203,7 +362,10 @@ async function seed() {
       mobile: f.mobile,
       email: f.email || undefined,
       password: 'Farmer@123',
-      role: 'farmer',
+      role: ROLES.FARMER,
+      level: ROLE_LEVELS[ROLES.FARMER],
+      state: 'Punjab',
+      district: f.district,
       isActive: true,
     });
 
@@ -224,7 +386,7 @@ async function seed() {
   }
   console.log(`✅ ${farmers.length} farmers seeded`);
 
-  // ---- SLOTS (next 7 days for all 3 centres) ----
+  // ── SLOTS (next 7 days for all 3 centres) ──────────
   console.log('📅 Generating slots...');
   const slotDocs = [];
   for (let dayOffset = 0; dayOffset < 8; dayOffset++) {
@@ -251,10 +413,9 @@ async function seed() {
   const slots = await Slot.insertMany(slotDocs);
   console.log(`✅ ${slots.length} slots generated`);
 
-  // ---- BOOKINGS, QUEUE, PROCUREMENTS, PAYMENTS ----
+  // ── BOOKINGS, QUEUE, PROCUREMENTS, PAYMENTS ────────
   console.log('📋 Creating sample bookings with various statuses...');
 
-  // Helper: get today's slots for a centre
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todaySlots = (centreId) => slots.filter(
@@ -263,7 +424,7 @@ async function seed() {
   );
 
   const bookingScenarios = [
-    // Ludhiana Centre - Today's bookings with various statuses
+    // Ludhiana Centre
     { farmerIdx: 0, centreId: centre1._id, cropIdx: 0, qty: 50, status: 'payment_completed', qStatus: 'completed', procStatus: 'completed', payStatus: 'paid' },
     { farmerIdx: 1, centreId: centre1._id, cropIdx: 0, qty: 35, status: 'payment_processing', qStatus: 'completed', procStatus: 'completed', payStatus: 'processing' },
     { farmerIdx: 2, centreId: centre1._id, cropIdx: 3, qty: 60, status: 'procurement_completed', qStatus: 'completed', procStatus: 'completed', payStatus: 'pending' },
@@ -329,7 +490,6 @@ async function seed() {
       ...(s.qStatus === 'serving' ? { servedAt: new Date(), counter: 'Counter 1' } : {}),
     });
 
-    // Create procurement if applicable
     if (s.procStatus) {
       const totalAmount = s.qty * crop.mspPrice;
       const proc = await Procurement.create({
@@ -343,13 +503,12 @@ async function seed() {
         grade: ['A', 'B', 'A', 'B'][i % 4],
         pricePerUnit: crop.mspPrice,
         totalAmount,
-        officerId: officer1._id,
+        officerId: po1._id,
         status: s.procStatus,
         procurementDate: s.procStatus === 'completed' ? new Date() : undefined,
         completedAt: s.procStatus === 'completed' ? new Date() : undefined,
       });
 
-      // Create payment if applicable
       if (s.payStatus) {
         const txnId = `DEMO-TXN-${Date.now().toString(36).toUpperCase()}-${i}`;
         await Payment.create({
@@ -363,13 +522,12 @@ async function seed() {
           paymentDate: s.payStatus === 'paid' ? new Date() : undefined,
           isDemoPayment: true,
           notes: '[DEMO] Simulated payment record for demonstration purposes.',
-          processedBy: officer1._id,
+          processedBy: po1._id,
           paymentMethod: 'bank_transfer',
         });
       }
     }
 
-    // Create sample notification
     await Notification.create({
       userId: farmer.user._id,
       type: 'booking_confirmed',
@@ -380,7 +538,7 @@ async function seed() {
     });
   }
 
-  // Add some upcoming bookings (next 2 days)
+  // Upcoming bookings
   console.log('📅 Creating upcoming bookings...');
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -433,21 +591,44 @@ async function seed() {
     }
   }
 
-  console.log('\n✅ ========================================');
-  console.log('   SEED COMPLETE — Demo Credentials');
-  console.log('   ========================================');
-  console.log('   ADMIN');
-  console.log('   Mobile: 9000000001  |  Password: Admin@123');
-  console.log('   Email: admin@kisanconnect.gov.in');
+  // ══════════════════════════════════════════════════
+  //  SUMMARY
+  // ══════════════════════════════════════════════════
+  console.log('\n✅ ═══════════════════════════════════════════════════════════');
+  console.log('   SEED COMPLETE — Full Hierarchy Demo Credentials');
+  console.log('   ═══════════════════════════════════════════════════════════');
   console.log('');
-  console.log('   OFFICER (Ludhiana Centre)');
-  console.log('   Mobile: 9810000001  |  Password: Officer@123');
-  console.log('   Email: officer1@kisanconnect.gov.in');
+  console.log('   🏛️  LEVEL 1 — CENTRAL ADMIN');
+  console.log('   Employee ID: CPO-001  |  Password: Admin@123');
+  console.log('   Mobile: 9000000001');
   console.log('');
-  console.log('   FARMER (Demo)');
+  console.log('   🏢 LEVEL 2 — STATE OFFICERS');
+  console.log('   SPO-PUN-001 (Punjab)      |  Password: Kisan@123');
+  console.log('   SPO-MP-001  (MP)          |  Password: Kisan@123');
+  console.log('');
+  console.log('   🏘️  LEVEL 3 — DISTRICT NODAL OFFICERS');
+  console.log('   DNO-LDH-001 (Ludhiana)    |  Password: Kisan@123');
+  console.log('   DNO-AMR-001 (Amritsar)    |  Password: Kisan@123');
+  console.log('   DNO-PTL-001 (Patiala)     |  Password: Kisan@123');
+  console.log('');
+  console.log('   👔 LEVEL 4 — CENTRE HEADS');
+  console.log('   PCH-LDH-001 (Ludhiana)    |  Password: Kisan@123');
+  console.log('   PCH-AMR-001 (Amritsar)    |  Password: Kisan@123');
+  console.log('   PCH-PTL-001 (Patiala)     |  Password: Kisan@123');
+  console.log('');
+  console.log('   👮 LEVEL 5 — OFFICERS & STAFF');
+  console.log('   PO-LDH-001 / PO-LDH-002  |  Password: Kisan@123');
+  console.log('   QWS-LDH-001               |  Password: Kisan@123');
+  console.log('   DSS-LDH-001               |  Password: Kisan@123');
+  console.log('   (+ Amritsar & Patiala staff with same pattern)');
+  console.log('');
+  console.log('   🚪 LEVEL 6 — GATE/VERIFICATION STAFF');
+  console.log('   GVS-LDH-001 / GVS-LDH-002  |  Password: Kisan@123');
+  console.log('   (+ Amritsar & Patiala staff with same pattern)');
+  console.log('');
+  console.log('   🌾 LEVEL 7 — FARMER (login with mobile)');
   console.log('   Mobile: 9751000001  |  Password: Farmer@123');
-  console.log('   Email: farmer@example.com');
-  console.log('   ========================================\n');
+  console.log('   ═══════════════════════════════════════════════════════════\n');
 
   await closeDB();
   console.log('🔌 Disconnected from PostgreSQL');

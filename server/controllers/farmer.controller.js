@@ -82,4 +82,159 @@ const getProcurementHistory = async (req, res, next) => {
   }
 };
 
-module.exports = { getProfile, updateProfile, getProcurementHistory };
+const aadhaarService = require('../services/aadhaar/AadhaarService');
+const smsService = require('../services/sms/SMSService');
+
+// POST /api/farmers/aadhaar/send-otp — Request official UIDAI OTP via authorized provider
+const sendAadhaarOtp = async (req, res, next) => {
+  try {
+    const { aadhaarNumber } = req.body;
+    if (!aadhaarNumber) {
+      throw new ApiError(400, 'Aadhaar number is required.');
+    }
+
+    const result = await aadhaarService.requestAadhaarOtp(aadhaarNumber);
+
+    res.json(
+      new ApiResponse(200, {
+        configured: result.configured,
+        referenceId: result.referenceId,
+        maskedAadhaar: result.maskedAadhaar,
+        configurationGuide: result.configurationGuide,
+      }, result.message)
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /api/farmers/aadhaar/verify-otp — Verify official UIDAI OTP & receive authorized demographic packet
+const verifyAadhaarOtp = async (req, res, next) => {
+  try {
+    const { referenceId, otp } = req.body;
+
+    if (!referenceId) {
+      throw new ApiError(400, 'Aadhaar reference ID is required. Please request OTP first.');
+    }
+    if (!otp || String(otp).trim().length !== 6) {
+      throw new ApiError(400, 'Please enter a valid 6-digit Aadhaar OTP.');
+    }
+
+    const kycResult = await aadhaarService.verifyAadhaarOtp(referenceId, otp);
+
+    res.json(
+      new ApiResponse(200, {
+        verified: true,
+        aadhaarDetails: kycResult.aadhaarDetails,
+        aadhaarSeedingStatus: kycResult.aadhaarSeedingStatus, // ONLY if reported by provider
+        npciStatus: kycResult.npciStatus,                     // ONLY if reported by provider
+      }, 'Aadhaar verified successfully via authorized e-KYC gateway.')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST /api/farmers/submit-kyc — Submit KYC with manual Land Records & dispatch real SMS
+const submitKyc = async (req, res, next) => {
+  try {
+    const {
+      aadhaarNumber,
+      aadhaarDetails,
+      aadhaarSeedingStatus,
+      npciStatus,
+      khatauniNumber,
+      khasraNumber,
+      landArea,
+      landDocumentName,
+    } = req.body;
+
+    if (!khatauniNumber || !khatauniNumber.trim()) {
+      throw new ApiError(400, 'Khatauni number is required.');
+    }
+    if (!khasraNumber || !khasraNumber.trim()) {
+      throw new ApiError(400, 'Khasra / Survey / Plot number is required.');
+    }
+    if (!landArea || !landArea.trim()) {
+      throw new ApiError(400, 'Land area is required.');
+    }
+
+    const maskedAadhaar = aadhaarDetails?.maskedAadhaar || aadhaarService.maskAadhaar(aadhaarNumber || '');
+
+    const updateData = {
+      aadhaarNumber: maskedAadhaar,
+      aadhaarVerified: Boolean(aadhaarDetails?.verifiedAt),
+      aadhaarSeedingStatus: aadhaarSeedingStatus || 'Pending Verification',
+      npciStatus: npciStatus || 'Pending Verification',
+      aadhaarDetails: aadhaarDetails || {
+        maskedAadhaar,
+        name: req.user?.name,
+        district: req.user?.district,
+        state: req.user?.state,
+      },
+      khatauniNumber: khatauniNumber.trim(),
+      khasraNumber: khasraNumber.trim(),
+      landArea: landArea.trim(),
+      landDocumentName: landDocumentName || 'Khatauni_ROR_Record.pdf',
+      kycStatus: 'Pending',
+      kycSubmittedAt: new Date(),
+    };
+
+    const profile = await FarmerProfile.findOneAndUpdate(
+      { userId: req.user._id },
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    // Send mandatory KYC submission SMS to farmer's verified mobile number
+    await smsService.sendKycConfirmation(req.user.mobile);
+
+    res.json(
+      new ApiResponse(200, {
+        profile,
+        kycStatus: 'Pending',
+        message: 'Your KYC application has been successfully submitted. Your KYC will be updated within 2 working days.',
+      }, 'KYC application submitted successfully.')
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+// GET /api/farmers/kyc-status — Retrieve KYC status and verified details
+const getKycStatus = async (req, res, next) => {
+  try {
+    const profile = await FarmerProfile.findOne({ userId: req.user._id });
+    if (!profile) {
+      throw new ApiError(404, 'Farmer profile not found.');
+    }
+
+    res.json(
+      new ApiResponse(200, {
+        kycStatus: profile.kycStatus || 'Not Started',
+        aadhaarVerified: !!profile.aadhaarVerified,
+        aadhaarNumber: profile.aadhaarNumber || null,
+        aadhaarSeedingStatus: profile.aadhaarSeedingStatus || 'Not Started',
+        npciStatus: profile.npciStatus || 'Not Started',
+        aadhaarDetails: profile.aadhaarDetails || null,
+        khatauniNumber: profile.khatauniNumber || null,
+        khasraNumber: profile.khasraNumber || null,
+        landArea: profile.landArea || null,
+        landDocumentName: profile.landDocumentName || null,
+        kycSubmittedAt: profile.kycSubmittedAt || null,
+      })
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  getProfile,
+  updateProfile,
+  getProcurementHistory,
+  sendAadhaarOtp,
+  verifyAadhaarOtp,
+  submitKyc,
+  getKycStatus,
+};

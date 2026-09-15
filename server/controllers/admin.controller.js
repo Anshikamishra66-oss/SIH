@@ -10,6 +10,7 @@ const Crop = require('../models/Crop.model');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const { startOfDay, endOfDay } = require('../utils/helpers');
+const { ROLES, OFFICER_ROLES, ROLE_LABELS } = require('../utils/roleHierarchy');
 
 // GET /api/admin/dashboard
 const getAdminDashboard = async (req, res, next) => {
@@ -30,8 +31,8 @@ const getAdminDashboard = async (req, res, next) => {
       totalPaymentsPending,
       cancelledBookings,
     ] = await Promise.all([
-      User.countDocuments({ role: 'farmer', isActive: true }),
-      User.countDocuments({ role: 'officer', isActive: true }),
+      User.countDocuments({ role: ROLES.FARMER, isActive: true }),
+      User.countDocuments({ role: { $in: OFFICER_ROLES }, isActive: true }),
       ProcurementCentre.countDocuments({ isActive: true }),
       Booking.countDocuments(),
       Booking.countDocuments({ createdAt: { $gte: dayStart, $lte: dayEnd } }),
@@ -122,7 +123,7 @@ const getAdminDashboard = async (req, res, next) => {
 const getFarmers = async (req, res, next) => {
   try {
     const { page = 1, limit = 20, search, district, isActive } = req.query;
-    const filter = { role: 'farmer' };
+    const filter = { role: ROLES.FARMER };
     if (isActive !== undefined) filter.isActive = isActive === 'true';
     if (search) {
       filter.$or = [
@@ -198,7 +199,7 @@ const createOfficer = async (req, res, next) => {
     const existing = await User.findOne({ mobile });
     if (existing) throw new ApiError(409, 'This mobile number is already registered.');
 
-    const user = await User.create({ name, mobile, email, password, role: 'officer' });
+    const user = await User.create({ name, mobile, email, password, role: ROLES.PROCUREMENT_OFFICER, level: 5 });
     const profile = await OfficerProfile.create({
       userId: user._id,
       centreId,
@@ -218,7 +219,7 @@ const createOfficer = async (req, res, next) => {
 // GET /api/admin/officers
 const getOfficers = async (req, res, next) => {
   try {
-    const officers = await User.find({ role: 'officer' }).sort({ createdAt: -1 });
+    const officers = await User.find({ role: { $in: OFFICER_ROLES } }).sort({ createdAt: -1 });
     const userIds = officers.map((u) => u._id);
     const profiles = await OfficerProfile.find({ userId: { $in: userIds } })
       .populate('centreId', 'name district');
@@ -385,7 +386,7 @@ const getAnalytics = async (req, res, next) => {
 const toggleFarmerStatus = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!user || user.role !== 'farmer') throw new ApiError(404, 'Farmer not found.');
+    if (!user || user.role !== ROLES.FARMER) throw new ApiError(404, 'Farmer not found.');
     user.isActive = !user.isActive;
     await user.save();
     res.json(new ApiResponse(200, { user }, `Farmer account ${user.isActive ? 'activated' : 'deactivated'}.`));

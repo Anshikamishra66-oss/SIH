@@ -1,4 +1,6 @@
-require('dotenv').config({ path: require('path').join(__dirname, '.env') });
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -22,6 +24,8 @@ const notificationRoutes = require('./routes/notification.routes');
 const officerRoutes = require('./routes/officer.routes');
 const adminRoutes = require('./routes/admin.routes');
 const cropRoutes = require('./routes/crop.routes');
+const staffRoutes = require('./routes/staff.routes');
+const aiRoutes = require('./routes/ai.routes');
 
 const app = express();
 const server = http.createServer(app);
@@ -71,6 +75,16 @@ if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
+// Root endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'OK',
+    name: 'Kisan Procurement Connect API Server',
+    webAppUrl: 'http://localhost:5173',
+    message: 'Frontend Web App is running on http://localhost:5173. API endpoints are located under /api',
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({
@@ -93,6 +107,8 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/officer', officerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/crops', cropRoutes);
+app.use('/api/staff', staffRoutes);
+app.use('/api/ai', aiRoutes);
 
 // 404 and error handlers
 app.use(notFound);

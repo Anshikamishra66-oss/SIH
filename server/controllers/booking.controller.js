@@ -26,9 +26,17 @@ const createBooking = async (req, res, next) => {
     const { slotId, cropId, cropName, quantity, unit } = req.body;
     const farmerId = req.user._id;
 
+    if (!slotId) throw new ApiError(400, 'Please select a time slot.');
+    if (!cropId) throw new ApiError(400, 'Please select a crop.');
+    if (!quantity || isNaN(quantity) || Number(quantity) <= 0) {
+      throw new ApiError(400, 'Please enter a valid quantity in quintals (minimum 0.1).');
+    }
+
+    const cleanCropId = cropId?._id || cropId;
+
     // 1. Lock and fetch slot
     const slot = await Slot.findById(slotId).session(session);
-    if (!slot) throw new ApiError(404, 'Slot not found.');
+    if (!slot) throw new ApiError(404, 'Selected slot not found.');
     if (slot.status === 'full' || slot.booked >= slot.capacity) {
       throw new ApiError(409, 'This slot is now full. Please choose another slot.');
     }
@@ -40,7 +48,7 @@ const createBooking = async (req, res, next) => {
       status: { $ne: 'cancelled' },
     }).session(session);
     if (existingBooking) {
-      throw new ApiError(409, 'You already have a booking for this slot.');
+      throw new ApiError(409, 'You already have an active booking for this time slot. Please choose another time slot or date.');
     }
 
     // 3. Check for any existing active booking on the same day at same centre
@@ -56,7 +64,8 @@ const createBooking = async (req, res, next) => {
       status: { $nin: ['cancelled'] },
     }).session(session);
     if (existingDayBooking) {
-      throw new ApiError(409, 'You already have a booking at this centre for the selected date.');
+      const formattedDate = new Date(slot.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      throw new ApiError(409, `You already have an active booking at this centre on ${formattedDate}. You can reserve one slot per centre per day.`);
     }
 
     // 4. Get centre to verify crop eligibility
@@ -76,7 +85,7 @@ const createBooking = async (req, res, next) => {
           farmerId,
           centreId: slot.centreId,
           slotId,
-          cropId,
+          cropId: cleanCropId,
           cropName,
           quantity,
           unit: unit || 'quintal',

@@ -2,15 +2,22 @@ import api from './api';
 
 export const authService = {
   register: (data) => api.post('/auth/register', data),
+  sendOtp: (data) => api.post('/auth/send-otp', data),
+  verifyOtp: (data) => api.post('/auth/verify-otp', data),
   login: (data) => api.post('/auth/login', data),
   logout: () => api.post('/auth/logout'),
   getMe: () => api.get('/auth/me'),
+  changePassword: (data) => api.put('/auth/change-password', data),
 };
 
 export const farmerService = {
   getProfile: () => api.get('/farmers/profile'),
   updateProfile: (data) => api.put('/farmers/profile', data),
   getHistory: (params) => api.get('/farmers/history', { params }),
+  sendAadhaarOtp: (data) => api.post('/farmers/aadhaar/send-otp', data),
+  verifyAadhaarOtp: (data) => api.post('/farmers/aadhaar/verify-otp', data),
+  submitKyc: (data) => api.post('/farmers/submit-kyc', data),
+  getKycStatus: () => api.get('/farmers/kyc-status'),
 };
 
 export const centreService = {
@@ -79,3 +86,18 @@ export const adminService = {
   generateSlots: (data) => api.post('/admin/slots/generate', data),
   getAnalytics: (params) => api.get('/admin/analytics', { params }),
 };
+
+export const staffService = {
+  getCreatableRoles: () => api.get('/staff/creatable-roles'),
+  createSubordinate: (data) => api.post('/staff/create', data),
+  getSubordinates: (params) => api.get('/staff/subordinates', { params }),
+  getHierarchy: () => api.get('/staff/hierarchy'),
+  toggleSubordinate: (id) => api.put(`/staff/${id}/toggle`),
+  resetPassword: (id) => api.put(`/staff/${id}/reset-password`),
+};
+
+export const aiService = {
+  chat: (message, history = []) => api.post('/ai/chat', { message, history }),
+};
+
+

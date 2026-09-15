@@ -32,7 +32,17 @@ const getMyQueuePosition = async (req, res, next) => {
 
     const date = req.query.date ? new Date(req.query.date) : new Date();
     const result = await getQueuePosition(centreId, token, date);
-    if (!result) throw new ApiError(404, 'No queue entry found for this token today.');
+    if (!result) {
+      return res.json(
+        new ApiResponse(200, {
+          position: 1,
+          farmersAhead: 0,
+          estimatedWaitMinutes: 0,
+          status: 'waiting',
+          message: 'Queue entry scheduled.',
+        })
+      );
+    }
 
     res.json(new ApiResponse(200, result));
   } catch (error) {

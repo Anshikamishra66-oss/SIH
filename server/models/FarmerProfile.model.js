@@ -46,8 +46,65 @@ const farmerProfileSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    // KYC Fields
+    aadhaarNumber: {
+      type: String,
+      trim: true,
+    },
+    aadhaarVerified: {
+      type: Boolean,
+      default: false,
+    },
+    aadhaarSeedingStatus: {
+      type: String,
+      default: 'Not Seeded',
+    },
+    npciStatus: {
+      type: String,
+      default: 'Inactive',
+    },
+    aadhaarDetails: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+    khatauniNumber: {
+      type: String,
+      trim: true,
+    },
+    khasraNumber: {
+      type: String,
+      trim: true,
+    },
+    landArea: {
+      type: String,
+      trim: true,
+    },
+    landDocumentName: {
+      type: String,
+      trim: true,
+    },
+    kycStatus: {
+      type: String,
+      enum: ['Not Started', 'Pending', 'Verified', 'Rejected'],
+      default: 'Not Started',
+    },
+    kycSubmittedAt: {
+      type: Date,
+    },
+    kycRemarks: {
+      type: String,
+      trim: true,
+    },
   },
   { timestamps: true }
 );
 
-module.exports = new PostgresModel('FarmerProfile', { crops: [], isProfileComplete: false }, {}, farmerProfileSchema);
+module.exports = new PostgresModel('FarmerProfile', {
+  crops: [],
+  isProfileComplete: false,
+  aadhaarVerified: false,
+  aadhaarSeedingStatus: 'Not Seeded',
+  npciStatus: 'Inactive',
+  aadhaarDetails: {},
+  kycStatus: 'Not Started',
+}, {}, farmerProfileSchema);

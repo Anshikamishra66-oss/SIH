@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, MapPin, Clock, Package, CreditCard, Phone, AlertTriangle, CheckCircle } from 'lucide-react';
 import { FaBell } from 'react-icons/fa';
 import { bookingService } from '../../services';
-import { formatDate, formatTime, formatCurrency, extractError } from '../../utils/constants';
+import { formatDate, formatTime, formatCurrency, extractError, formatAddress } from '../../utils/constants';
 import FarmerLayout from '../../layouts/FarmerLayout';
 import Badge from '../../components/common/Badge';
 import ProcurementTimeline from '../../components/farmer/ProcurementTimeline';
@@ -95,7 +95,7 @@ const BookingDetailPage = () => {
                   <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" />
                   <p className="font-medium text-gray-900">{booking.centreId?.name}</p>
                 </div>
-                <p className="text-xs text-gray-400 ml-5">{booking.centreId?.address}</p>
+                <p className="text-xs text-gray-400 ml-5">{formatAddress(booking.centreId?.address)}</p>
               </div>
               <div>
                 <p className="text-xs text-gray-400 mb-0.5">Contact</p>

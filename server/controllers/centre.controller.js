@@ -7,30 +7,40 @@ const ApiResponse = require('../utils/ApiResponse');
 // GET /api/centres - List centres (filtered by farmer eligibility if logged in as farmer)
 const getCentres = async (req, res, next) => {
   try {
-    const { district, state, page = 1, limit = 20 } = req.query;
-    const filter = { isActive: true };
+    const { district, state, cropId, page = 1, limit = 50 } = req.query;
+    let filter = { isActive: true };
 
     if (district) filter.district = { $regex: district, $options: 'i' };
     if (state) filter.state = { $regex: state, $options: 'i' };
 
-    // If farmer, show centres in their district + any with empty eligibility (open)
+    // If farmer, prioritize centres in their district + any open centres
     if (req.user && req.user.role === 'farmer') {
       const profile = await FarmerProfile.findOne({ userId: req.user._id });
-      if (profile) {
+      if (profile && profile.district) {
         filter.$or = [
           { eligibilityDistricts: { $size: 0 } },
           { eligibilityDistricts: { $elemMatch: { $regex: profile.district, $options: 'i' } } },
+          { district: { $regex: profile.district, $options: 'i' } },
         ];
       }
     }
 
-    const centres = await ProcurementCentre.find(filter)
+    let centres = await ProcurementCentre.find(filter)
       .populate('availableCrops', 'name mspPrice unit season')
       .skip((page - 1) * limit)
       .limit(Number(limit))
       .sort({ name: 1 });
 
-    const total = await ProcurementCentre.countDocuments(filter);
+    // Fallback: If district filter produced 0 centres, fetch all active centres so farmer can still select a mandi
+    if (!centres || centres.length === 0) {
+      centres = await ProcurementCentre.find({ isActive: true })
+        .populate('availableCrops', 'name mspPrice unit season')
+        .skip((page - 1) * limit)
+        .limit(Number(limit))
+        .sort({ name: 1 });
+    }
+
+    const total = centres.length;
 
     res.json(
       new ApiResponse(200, {
@@ -71,11 +81,51 @@ const getCentreSlots = async (req, res, next) => {
     const dayEnd = new Date(date);
     dayEnd.setHours(23, 59, 59, 999);
 
-    const slots = await Slot.find({
+    let slots = await Slot.find({
       centreId: req.params.id,
       date: { $gte: dayStart, $lte: dayEnd },
       status: { $ne: 'closed' },
     }).sort({ startTime: 1 });
+
+    // If no slots exist for this date yet, auto-generate standard slots so farmer is never blocked
+    if (!slots || slots.length === 0) {
+      const centre = await ProcurementCentre.findById(req.params.id);
+      if (centre && centre.operatingHours) {
+        const duration = centre.slotDurationMinutes || 60;
+        const capacity = Math.max(1, Math.floor((centre.dailyCapacity || 100) / (8 * 60 / duration)));
+        const [startH, startM] = (centre.operatingHours.start || '09:00').split(':').map(Number);
+        const [endH, endM] = (centre.operatingHours.end || '17:00').split(':').map(Number);
+
+        let slotStart = startH * 60 + startM;
+        const slotEnd = endH * 60 + endM;
+        const newSlots = [];
+
+        while (slotStart + duration <= slotEnd) {
+          const startTime = `${String(Math.floor(slotStart / 60)).padStart(2, '0')}:${String(slotStart % 60).padStart(2, '0')}`;
+          const endTime = `${String(Math.floor((slotStart + duration) / 60)).padStart(2, '0')}:${String((slotStart + duration) % 60).padStart(2, '0')}`;
+
+          newSlots.push({
+            centreId: centre._id,
+            date: dayStart,
+            startTime,
+            endTime,
+            capacity,
+            booked: 0,
+            status: 'available',
+          });
+          slotStart += duration;
+        }
+
+        if (newSlots.length > 0) {
+          await Slot.insertMany(newSlots);
+          slots = await Slot.find({
+            centreId: req.params.id,
+            date: { $gte: dayStart, $lte: dayEnd },
+            status: { $ne: 'closed' },
+          }).sort({ startTime: 1 });
+        }
+      }
+    }
 
     res.json(new ApiResponse(200, { slots }));
   } catch (error) {

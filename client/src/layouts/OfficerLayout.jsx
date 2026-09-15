@@ -1,24 +1,28 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, ClipboardList, LogOut, Menu, X, Wheat, Shield
+  LayoutDashboard, ClipboardList, LogOut, Menu, X, Wheat, Shield, Users
 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
-
-const navItems = [
-  { to: '/officer/dashboard', icon: LayoutDashboard, label: 'Dashboard & Queue' },
-  { to: '/officer/bookings', icon: ClipboardList, label: "Today's Bookings" },
-];
+import { useAuth, CREATOR_ROLES } from '../context/AuthContext';
 
 const OfficerLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, roleLabel, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
+
+  const navItems = [
+    { to: '/officer/dashboard', icon: LayoutDashboard, label: 'Dashboard & Queue' },
+    { to: '/officer/bookings', icon: ClipboardList, label: "Today's Bookings" },
+    // Show staff management for Centre Heads and higher
+    ...(CREATOR_ROLES.includes(user?.role) || user?.level <= 4
+      ? [{ to: '/officer/staff', icon: Users, label: 'Staff Management' }]
+      : []),
+  ];
 
   const Sidebar = () => (
     <div className="flex flex-col h-full">
@@ -37,8 +41,15 @@ const OfficerLayout = ({ children }) => {
       </div>
 
       <div className="px-4 py-3 mx-3 mt-3 bg-amber-50 rounded-lg border border-amber-100">
-        <p className="text-xs text-amber-700 font-medium">Procurement Officer</p>
-        <p className="text-sm font-semibold text-gray-900 truncate">{user?.name}</p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs text-amber-800 font-bold uppercase tracking-wider">{roleLabel || 'Officer'}</p>
+          {user?.employeeId && (
+            <span className="text-[10px] font-mono bg-amber-200 text-amber-900 px-1.5 py-0.5 rounded font-bold">
+              {user.employeeId}
+            </span>
+          )}
+        </div>
+        <p className="text-sm font-semibold text-gray-900 truncate mt-0.5">{user?.name}</p>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">

@@ -1,72 +1,149 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MapPin, Calendar, Clock, Package, CheckCircle, ArrowRight, ArrowLeft,
-  Building2, ChevronDown, Wheat, AlertCircle, Info
+  Building2, Wheat, AlertCircle, Info, Search, RotateCcw, ShieldCheck, Ticket
 } from 'lucide-react';
 import { FaCheck } from 'react-icons/fa';
 import { centreService, cropService, bookingService } from '../../services';
-import { formatTime, formatCurrency, extractError } from '../../utils/constants';
+import { formatTime, formatCurrency, extractError, formatAddress } from '../../utils/constants';
 import FarmerLayout from '../../layouts/FarmerLayout';
 import Button from '../../components/common/Button';
-import Input, { Select } from '../../components/common/Input';
+import Input from '../../components/common/Input';
 import { Spinner } from '../../components/common/Spinner';
 import toast from 'react-hot-toast';
 
-const STEPS = ['Select Crop', 'Choose Centre', 'Pick Slot', 'Confirm'];
+const STEPS = ['Choose Mandi', 'Select Crop', 'Produce Quantity', 'Date & Slot', 'Confirm'];
+const DRAFT_KEY = 'kpc_farmer_slot_booking_draft';
 
 const BookSlotPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
 
-  // Data
-  const [crops, setCrops] = useState([]);
+  // Data collections
   const [centres, setCentres] = useState([]);
+  const [crops, setCrops] = useState([]);
   const [slots, setSlots] = useState([]);
 
   // Loading states
+  const [loadingCentres, setLoadingCentres] = useState(true);
   const [loadingCrops, setLoadingCrops] = useState(true);
-  const [loadingCentres, setLoadingCentres] = useState(false);
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   // Form state
+  const [selectedCentre, setSelectedCentre] = useState(null);
   const [selectedCrop, setSelectedCrop] = useState(null);
   const [quantity, setQuantity] = useState('');
-  const [selectedCentre, setSelectedCentre] = useState(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [centreSearch, setCentreSearch] = useState('');
 
-  // Validation
+  // Post-booking confirmed state
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
+
+  // Errors & submission feedback
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
 
-  useEffect(() => {
-    const fetchCrops = async () => {
-      try {
-        const res = await cropService.getCrops();
-        setCrops(res.data.data.crops);
-      } catch { toast.error('Could not load crops. Please refresh.'); }
-      finally { setLoadingCrops(false); }
-    };
-    fetchCrops();
+  // 14-day date range generator (local dates to avoid UTC offset issues)
+  const availableDates = useMemo(() => {
+    return Array.from({ length: 14 }, (_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    });
   }, []);
 
+  // Fetch initial Centres and Crops
   useEffect(() => {
-    if (step === 1) {
-      const fetchCentres = async () => {
-        setLoadingCentres(true);
-        try {
-          const res = await centreService.getCentres();
-          setCentres(res.data.data.centres);
-        } catch { toast.error('Could not load centres.'); }
-        finally { setLoadingCentres(false); }
-      };
-      fetchCentres();
-    }
-  }, [step]);
+    let isMounted = true;
 
+    const loadInitialData = async () => {
+      setLoadingCentres(true);
+      setLoadingCrops(true);
+      try {
+        const [centresRes, cropsRes] = await Promise.all([
+          centreService.getCentres(),
+          cropService.getCrops(),
+        ]);
+        if (!isMounted) return;
+
+        const allCentres = centresRes.data.data.centres || [];
+        const allCrops = cropsRes.data.data.crops || [];
+        setCentres(allCentres);
+        setCrops(allCrops);
+
+        // Try restoring draft from sessionStorage on page refresh
+        try {
+          const saved = sessionStorage.getItem(DRAFT_KEY);
+          if (saved) {
+            const draft = JSON.parse(saved);
+            if (draft.step !== undefined && draft.step < STEPS.length) {
+              setStep(draft.step);
+            }
+            if (draft.centreId) {
+              const matchedCentre = allCentres.find((c) => c._id === draft.centreId);
+              if (matchedCentre) setSelectedCentre(matchedCentre);
+            }
+            if (draft.cropId) {
+              const matchedCrop = allCrops.find((c) => c._id === draft.cropId);
+              if (matchedCrop) setSelectedCrop(matchedCrop);
+            }
+            if (draft.quantity) setQuantity(draft.quantity);
+            if (draft.date) setSelectedDate(draft.date);
+          }
+        } catch {
+          // ignore corrupted draft
+        }
+      } catch {
+        toast.error('Could not load procurement centres or crops. Please refresh.');
+      } finally {
+        if (isMounted) {
+          setLoadingCentres(false);
+          setLoadingCrops(false);
+        }
+      }
+    };
+
+    loadInitialData();
+    return () => { isMounted = false; };
+  }, []);
+
+  // Persist form draft in sessionStorage across accidental page refreshes
   useEffect(() => {
-    if (step === 2 && selectedCentre && selectedDate) {
+    if (confirmedBooking) {
+      sessionStorage.removeItem(DRAFT_KEY);
+      return;
+    }
+    const draft = {
+      step,
+      centreId: selectedCentre?._id,
+      cropId: selectedCrop?._id,
+      quantity,
+      date: selectedDate,
+      slotId: selectedSlot?._id,
+    };
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      // quota exceeded or private browsing
+    }
+  }, [step, selectedCentre, selectedCrop, quantity, selectedDate, selectedSlot, confirmedBooking]);
+
+  // When stepping into Date & Slot (Step 3), ensure default date is selected
+  useEffect(() => {
+    if (step === 3 && !selectedDate && availableDates.length > 0) {
+      setSelectedDate(availableDates[0]);
+    }
+  }, [step, selectedDate, availableDates]);
+
+  // Fetch slots whenever selectedCentre or selectedDate changes in Step 3
+  useEffect(() => {
+    if (step === 3 && selectedCentre && selectedDate) {
       fetchSlots();
     }
   }, [step, selectedCentre, selectedDate]);
@@ -75,76 +152,251 @@ const BookSlotPage = () => {
     setLoadingSlots(true);
     setSlots([]);
     setSelectedSlot(null);
+    setSubmitError('');
     try {
       const res = await centreService.getCentreSlots(selectedCentre._id, selectedDate);
-      setSlots(res.data.data.slots);
-    } catch { toast.error('Could not load slots.'); }
-    finally { setLoadingSlots(false); }
+      setSlots(res.data.data.slots || []);
+    } catch {
+      toast.error('Could not load time slots for this date.');
+    } finally {
+      setLoadingSlots(false);
+    }
   };
 
+  // Crops available at currently selected centre
+  const availableCropsForCentre = useMemo(() => {
+    if (!selectedCentre) return crops;
+    if (!selectedCentre.availableCrops || selectedCentre.availableCrops.length === 0) {
+      return crops;
+    }
+    // Match crops by ID or name
+    const centreCropIds = new Set(
+      selectedCentre.availableCrops.map((c) => (typeof c === 'object' ? c._id : c))
+    );
+    const centreCropNames = new Set(
+      selectedCentre.availableCrops.map((c) => (typeof c === 'object' ? c.name?.toLowerCase() : ''))
+    );
+
+    const filtered = crops.filter((crop) =>
+      centreCropIds.has(crop._id) || centreCropNames.has(crop.name?.toLowerCase())
+    );
+    return filtered.length > 0 ? filtered : crops;
+  }, [selectedCentre, crops]);
+
+  // Handle Step Validation and Advancement
   const goNext = () => {
     const errs = {};
+    setSubmitError('');
+
     if (step === 0) {
-      if (!selectedCrop) errs.crop = 'Please select a crop';
-      if (!quantity || isNaN(quantity) || Number(quantity) <= 0) errs.quantity = 'Enter a valid quantity';
+      if (!selectedCentre) errs.centre = 'Please select a procurement centre / mandi to continue';
     } else if (step === 1) {
-      if (!selectedCentre) errs.centre = 'Please select a centre';
+      if (!selectedCrop) errs.crop = 'Please select a crop to proceed';
     } else if (step === 2) {
-      if (!selectedDate) errs.date = 'Please select a date';
-      if (!selectedSlot) errs.slot = 'Please select a time slot';
+      if (!quantity || isNaN(quantity) || Number(quantity) <= 0) {
+        errs.quantity = 'Please enter a valid produce quantity in quintals (minimum 0.1)';
+      }
+    } else if (step === 3) {
+      if (!selectedDate) errs.date = 'Please select a procurement date';
+      if (!selectedSlot) errs.slot = 'Please select an available time slot';
     }
 
-    if (Object.keys(errs).length) { setErrors(errs); return; }
+    if (Object.keys(errs).length) {
+      setErrors(errs);
+      return;
+    }
     setErrors({});
     setStep((s) => s + 1);
   };
 
-  const handleSubmit = async () => {
+  const handleReset = () => {
+    sessionStorage.removeItem(DRAFT_KEY);
+    setStep(0);
+    setSelectedCentre(null);
+    setSelectedCrop(null);
+    setQuantity('');
+    setSelectedDate('');
+    setSelectedSlot(null);
+    setConfirmedBooking(null);
+    setErrors({});
+    setSubmitError('');
+  };
+
+  // Final Confirmation Submit
+  const handleConfirmBooking = async () => {
     setSubmitting(true);
+    setSubmitError('');
     try {
-      const res = await bookingService.createBooking({
+      const payload = {
         slotId: selectedSlot._id,
         cropId: selectedCrop._id,
         cropName: selectedCrop.name,
         quantity: Number(quantity),
         unit: 'quintal',
-      });
-      toast.success('Booking confirmed! Your token has been generated.');
-      navigate(`/farmer/bookings/${res.data.data.booking._id}`);
+      };
+
+      const res = await bookingService.createBooking(payload);
+      const booking = res.data.data.booking;
+
+      sessionStorage.removeItem(DRAFT_KEY);
+      setConfirmedBooking(booking);
+      toast.success('Slot booked successfully! Your unique token is generated.');
     } catch (err) {
-      toast.error(extractError(err));
+      const msg = extractError(err);
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
   };
 
-  // Generate next 14 days for date picker
-  const availableDates = Array.from({ length: 14 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() + i);
-    return d.toISOString().split('T')[0];
-  });
-
-  const estimatedAmount = selectedCrop && quantity
+  const estimatedAmount = selectedCrop && quantity && !isNaN(quantity)
     ? selectedCrop.mspPrice * Number(quantity)
     : null;
 
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SUCCESS / CONFIRMATION SCREEN WITH UNIQUE TOKEN
+  // ─────────────────────────────────────────────────────────────────────────────
+  if (confirmedBooking) {
+    return (
+      <FarmerLayout>
+        <div className="max-w-xl mx-auto py-4">
+          <div className="card p-6 sm:p-8 text-center border-2 border-emerald-200 shadow-lg bg-white">
+            <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+              <CheckCircle className="w-10 h-10" />
+            </div>
+
+            <span className="text-xs font-semibold tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full uppercase">
+              Slot Reserved &amp; Confirmed
+            </span>
+
+            <h1 className="text-2xl font-bold text-gray-900 mt-3">Procurement Slot Booked!</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Your government procurement token has been generated and saved to the database.
+            </p>
+
+            {/* Official Token Box */}
+            <div className="my-6 p-6 bg-gradient-to-br from-emerald-50 via-primary-50 to-emerald-100/50 rounded-2xl border-2 border-emerald-300 shadow-sm relative overflow-hidden">
+              <div className="flex items-center justify-between text-xs font-mono font-semibold text-emerald-800 uppercase tracking-widest border-b border-emerald-200 pb-2 mb-3">
+                <span className="flex items-center gap-1.5">
+                  <Ticket className="w-4 h-4 text-emerald-600" /> Official Token Slip
+                </span>
+                <span>ID: {confirmedBooking.bookingId}</span>
+              </div>
+
+              <p className="text-xs text-emerald-800 font-medium uppercase tracking-wider">Your Queue Token</p>
+              <div className="text-4xl sm:text-5xl font-black text-emerald-800 tracking-wider my-2 font-mono drop-shadow-sm">
+                {confirmedBooking.token}
+              </div>
+              <p className="text-xs text-emerald-700">
+                Please present this token number when you arrive at the procurement centre.
+              </p>
+            </div>
+
+            {/* Booking Details Grid */}
+            <div className="bg-gray-50 rounded-xl p-4 text-left border border-gray-200 space-y-3 text-sm mb-6">
+              <div className="flex items-start justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-500 text-xs">Procurement Centre:</span>
+                <span className="font-semibold text-gray-900 text-right">
+                  {confirmedBooking.centreId?.name || selectedCentre?.name}
+                </span>
+              </div>
+              <div className="flex items-start justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-500 text-xs">Crop &amp; Quantity:</span>
+                <span className="font-semibold text-gray-900">
+                  {confirmedBooking.cropName} — {confirmedBooking.quantity} {confirmedBooking.unit || 'quintal'}
+                </span>
+              </div>
+              <div className="flex items-start justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-500 text-xs">Reserved Date:</span>
+                <span className="font-semibold text-gray-900">
+                  {new Date(confirmedBooking.bookingDate).toLocaleDateString('en-IN', {
+                    weekday: 'short', day: 'numeric', month: 'long', year: 'numeric'
+                  })}
+                </span>
+              </div>
+              <div className="flex items-start justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-500 text-xs">Allocated Time Slot:</span>
+                <span className="font-semibold text-primary-700">
+                  {formatTime(confirmedBooking.slotStartTime)} – {formatTime(confirmedBooking.slotEndTime)}
+                </span>
+              </div>
+              <div className="flex items-start justify-between">
+                <span className="text-gray-500 text-xs">Estimated MSP Value:</span>
+                <span className="font-bold text-emerald-700">
+                  {estimatedAmount ? formatCurrency(estimatedAmount) : 'As per MSP'}
+                </span>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => navigate('/farmer/dashboard')}
+                rightIcon={<ArrowRight className="w-4 h-4" />}
+                className="w-full sm:w-auto"
+              >
+                Go to Dashboard
+              </Button>
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => navigate(`/farmer/bookings/${confirmedBooking._id}`)}
+                className="w-full sm:w-auto"
+              >
+                View Booking Slip
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={handleReset}
+                leftIcon={<RotateCcw className="w-4 h-4" />}
+                className="w-full sm:w-auto"
+              >
+                Book Another Slot
+              </Button>
+            </div>
+          </div>
+        </div>
+      </FarmerLayout>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // MAIN MULTI-STEP BOOKING FLOW
+  // ─────────────────────────────────────────────────────────────────────────────
   return (
     <FarmerLayout>
-      <div className="max-w-2xl mx-auto">
-        <div className="page-header">
-          <h1 className="page-title">Book a Procurement Slot</h1>
-          <p className="page-subtitle">Complete the steps below to reserve your slot</p>
+      <div className="max-w-2xl mx-auto py-2">
+        {/* Header with Draft Reset Option */}
+        <div className="page-header flex items-center justify-between mb-6">
+          <div>
+            <h1 className="page-title text-xl sm:text-2xl font-bold text-gray-900">Book Procurement Slot</h1>
+            <p className="page-subtitle text-xs sm:text-sm text-gray-500">
+              Center/Mandi → Crop → Quantity → Date &amp; Slot → Confirm
+            </p>
+          </div>
+          {(selectedCentre || selectedCrop || quantity) && (
+            <button
+              type="button"
+              onClick={handleReset}
+              className="text-xs text-gray-500 hover:text-red-600 flex items-center gap-1 border border-gray-200 hover:border-red-300 px-2.5 py-1.5 rounded-lg transition-all"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Start Over
+            </button>
+          )}
         </div>
 
-        {/* Step progress */}
-        <div className="flex items-center gap-1 mb-8">
+        {/* Step Progress Indicator */}
+        <div className="flex items-center gap-1 mb-8 overflow-x-auto pb-1">
           {STEPS.map((label, i) => (
-            <div key={i} className="flex items-center flex-1">
+            <div key={i} className="flex items-center flex-1 min-w-[70px]">
               <div
-                className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all
+                className={`flex-1 flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-xs font-medium transition-all
                   ${i < step ? 'bg-primary-100 text-primary-700' : ''}
-                  ${i === step ? 'bg-primary-600 text-white' : ''}
+                  ${i === step ? 'bg-primary-600 text-white shadow-sm' : ''}
                   ${i > step ? 'bg-gray-100 text-gray-400' : ''}
                 `}
               >
@@ -155,316 +407,528 @@ const BookSlotPage = () => {
                 `}>
                   {i < step ? <FaCheck className="w-2.5 h-2.5" /> : i + 1}
                 </span>
-                <span className="hidden sm:block">{label}</span>
+                <span className="hidden sm:inline truncate">{label}</span>
               </div>
-              {i < STEPS.length - 1 && <div className="w-2" />}
+              {i < STEPS.length - 1 && <div className="w-1.5" />}
             </div>
           ))}
         </div>
 
-        <div className="card p-6">
-          {/* STEP 0: Select crop + quantity */}
+        {/* Main Card */}
+        <div className="card p-5 sm:p-7 shadow-sm border border-gray-200">
+          {/* ────────────────────────────────────────────────────────── */}
+          {/* STEP 0: CHOOSE MANDI / CENTRE                              */}
+          {/* ────────────────────────────────────────────────────────── */}
           {step === 0 && (
-            <div className="space-y-5">
-              <h2 className="text-base font-semibold text-gray-900">What crop are you bringing?</h2>
+            <div className="space-y-4">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">Step 1: Choose Procurement Centre / Mandi</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Select the official government procurement centre where you want to bring your produce.
+                </p>
+              </div>
 
-              {loadingCrops ? (
-                <div className="flex justify-center py-8"><Spinner /></div>
+              {/* Search Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search mandi by name, district, or address..."
+                  value={centreSearch}
+                  onChange={(e) => setCentreSearch(e.target.value)}
+                  className="w-full px-4 py-2.5 pl-10 pr-16 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all"
+                />
+                <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5" />
+                {centreSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setCentreSearch('')}
+                    className="absolute right-3 top-2 text-xs text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-md"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+
+              {loadingCentres ? (
+                <div className="flex justify-center py-10"><Spinner /></div>
+              ) : centres.length === 0 ? (
+                <div className="text-center py-10 text-gray-500 text-sm bg-gray-50 rounded-xl">
+                  <Building2 className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+                  No procurement centres found. Please contact the district agriculture office.
+                </div>
               ) : (
-                <>
-                  <div>
-                    <p className="label">Select Crop <span className="text-red-500">*</span></p>
-                    <div className="grid grid-cols-2 gap-3">
-                      {crops.map((crop) => (
+                <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+                  {centres
+                    .filter((c) => {
+                      if (!centreSearch.trim()) return true;
+                      const q = centreSearch.toLowerCase();
+                      const addrStr = formatAddress(c.address).toLowerCase();
+                      return (
+                        c.name?.toLowerCase().includes(q) ||
+                        c.district?.toLowerCase().includes(q) ||
+                        addrStr.includes(q)
+                      );
+                    })
+                    .map((centre) => {
+                      const isSelected = selectedCentre?._id === centre._id;
+                      return (
                         <button
-                          key={crop._id}
+                          key={centre._id}
                           type="button"
-                          onClick={() => { setSelectedCrop(crop); setErrors({ ...errors, crop: '' }); }}
-                          className={`p-4 rounded-xl border-2 text-left transition-all
-                            ${selectedCrop?._id === crop._id
-                              ? 'border-primary-500 bg-primary-50'
+                          onClick={() => {
+                            setSelectedCentre(centre);
+                            setErrors({ ...errors, centre: '' });
+                            // If selected crop is not accepted at this new centre, reset it
+                            if (selectedCrop && centre.availableCrops?.length > 0) {
+                              const accepts = centre.availableCrops.some((c) => {
+                                const cid = typeof c === 'object' ? c._id : c;
+                                const cname = typeof c === 'object' ? c.name?.toLowerCase() : String(c).toLowerCase();
+                                return cid === selectedCrop._id || cname === selectedCrop.name?.toLowerCase();
+                              });
+                              if (!accepts) setSelectedCrop(null);
+                            }
+                          }}
+                          className={`w-full p-4 rounded-xl border-2 text-left transition-all
+                            ${isSelected
+                              ? 'border-primary-500 bg-primary-50/70 shadow-sm'
                               : 'border-gray-200 hover:border-gray-300 bg-white'
                             }`}
                         >
-                          <p className="font-semibold text-gray-900 text-sm">{crop.name}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">{crop.nameHindi}</p>
-                          <p className="text-xs text-primary-600 font-medium mt-1">
-                            MSP: {formatCurrency(crop.mspPrice)}/{crop.unit}
-                          </p>
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-gray-900 text-sm sm:text-base">{centre.name}</p>
+                              <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
+                                <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-gray-400" />
+                                <span className="truncate">
+                                  {formatAddress(centre.address)}
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                                  Capacity: {centre.dailyCapacity || 100}/day
+                                </span>
+                                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                                  Hours: {centre.operatingHours?.start || '09:00'} – {centre.operatingHours?.end || '17:00'}
+                                </span>
+                              </div>
+                              {centre.availableCrops?.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-2">
+                                  {centre.availableCrops.slice(0, 5).map((c) => (
+                                    <span key={typeof c === 'object' ? c._id : c} className="text-xs bg-emerald-50 text-emerald-700 px-1.5 py-0.5 rounded border border-emerald-100">
+                                      {typeof c === 'object' ? c.name : c}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0 mt-1" />
+                            )}
+                          </div>
                         </button>
-                      ))}
-                    </div>
-                    {errors.crop && <p className="error-text mt-2 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.crop}</p>}
-                  </div>
-
-                  <Input
-                    id="quantity"
-                    label="Quantity (quintals)"
-                    type="number"
-                    placeholder="e.g., 50"
-                    value={quantity}
-                    onChange={(e) => { setQuantity(e.target.value); setErrors({ ...errors, quantity: '' }); }}
-                    error={errors.quantity}
-                    required
-                    min="0.1"
-                    step="0.1"
-                    hint="Enter the approximate quantity you plan to sell"
-                  />
-
-                  {estimatedAmount && (
-                    <div className="p-4 bg-primary-50 rounded-xl border border-primary-100">
-                      <div className="flex items-center gap-2 text-primary-700">
-                        <Info className="w-4 h-4 flex-shrink-0" />
-                        <div>
-                          <p className="text-sm font-medium">Estimated Procurement Value</p>
-                          <p className="text-xl font-bold">{formatCurrency(estimatedAmount)}</p>
-                          <p className="text-xs text-primary-500 mt-0.5">
-                            Based on MSP of {formatCurrency(selectedCrop.mspPrice)}/{selectedCrop.unit}.
-                            Final amount calculated at procurement centre.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
+                      );
+                    })}
+                </div>
+              )}
+              {errors.centre && (
+                <p className="error-text flex items-center gap-1 mt-2 text-xs text-red-600">
+                  <AlertCircle className="w-3.5 h-3.5" />{errors.centre}
+                </p>
               )}
             </div>
           )}
 
-          {/* STEP 1: Select centre */}
+          {/* ────────────────────────────────────────────────────────── */}
+          {/* STEP 1: SELECT CROP                                        */}
+          {/* ────────────────────────────────────────────────────────── */}
           {step === 1 && (
             <div className="space-y-4">
-              <h2 className="text-base font-semibold text-gray-900">Choose a Procurement Centre</h2>
-              <p className="text-sm text-gray-500">Showing centres available in your district</p>
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">Step 2: Select Crop to Sell</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Showing crops procured by <span className="font-semibold text-gray-800">{selectedCentre?.name}</span>
+                </p>
+              </div>
 
-              {loadingCentres ? (
+              {loadingCrops ? (
                 <div className="flex justify-center py-8"><Spinner /></div>
-              ) : centres.length === 0 ? (
-                <div className="text-center py-8 text-gray-500 text-sm">
-                  <Building2 className="w-10 h-10 mx-auto mb-2 text-gray-300" />
-                  No centres available in your area. Contact your district office.
+              ) : availableCropsForCentre.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 text-sm bg-gray-50 rounded-xl">
+                  <Wheat className="w-10 h-10 mx-auto mb-2 text-gray-300" />
+                  No specific crops listed for this centre. All registered crops can be accepted.
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {centres.map((centre) => (
-                    <button
-                      key={centre._id}
-                      type="button"
-                      onClick={() => { setSelectedCentre(centre); setErrors({ ...errors, centre: '' }); }}
-                      className={`w-full p-4 rounded-xl border-2 text-left transition-all
-                        ${selectedCentre?._id === centre._id
-                          ? 'border-primary-500 bg-primary-50'
-                          : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900">{centre.name}</p>
-                          <div className="flex items-center gap-1 text-gray-500 text-xs mt-1">
-                            <MapPin className="w-3 h-3" />
-                            {centre.address}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {availableCropsForCentre.map((crop) => {
+                    const isSelected = selectedCrop?._id === crop._id;
+                    return (
+                      <button
+                        key={crop._id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedCrop(crop);
+                          setErrors({ ...errors, crop: '' });
+                        }}
+                        className={`p-4 rounded-xl border-2 text-left transition-all
+                          ${isSelected
+                            ? 'border-primary-500 bg-primary-50/80 shadow-sm'
+                            : 'border-gray-200 hover:border-gray-300 bg-white'
+                          }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <p className="font-semibold text-gray-900 text-sm sm:text-base">{crop.name}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{crop.nameHindi}</p>
                           </div>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                              Capacity: {centre.dailyCapacity}/day
-                            </span>
-                            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
-                              Hours: {centre.operatingHours?.start} – {centre.operatingHours?.end}
-                            </span>
-                          </div>
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {centre.availableCrops?.slice(0, 4).map((c) => (
-                              <span key={c._id} className="text-xs bg-primary-50 text-primary-700 px-1.5 py-0.5 rounded">
-                                {c.name}
-                              </span>
-                            ))}
-                          </div>
+                          {isSelected && (
+                            <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0" />
+                          )}
                         </div>
-                        {selectedCentre?._id === centre._id && (
-                          <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0" />
-                        )}
-                      </div>
+                        <div className="mt-3 flex items-center justify-between">
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                            MSP: {formatCurrency(crop.mspPrice)}/{crop.unit || 'quintal'}
+                          </span>
+                          {crop.season && (
+                            <span className="text-xs text-gray-400 capitalize">{crop.season}</span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {errors.crop && (
+                <p className="error-text flex items-center gap-1 mt-2 text-xs text-red-600">
+                  <AlertCircle className="w-3.5 h-3.5" />{errors.crop}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* ────────────────────────────────────────────────────────── */}
+          {/* STEP 2: PRODUCE QUANTITY                                   */}
+          {/* ────────────────────────────────────────────────────────── */}
+          {step === 2 && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">Step 3: Enter Produce Quantity</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Enter approximate quantity of <span className="font-semibold text-gray-800">{selectedCrop?.name}</span> you plan to sell.
+                </p>
+              </div>
+
+              {/* Crop badge */}
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200">
+                <div>
+                  <p className="text-xs text-gray-500">Selected Crop</p>
+                  <p className="font-semibold text-gray-900 text-sm">{selectedCrop?.name} ({selectedCrop?.nameHindi})</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">Government MSP Rate</p>
+                  <p className="font-bold text-emerald-700 text-sm">
+                    {formatCurrency(selectedCrop?.mspPrice)}/{selectedCrop?.unit || 'quintal'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Quantity input */}
+              <div>
+                <Input
+                  id="quantity"
+                  label="Quantity in Quintals"
+                  type="number"
+                  placeholder="e.g., 25"
+                  value={quantity}
+                  onChange={(e) => {
+                    setQuantity(e.target.value);
+                    setErrors({ ...errors, quantity: '' });
+                  }}
+                  error={errors.quantity}
+                  required
+                  min="0.1"
+                  step="0.1"
+                  hint="1 Quintal = 100 Kilograms"
+                />
+
+                {/* Quick preset buttons */}
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="text-xs text-gray-500">Quick add:</span>
+                  {[10, 25, 50, 100].map((preset) => (
+                    <button
+                      key={preset}
+                      type="button"
+                      onClick={() => {
+                        setQuantity(String(preset));
+                        setErrors({ ...errors, quantity: '' });
+                      }}
+                      className="px-2.5 py-1 text-xs font-medium rounded-lg bg-gray-100 hover:bg-primary-50 hover:text-primary-700 text-gray-700 border border-gray-200 transition-all"
+                    >
+                      {preset} q
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Real-time Estimated Procurement Value */}
+              {estimatedAmount && (
+                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 animate-fadeIn">
+                  <div className="flex items-start gap-3">
+                    <Info className="w-5 h-5 text-emerald-700 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="text-xs font-semibold text-emerald-900 uppercase tracking-wide">
+                        Estimated Procurement Value
+                      </p>
+                      <p className="text-2xl font-bold text-emerald-800 mt-0.5">
+                        {formatCurrency(estimatedAmount)}
+                      </p>
+                      <p className="text-xs text-emerald-700 mt-1">
+                        Calculated at {quantity} quintal × {formatCurrency(selectedCrop.mspPrice)}.
+                        Final amount will be determined after quality and moisture inspection at the mandi.
+                      </p>
+                    </div>
+                  </div>
+                </div>
               )}
-              {errors.centre && <p className="error-text flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.centre}</p>}
             </div>
           )}
 
-          {/* STEP 2: Select date & slot */}
-          {step === 2 && (
+          {/* ────────────────────────────────────────────────────────── */}
+          {/* STEP 3: DATE & TIME SLOT                                   */}
+          {/* ────────────────────────────────────────────────────────── */}
+          {step === 3 && (
             <div className="space-y-5">
-              <h2 className="text-base font-semibold text-gray-900">Choose Date & Time Slot</h2>
-
               <div>
-                <p className="label">Select Date <span className="text-red-500">*</span></p>
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                <h2 className="text-base font-semibold text-gray-900">Step 4: Choose Date &amp; Available Slot</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Select a date and an open slot at <span className="font-semibold text-gray-800">{selectedCentre?.name}</span>.
+                </p>
+              </div>
+
+              {/* 14-day Date Picker */}
+              <div>
+                <label className="label text-xs font-medium text-gray-700 mb-2 block">
+                  Select Date <span className="text-red-500">*</span>
+                </label>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
                   {availableDates.map((date) => {
                     const d = new Date(date);
-                    const isToday = date === new Date().toISOString().split('T')[0];
+                    const isSelected = selectedDate === date;
+                    const isToday = date === availableDates[0];
                     return (
                       <button
                         key={date}
                         type="button"
-                        onClick={() => { setSelectedDate(date); setErrors({ ...errors, date: '' }); }}
+                        onClick={() => {
+                          setSelectedDate(date);
+                          setErrors({ ...errors, date: '' });
+                        }}
                         className={`p-2.5 rounded-xl border-2 text-center transition-all
-                          ${selectedDate === date
-                            ? 'border-primary-500 bg-primary-50'
-                            : 'border-gray-200 hover:border-gray-300'
+                          ${isSelected
+                            ? 'border-primary-500 bg-primary-50/80 shadow-sm'
+                            : 'border-gray-200 hover:border-gray-300 bg-white'
                           }`}
                       >
                         <p className="text-xs font-medium text-gray-500">
                           {d.toLocaleDateString('en-IN', { weekday: 'short' })}
                         </p>
-                        <p className="text-lg font-bold text-gray-900">
+                        <p className="text-lg font-bold text-gray-900 leading-tight">
                           {d.getDate()}
                         </p>
                         <p className="text-xs text-gray-500">
                           {d.toLocaleDateString('en-IN', { month: 'short' })}
                         </p>
-                        {isToday && <p className="text-xs text-primary-600 font-semibold">Today</p>}
+                        {isToday && (
+                          <span className="text-[10px] font-semibold text-emerald-700 block mt-0.5">Today</span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
-                {errors.date && <p className="error-text mt-2 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.date}</p>}
+                {errors.date && (
+                  <p className="error-text mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                    <AlertCircle className="w-3.5 h-3.5" />{errors.date}
+                  </p>
+                )}
               </div>
 
+              {/* Slots List for Selected Date */}
               {selectedDate && (
                 <div>
-                  <p className="label">Select Time Slot <span className="text-red-500">*</span></p>
+                  <label className="label text-xs font-medium text-gray-700 mb-2 block">
+                    Available Time Slots <span className="text-red-500">*</span>
+                  </label>
+
                   {loadingSlots ? (
                     <div className="flex justify-center py-6"><Spinner /></div>
                   ) : slots.length === 0 ? (
-                    <div className="text-center py-6 text-sm text-gray-500 bg-gray-50 rounded-xl">
-                      No slots available for this date. Please select another date.
+                    <div className="text-center py-6 text-sm text-gray-500 bg-gray-50 rounded-xl border border-gray-200">
+                      No slots available on this date. Please select another date.
                     </div>
                   ) : (
                     <div className="space-y-2">
                       {slots.map((slot) => {
                         const isFull = slot.status === 'full' || slot.booked >= slot.capacity;
-                        const available = slot.capacity - slot.booked;
+                        const availableSpots = Math.max(0, slot.capacity - slot.booked);
+                        const isSelected = selectedSlot?._id === slot._id;
+
                         return (
                           <button
                             key={slot._id}
                             type="button"
                             disabled={isFull}
-                            onClick={() => { if (!isFull) { setSelectedSlot(slot); setErrors({ ...errors, slot: '' }); } }}
-                            className={`w-full p-4 rounded-xl border-2 flex items-center justify-between transition-all
+                            onClick={() => {
+                              if (!isFull) {
+                                setSelectedSlot(slot);
+                                setErrors({ ...errors, slot: '' });
+                              }
+                            }}
+                            className={`w-full p-3.5 rounded-xl border-2 flex items-center justify-between transition-all
                               ${isFull ? 'border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed' : ''}
-                              ${!isFull && selectedSlot?._id === slot._id ? 'border-primary-500 bg-primary-50' : ''}
-                              ${!isFull && selectedSlot?._id !== slot._id ? 'border-gray-200 hover:border-gray-300' : ''}
+                              ${!isFull && isSelected ? 'border-primary-500 bg-primary-50/80 shadow-sm' : ''}
+                              ${!isFull && !isSelected ? 'border-gray-200 hover:border-gray-300 bg-white' : ''}
                             `}
                           >
                             <div className="text-left">
-                              <p className="font-semibold text-gray-900">
+                              <p className="font-semibold text-gray-900 text-sm">
                                 {formatTime(slot.startTime)} – {formatTime(slot.endTime)}
                               </p>
-                              <p className={`text-xs mt-0.5 ${isFull ? 'text-red-500' : 'text-green-600'} font-medium`}>
-                                {isFull ? 'FULL' : `${available} spots available`}
+                              <p className={`text-xs mt-0.5 font-medium ${isFull ? 'text-red-500' : 'text-emerald-700'}`}>
+                                {isFull ? 'SLOT FULL' : `${availableSpots} spots available`}
                               </p>
                             </div>
+
                             <div className="text-right">
-                              {/* Capacity bar */}
+                              {/* Capacity Bar */}
                               <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
                                 <div
-                                  className={`h-full rounded-full ${isFull ? 'bg-red-400' : 'bg-primary-500'}`}
+                                  className={`h-full rounded-full transition-all ${isFull ? 'bg-red-400' : 'bg-primary-500'}`}
                                   style={{ width: `${Math.min(100, (slot.booked / slot.capacity) * 100)}%` }}
                                 />
                               </div>
-                              <p className="text-xs text-gray-400 mt-0.5">{slot.booked}/{slot.capacity}</p>
+                              <p className="text-xs text-gray-400 mt-0.5">{slot.booked}/{slot.capacity} booked</p>
                             </div>
                           </button>
                         );
                       })}
                     </div>
                   )}
-                  {errors.slot && <p className="error-text mt-2 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.slot}</p>}
+                  {errors.slot && (
+                    <p className="error-text mt-1.5 text-xs text-red-600 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5" />{errors.slot}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
           )}
 
-          {/* STEP 3: Confirm */}
-          {step === 3 && (
+          {/* ────────────────────────────────────────────────────────── */}
+          {/* STEP 4: REVIEW & CONFIRM BOOKING                           */}
+          {/* ────────────────────────────────────────────────────────── */}
+          {step === 4 && (
             <div className="space-y-5">
-              <h2 className="text-base font-semibold text-gray-900">Confirm Your Booking</h2>
+              <div>
+                <h2 className="text-base font-semibold text-gray-900">Step 5: Review &amp; Confirm Booking</h2>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  Please verify your procurement slot details before confirming.
+                </p>
+              </div>
 
-              <div className="bg-primary-50 rounded-xl p-5 border border-primary-100">
-                <div className="grid grid-cols-2 gap-4 text-sm">
+              {/* Detailed Summary Card */}
+              <div className="bg-primary-50/60 rounded-xl p-5 border border-primary-100">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p className="text-xs text-gray-500">Crop</p>
-                    <p className="font-semibold text-gray-900 mt-0.5">{selectedCrop?.name}</p>
+                    <p className="text-xs text-gray-500">Mandi / Centre</p>
+                    <p className="font-semibold text-gray-900 mt-0.5">{selectedCentre?.name}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{formatAddress(selectedCentre?.address)}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500">Crop to Sell</p>
+                    <p className="font-semibold text-gray-900 mt-0.5">
+                      {selectedCrop?.name} {selectedCrop?.nameHindi ? `(${selectedCrop.nameHindi})` : ''}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-0.5">MSP: {formatCurrency(selectedCrop?.mspPrice)}/quintal</p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Quantity</p>
                     <p className="font-semibold text-gray-900 mt-0.5">{quantity} quintal</p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">Centre</p>
-                    <p className="font-semibold text-gray-900 mt-0.5">{selectedCentre?.name}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500">Date</p>
+                    <p className="text-xs text-gray-500">Procurement Date</p>
                     <p className="font-semibold text-gray-900 mt-0.5">
-                      {selectedDate ? new Date(selectedDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) : '—'}
+                      {selectedDate
+                        ? new Date(selectedDate).toLocaleDateString('en-IN', {
+                            weekday: 'short', day: '2-digit', month: 'long', year: 'numeric'
+                          })
+                        : '—'}
                     </p>
                   </div>
                   <div>
                     <p className="text-xs text-gray-500">Time Slot</p>
-                    <p className="font-semibold text-gray-900 mt-0.5">
+                    <p className="font-semibold text-primary-700 mt-0.5">
                       {selectedSlot ? `${formatTime(selectedSlot.startTime)} – ${formatTime(selectedSlot.endTime)}` : '—'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500">Est. Value</p>
-                    <p className="font-semibold text-primary-700 mt-0.5">{formatCurrency(estimatedAmount)}</p>
+                    <p className="text-xs text-gray-500">Estimated Total Value</p>
+                    <p className="font-bold text-emerald-700 text-base mt-0.5">
+                      {formatCurrency(estimatedAmount)}
+                    </p>
                   </div>
                 </div>
               </div>
 
-              <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-                <p className="text-xs text-amber-700">
-                  <strong>Note:</strong> This is an estimated value based on current MSP.
-                  Final procurement amount will be determined at the centre after quality grading.
-                </p>
-              </div>
+              {/* Submit Error Banner (Duplicate / Full slot) */}
+              {submitError && (
+                <div className="p-4 bg-red-50 rounded-xl border border-red-200 text-red-700 text-xs sm:text-sm flex items-start gap-2.5">
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 text-red-600 mt-0.5" />
+                  <div>
+                    <p className="font-semibold">Booking Could Not Be Completed</p>
+                    <p className="mt-0.5">{submitError}</p>
+                    <p className="mt-1 text-xs text-red-600">
+                      Tip: Click &apos;Back&apos; to Step 4 to select a different time slot or date.
+                    </p>
+                  </div>
+                </div>
+              )}
 
-              <div className="p-4 bg-gray-50 rounded-xl text-xs text-gray-600 space-y-2">
+              {/* Guidelines checklist */}
+              <div className="p-4 bg-gray-50 rounded-xl text-xs text-gray-600 space-y-2 border border-gray-200">
                 <p className="flex items-center gap-2">
-                  <FaCheck className="text-emerald-600 w-3 h-3 flex-shrink-0" />
-                  <span>A unique token number will be assigned to you</span>
+                  <ShieldCheck className="text-emerald-600 w-4 h-4 flex-shrink-0" />
+                  <span>A unique token number will be generated immediately for queue entry.</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <FaCheck className="text-emerald-600 w-3 h-3 flex-shrink-0" />
-                  <span>You can track your position in the live queue</span>
+                  <ShieldCheck className="text-emerald-600 w-4 h-4 flex-shrink-0" />
+                  <span>You can track your real-time queue position on your Farmer Dashboard.</span>
                 </p>
                 <p className="flex items-center gap-2">
-                  <FaCheck className="text-emerald-600 w-3 h-3 flex-shrink-0" />
-                  <span>You will be notified when your turn approaches</span>
-                </p>
-                <p className="flex items-center gap-2">
-                  <FaCheck className="text-emerald-600 w-3 h-3 flex-shrink-0" />
-                  <span>Arrive 10–15 minutes before your slot time</span>
+                  <ShieldCheck className="text-emerald-600 w-4 h-4 flex-shrink-0" />
+                  <span>Please arrive 10–15 minutes before your time slot with your photo ID.</span>
                 </p>
               </div>
             </div>
           )}
 
-          {/* Navigation buttons */}
+          {/* ────────────────────────────────────────────────────────── */}
+          {/* NAVIGATION BUTTONS                                         */}
+          {/* ────────────────────────────────────────────────────────── */}
           <div className={`flex gap-3 mt-6 ${step > 0 ? 'justify-between' : 'justify-end'}`}>
             {step > 0 && (
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => setStep((s) => s - 1)}
+                onClick={() => {
+                  setSubmitError('');
+                  setStep((s) => s - 1);
+                }}
                 leftIcon={<ArrowLeft className="w-4 h-4" />}
               >
                 Back
               </Button>
             )}
-            {step < 3 ? (
+
+            {step < 4 ? (
               <Button
                 type="button"
                 variant="primary"
@@ -478,7 +942,7 @@ const BookSlotPage = () => {
                 type="button"
                 variant="primary"
                 loading={submitting}
-                onClick={handleSubmit}
+                onClick={handleConfirmBooking}
                 size="lg"
                 rightIcon={<CheckCircle className="w-4 h-4" />}
               >
