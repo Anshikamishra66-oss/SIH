@@ -84,14 +84,17 @@ const sendOtp = async (req, res, next) => {
     // Dispatch real SMS via SMS gateway
     const smsResult = await smsService.sendOtp(cleanMobile, otpPayload.rawOtp);
 
+    // Return fresh dynamic random OTP in response for development / demo mode testing
+    const demoOtpCode = otpPayload.rawOtp;
+
     res.json(
       new ApiResponse(200, {
         mobile: cleanMobile,
         resendCooldown: 60,
         smsDelivered: Boolean(smsResult?.delivered),
         gatewayConfigured: smsService.isConfigured(),
-        demoOtp: '123456',
-      }, `OTP sent to +91 ${cleanMobile.slice(0, 2)}******${cleanMobile.slice(-2)}. (Demo OTP: 123456)`)
+        demoOtp: demoOtpCode,
+      }, `OTP sent to +91 ${cleanMobile.slice(0, 2)}******${cleanMobile.slice(-2)}. (Demo OTP: ${demoOtpCode})`)
     );
   } catch (error) {
     next(error);
@@ -150,10 +153,10 @@ const register = async (req, res, next) => {
 
     const cleanMobile = String(mobile).trim();
 
-    // Verify OTP state: must either have already been verified in this session, match 123456, or verify successfully
+    // Verify OTP state: must either have already been verified in this session or verify successfully
     const cleanOtp = String(otp || '').trim();
     const isAlreadyVerified = otpManager.isVerified(cleanMobile);
-    if (!isAlreadyVerified && cleanOtp !== '123456') {
+    if (!isAlreadyVerified) {
       try {
         otpManager.verifyOtp(cleanMobile, cleanOtp);
       } catch (err) {
@@ -261,13 +264,9 @@ const login = async (req, res, next) => {
 
       if (cleanOtp) {
         try {
-          if (cleanOtp === '123456') {
-            isVerified = true;
-          } else {
-            otpManager.verifyOtp(cleanMobile, cleanOtp);
-            otpManager.consume(cleanMobile);
-            isVerified = true;
-          }
+          otpManager.verifyOtp(cleanMobile, cleanOtp);
+          otpManager.consume(cleanMobile);
+          isVerified = true;
         } catch (err) {
           throw new ApiError(err.statusCode || 401, err.message);
         }

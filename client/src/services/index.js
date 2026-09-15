@@ -19,6 +19,7 @@ export const farmerService = {
   sendKisanIdOtp: (data) => api.post('/farmers/kisan-id/send-otp', data),
   verifyKisanIdOtp: (data) => api.post('/farmers/kisan-id/verify-otp', data),
   verifyKisanId: (data) => api.post('/farmers/kisan-id/verify-otp', data),
+  checkNpciStatus: () => api.post('/farmers/check-npci-status'),
   submitKyc: (data) => api.post('/farmers/submit-kyc', data),
   getKycStatus: () => api.get('/farmers/kyc-status'),
 };
@@ -48,6 +49,9 @@ export const queueService = {
   callToken: (token, centreId, counter) => api.put(`/queue/${token}/call`, { centreId, counter }),
   completeToken: (token, centreId) => api.put(`/queue/${token}/complete`, { centreId }),
   callNext: (centreId, counter) => api.post('/queue/call-next', { centreId, counter }),
+  getGateMetrics: (params) => api.get('/queue/gate-metrics', { params }),
+  lookupGateToken: (data) => api.post('/queue/lookup-gate-token', data),
+  verifyGateEntry: (token, data) => api.put(`/queue/verify-gate-entry/${token}`, data),
 };
 
 export const procurementService = {
@@ -71,6 +75,8 @@ export const notificationService = {
 export const officerService = {
   getDashboard: () => api.get('/officer/dashboard'),
   getBookings: (params) => api.get('/officer/bookings', { params }),
+  getKycApprovals: (params) => api.get('/officer/kyc-approvals', { params }),
+  updateKycApproval: (profileId, data) => api.put(`/officer/kyc-approvals/${profileId}`, data),
 };
 
 export const adminService = {

@@ -6,6 +6,7 @@ const {
   getProcurementHistory,
   sendAadhaarOtp,
   verifyAadhaarOtp,
+  checkNpciStatus,
   sendKisanIdOtp,
   verifyKisanIdOtp,
   verifyKisanId,
@@ -23,6 +24,8 @@ router.get('/history', getProcurementHistory);
 // Aadhaar e-KYC endpoints
 router.post('/aadhaar/send-otp', sendAadhaarOtp);
 router.post('/aadhaar/verify-otp', verifyAadhaarOtp);
+router.post('/check-npci-status', checkNpciStatus);
+router.get('/check-npci-status', checkNpciStatus);
 
 // Kisan ID verification with OTP & KYC submission
 router.post('/kisan-id/send-otp', sendKisanIdOtp);

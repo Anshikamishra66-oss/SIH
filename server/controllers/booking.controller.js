@@ -11,7 +11,7 @@ const Slot = require('../models/Slot.model');
 const QueueEntry = require('../models/QueueEntry.model');
 const ProcurementCentre = require('../models/ProcurementCentre.model');
 const Payment = require('../models/Payment.model');
-const Procurement = require('../models/Procurement.model');
+const FarmerProfile = require('../models/FarmerProfile.model');
 const ApiError = require('../utils/ApiError');
 const ApiResponse = require('../utils/ApiResponse');
 const { generateBookingId, generateToken } = require('../utils/helpers');
@@ -30,6 +30,30 @@ const createBooking = async (req, res, next) => {
     if (!cropId) throw new ApiError(400, 'Please select a crop.');
     if (!quantity || isNaN(quantity) || Number(quantity) <= 0) {
       throw new ApiError(400, 'Please enter a valid quantity in quintals (minimum 0.1).');
+    }
+
+    // Strict KYC Approval Enforcer: Slot booking requires District Procurement Officer approval
+    const farmerProfile = await FarmerProfile.findOne({ userId: farmerId }).session(session);
+
+    if (!farmerProfile || !farmerProfile.aadhaarVerified) {
+      throw new ApiError(
+        403,
+        'e-KYC Mandatory: Please complete your Aadhaar e-KYC and Kisan ID verification before booking a procurement slot.'
+      );
+    }
+
+    if (farmerProfile.kycStatus === 'Rejected') {
+      throw new ApiError(
+        403,
+        `KYC Application Rejected: Your KYC application was rejected by the District Procurement Officer. Reason: "${farmerProfile.kycRemarks || 'Invalid details'}". Please update and re-submit your KYC for approval.`
+      );
+    }
+
+    if (farmerProfile.kycStatus !== 'Verified') {
+      throw new ApiError(
+        403,
+        'KYC Approval Pending: Your KYC application has been submitted and is currently pending approval by your District Procurement Officer. Slot booking activates once approved.'
+      );
     }
 
     const cleanCropId = cropId?._id || cropId;

@@ -126,6 +126,28 @@ class NotificationService {
       { mobile, event: 'kyc_submitted' }
     );
   }
+
+  async kycApproved(userId, remarks) {
+    const message = `Your KYC application has been APPROVED by the District Procurement Officer. ${remarks ? 'Remarks: ' + remarks : ''} You can now book procurement slots!`;
+    return this.send(
+      userId,
+      'kyc_approved',
+      'KYC Application Approved ✓',
+      message,
+      { status: 'Verified' }
+    );
+  }
+
+  async kycRejected(userId, remarks) {
+    const message = `Your KYC application was REJECTED by the District Procurement Officer. Reason: ${remarks || 'Invalid details'}. Please update and re-submit your KYC.`;
+    return this.send(
+      userId,
+      'kyc_rejected',
+      'KYC Application Rejected ✗',
+      message,
+      { status: 'Rejected' }
+    );
+  }
 }
 
 // Singleton instance

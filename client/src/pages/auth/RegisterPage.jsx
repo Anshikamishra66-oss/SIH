@@ -28,6 +28,7 @@ const RegisterPage = () => {
   const [verifyingOtp, setVerifyingOtp] = useState(false);
   const [isMobileVerified, setIsMobileVerified] = useState(false);
   const [timer, setTimer] = useState(0);
+  const [currentDemoOtp, setCurrentDemoOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -52,7 +53,7 @@ const RegisterPage = () => {
     setErrors((prev) => ({ ...prev, [field]: '' }));
   };
 
-  // Step 1: Send Real OTP to Mobile
+  // Step 1: Send OTP to Mobile
   const handleSendOtp = async () => {
     if (!/^[6-9]\d{9}$/.test(form.mobile)) {
       setErrors((prev) => ({ ...prev, mobile: 'Enter a valid 10-digit Indian mobile number' }));
@@ -66,6 +67,8 @@ const RegisterPage = () => {
       setIsMobileVerified(false);
       const cooldown = res.data?.data?.resendCooldown || 60;
       setTimer(cooldown);
+      const demoCode = res.data?.data?.demoOtp;
+      if (demoCode) setCurrentDemoOtp(demoCode);
       toast.success(res.data?.message || `Verification OTP sent to +91 ${form.mobile}`);
     } catch (err) {
       toast.error(extractError(err));
@@ -74,19 +77,11 @@ const RegisterPage = () => {
     }
   };
 
-  // Step 2: Verify OTP
+  // Step 2: Verify OTP strictly with backend
   const handleVerifyOtp = async () => {
     const cleanOtp = form.otp.trim();
     if (!cleanOtp || cleanOtp.length !== 6) {
       setErrors((prev) => ({ ...prev, otp: 'Please enter the 6-digit OTP' }));
-      return;
-    }
-
-    // Direct client-side demo check for instant testing
-    if (cleanOtp === '123456') {
-      setIsMobileVerified(true);
-      setErrors((prev) => ({ ...prev, otp: '', mobile: '' }));
-      toast.success('Mobile Number Verified with Demo OTP: 123456 ✓');
       return;
     }
 
@@ -349,23 +344,18 @@ const RegisterPage = () => {
                   )}
 
                   {/* Quick Demo Helper */}
-                  {!isMobileVerified && (
+                  {!isMobileVerified && currentDemoOtp && (
                     <div className="flex items-center justify-between text-xs pt-0.5">
-                      <span className="text-[11px] text-gray-500 font-medium">Quick Demo Test:</span>
+                      <span className="text-[11px] text-gray-500 font-medium">Sandbox Generated OTP:</span>
                       <button
                         type="button"
                         onClick={() => {
-                          const testMob = form.mobile.length === 10 ? form.mobile : '9876543210';
-                          update('mobile', testMob);
-                          setOtpSent(true);
-                          update('otp', '123456');
-                          setIsMobileVerified(true);
-                          setErrors((prev) => ({ ...prev, mobile: '', otp: '' }));
-                          toast.success(`Demo Mobile (+91 ${testMob}) Verified with 123456 ✓`);
+                          update('otp', currentDemoOtp);
+                          toast.success(`Active OTP ${currentDemoOtp} filled. Click Verify to confirm.`);
                         }}
-                        className="text-[11px] font-bold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-1 rounded-lg transition flex items-center gap-1 shadow-2xs"
+                        className="text-[11px] font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-1 rounded-lg transition flex items-center gap-1 shadow-2xs"
                       >
-                        ⚡ 1-Click Demo Verify (123456)
+                        ⚡ Fill Active Random OTP ({currentDemoOtp})
                       </button>
                     </div>
                   )}

@@ -115,8 +115,8 @@
       "state": "Punjab",
       "_id": "da077c25-ea52-4573-b5aa-9863d1c19eda",
       "createdAt": "2026-09-13T22:05:46.428Z",
-      "updatedAt": "2026-09-14T16:47:05.386Z",
-      "lastLogin": "2026-09-14T16:47:05.386Z"
+      "updatedAt": "2026-09-15T21:02:02.378Z",
+      "lastLogin": "2026-09-15T21:02:02.378Z"
     },
     {
       "role": "state_officer",
@@ -149,8 +149,8 @@
       "district": "Ludhiana",
       "_id": "d8039f4d-7969-49a3-ac5f-6fb5c10f560a",
       "createdAt": "2026-09-13T22:05:47.017Z",
-      "updatedAt": "2026-09-14T16:45:35.091Z",
-      "lastLogin": "2026-09-14T16:45:35.091Z"
+      "updatedAt": "2026-09-15T19:27:35.265Z",
+      "lastLogin": "2026-09-15T19:27:35.265Z"
     },
     {
       "role": "district_officer",
@@ -465,8 +465,8 @@
       "centreId": "3b68f2ea-4c31-402b-8d9a-19a32c755171",
       "_id": "3eab95f9-8b20-40df-bec0-8ac8dd77c49d",
       "createdAt": "2026-09-13T22:05:53.004Z",
-      "updatedAt": "2026-09-14T16:41:55.297Z",
-      "lastLogin": "2026-09-14T16:41:55.297Z"
+      "updatedAt": "2026-09-15T21:02:01.907Z",
+      "lastLogin": "2026-09-15T21:02:01.907Z"
     },
     {
       "role": "gate_staff",
@@ -566,8 +566,8 @@
       "district": "Ludhiana",
       "_id": "9f05ae12-a2b8-4dbb-a249-db25afd195e3",
       "createdAt": "2026-09-13T22:05:54.824Z",
-      "updatedAt": "2026-09-15T10:31:42.164Z",
-      "lastLogin": "2026-09-15T10:31:42.164Z"
+      "updatedAt": "2026-09-15T20:14:59.203Z",
+      "lastLogin": "2026-09-15T20:14:59.203Z"
     },
     {
       "role": "farmer",
@@ -806,8 +806,8 @@
       "district": "Lucknow",
       "_id": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
       "createdAt": "2026-09-14T03:45:07.962Z",
-      "updatedAt": "2026-09-15T07:33:40.654Z",
-      "lastLogin": "2026-09-15T06:56:02.429Z"
+      "updatedAt": "2026-09-15T19:09:38.279Z",
+      "lastLogin": "2026-09-15T19:09:38.279Z"
     },
     {
       "role": "farmer",
@@ -822,6 +822,246 @@
       "_id": "a0584946-48eb-44ef-bdac-44bd811d45a2",
       "createdAt": "2026-09-14T20:26:32.348Z",
       "updatedAt": "2026-09-14T20:26:33.076Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "aman yadav",
+      "mobile": "6394898638",
+      "password": "$2b$12$XRjOkwZaoKNpI3qaoMQ/Zua9kDKoyPOTW5YUzQNyzQSByhBUgn26K",
+      "state": "Uttar Pradesh",
+      "district": "Maharajganj",
+      "_id": "122c84d5-d6cf-4f12-ac2e-9cfbdb4dbf62",
+      "createdAt": "2026-09-15T13:46:54.651Z",
+      "updatedAt": "2026-09-15T16:07:45.676Z",
+      "lastLogin": "2026-09-15T16:07:45.676Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Registered Farmer",
+      "mobile": "9123456780",
+      "password": "$2b$12$CVIvKfCSna87gTRU73Q35u84CQEOn5.6MJ3PrnxQ7F7iPdwJ54qNO",
+      "state": "Uttar Pradesh",
+      "district": "Gorakhpur",
+      "_id": "4e5b2407-738a-4d1f-be91-38a2d1b830d0",
+      "createdAt": "2026-09-15T17:35:16.871Z",
+      "updatedAt": "2026-09-15T17:44:03.455Z",
+      "lastLogin": "2026-09-15T17:44:03.455Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Harminder Singh",
+      "mobile": "9123456789",
+      "password": "$2b$12$pX.3nGYNUifdRYY6wWNL8u51wXyYbhdQPvyrHiaUn1HSgRQWvLHWi",
+      "state": "Uttar Pradesh",
+      "district": "Gorakhpur",
+      "_id": "91c3bef8-103d-435d-b9bd-7aa9822f097f",
+      "createdAt": "2026-09-15T18:57:23.474Z",
+      "updatedAt": "2026-09-15T19:01:43.279Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Harpreet Singh (Amritsar)",
+      "mobile": "9686087120",
+      "password": "$2b$12$HrIATvNDFN2.1qzJEbCTeOj5z37EnuuwX5wKZMpmcpt.hUhoZpzda",
+      "state": "Punjab",
+      "district": "Amritsar",
+      "_id": "b27f2bc2-0acd-44ae-8cbd-f558b7560c5a",
+      "createdAt": "2026-09-15T19:24:14.270Z",
+      "updatedAt": "2026-09-15T19:24:14.493Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Harpreet Singh (Amritsar)",
+      "mobile": "9546046583",
+      "password": "$2b$12$3e8VsY4z/EazSGF5o9kUY.dZLL9GEe7d19qQnyIex8cgOfR24b.ze",
+      "state": "Punjab",
+      "district": "Amritsar",
+      "_id": "70d40ff5-42c0-4f53-8aa5-86bd405f6623",
+      "createdAt": "2026-09-15T19:24:31.158Z",
+      "updatedAt": "2026-09-15T19:24:31.378Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9296575560",
+      "password": "$2b$12$/Ys0w1xhuLP8KSF5rsDXIeYEp7pY/.O0r4EnJZ5Ztl9ADm8eKMeFC",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "a83f860a-b011-419b-9b24-8badab9f32af",
+      "createdAt": "2026-09-15T20:00:17.537Z",
+      "updatedAt": "2026-09-15T20:00:17.819Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9789259635",
+      "password": "$2b$12$.z.FPBCjvMMzhO/A/Y1AUO3QjQBqtmGCXra4Zb4F/cdQwGcxfVphK",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "34fd3838-13d2-4f77-afe7-b7ad315ba27b",
+      "createdAt": "2026-09-15T20:00:35.930Z",
+      "updatedAt": "2026-09-15T20:00:36.154Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9913227707",
+      "password": "$2b$12$tGTHD2TjAtwX74oGuINum.b70GhxTfrqJvuSnmVO4OvYJ8iXDIjKC",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "fc43319f-63d2-4adb-9c5f-e588b9e56fdb",
+      "createdAt": "2026-09-15T20:00:48.371Z",
+      "updatedAt": "2026-09-15T20:00:48.596Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9679076816",
+      "password": "$2b$12$z1MVzRWTjBRLcBZMFXq0vu8WSjbjxgwSHjR8hpiPekjfp2XzIhpxK",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "61384a14-9c90-440b-a68d-3e3cd3fd00c3",
+      "createdAt": "2026-09-15T20:01:12.643Z",
+      "updatedAt": "2026-09-15T20:01:12.866Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9132260999",
+      "password": "$2b$12$iZpu.lzXeUsoH9YSzOGOguXL2nNZ7NAVWQ0bbiCqhFoU.k7BWru5a",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "31d47c2b-15ed-4491-b25f-664677aaa1f2",
+      "createdAt": "2026-09-15T20:01:39.481Z",
+      "updatedAt": "2026-09-15T20:01:39.877Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9621707368",
+      "password": "$2b$12$7G.Hx/gHDil33AjuJ4P9M.rTmVvOKXNZXRkzNstgiPpXBviXVWXqm",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "b6a00d21-3d0f-4fee-bf7c-45bcdd25b15b",
+      "createdAt": "2026-09-15T20:02:17.278Z",
+      "updatedAt": "2026-09-15T20:02:17.501Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9537207392",
+      "password": "$2b$12$hHenjtaJUB0WlENNolQes.9AZ6j9hmRE5UfXO0CY9/ZW89NOaLdmu",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "cd437abb-3682-498d-866f-f5ef7b7c9683",
+      "createdAt": "2026-09-15T20:02:52.040Z",
+      "updatedAt": "2026-09-15T20:02:52.264Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9934284726",
+      "password": "$2b$12$b/3tYL0BBlphJI5fP4acpuHCAMpHCGO5TYe.bIUvRJNk7KeOBDJnG",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "4d989e5c-26a8-40df-a835-0eb5b1ededc6",
+      "createdAt": "2026-09-15T20:03:03.756Z",
+      "updatedAt": "2026-09-15T20:03:04.035Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9555920439",
+      "password": "$2b$12$jwM03kzR4wjo6ptjiv8WwuEfInuW5w1Onbtanh9xW9I252kVB5Ac2",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "29912ea0-aa12-49d4-90f2-69fce6319699",
+      "createdAt": "2026-09-15T20:03:16.288Z",
+      "updatedAt": "2026-09-15T20:03:16.512Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9279588695",
+      "password": "$2b$12$JIRoWGUqJfX.cgJcQ1V1ouDOL2jQ/yKqXW90H40dH5zB1oArryrV.",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "cbd2c68a-5b4c-4530-8ac4-5e6e0251014d",
+      "createdAt": "2026-09-15T20:03:30.845Z",
+      "updatedAt": "2026-09-15T20:03:31.071Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9696317499",
+      "password": "$2b$12$Kuzw01Nub0wM6PnEJKe0E.alU7vbCa.iC9WTCbUFwrCsytynkC4W2",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+      "createdAt": "2026-09-15T20:03:53.185Z",
+      "updatedAt": "2026-09-15T20:03:53.407Z"
+    },
+    {
+      "role": "farmer",
+      "isActive": true,
+      "level": 7,
+      "mustChangePassword": false,
+      "name": "Gurpreet Singh (Gate Test)",
+      "mobile": "9799369651",
+      "password": "$2b$12$HA37YyB3Dxb0Ik9vCX0qnuqJ/OiFTmO7COwVeyLNRIxOxrH70YRW.",
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "_id": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+      "createdAt": "2026-09-15T21:02:01.923Z",
+      "updatedAt": "2026-09-15T21:02:02.144Z"
     }
   ],
   "procurement_centres": [
@@ -1209,15 +1449,65 @@
         }
       ],
       "isProfileComplete": true,
-      "userId": "9f05ae12-a2b8-4dbb-a249-db25afd195e3",
-      "farmerIdNumber": "FMR-LDH-001",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Rajveer Singh",
+        "mobile": "9751000001",
+        "email": "farmer@example.com",
+        "password": "$2b$12$bk3H0eoW3a6E5L8C0n1aQuX.ey8uAvA2ELZuij860ihcnLTQDgA7W",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "9f05ae12-a2b8-4dbb-a249-db25afd195e3",
+        "createdAt": "2026-09-13T22:05:54.824Z",
+        "updatedAt": "2026-09-15T18:58:19.532Z",
+        "lastLogin": "2026-09-15T18:58:19.532Z"
+      },
+      "farmerIdNumber": "KSN-UP-2024-8849",
       "state": "Punjab",
       "district": "Ludhiana",
       "village": "Doraha",
       "address": "Near Panchayat Office, Doraha, Ludhiana, Punjab",
       "_id": "1e67a9b9-1644-49c8-a534-0a1c7b3c8ac3",
       "createdAt": "2026-09-13T22:05:55.154Z",
-      "updatedAt": "2026-09-13T22:05:55.154Z"
+      "updatedAt": "2026-09-15T19:00:30.317Z",
+      "aadhaarNumber": "XXXX-XXXX-5212",
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Pending Verification",
+      "npciStatus": "Pending Verification",
+      "aadhaarDetails": {
+        "name": "Rajveer Singh",
+        "dob": "12/06/1983",
+        "gender": "MALE",
+        "careOf": "Care of Farmer Family",
+        "address": "Ludhiana, Punjab",
+        "maskedAadhaar": "XXXX-XXXX-5212",
+        "verifiedAt": "2026-09-15T16:26:46.657Z",
+        "providerRef": "SANDBOX-UIDAI-1789489606642-03fac0",
+        "isSandbox": true
+      },
+      "kisanId": "KSN-UP-2024-8849",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KSN-UP-2024-8849",
+        "farmerName": "Rajveer Singh",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "linkedMobile": "+91 ******0001",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "pmKisanStatus": "Active & DBT Linked ✓",
+        "registryDate": "15/04/2022",
+        "issuingAuthority": "Punjab Department of Agriculture & Farmers Welfare",
+        "status": "Verified ✓",
+        "isSandbox": true,
+        "verificationType": "Government Farmer Registry (Sandbox Simulation)",
+        "verifiedAt": "2026-09-15T16:26:46.672Z"
+      },
+      "kycStatus": "Verified",
+      "kycSubmittedAt": "2026-09-15T16:26:46.687Z",
+      "kycRemarks": "Verified by District Procurement Officer"
     },
     {
       "crops": [
@@ -1521,10 +1811,70 @@
     {
       "crops": [],
       "isProfileComplete": false,
-      "userId": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Rajveer Singh",
+        "mobile": "8005011242",
+        "email": "ankurr@gmail.com",
+        "password": "$2b$12$bX.GDhdY54FmIxP94JY7j.k1Nuw4Mozrjv0vwjbYn1rPD4kwVqQZ.",
+        "state": "Uttar Pradesh",
+        "district": "Lucknow",
+        "_id": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
+        "createdAt": "2026-09-14T03:45:07.962Z",
+        "updatedAt": "2026-09-15T18:15:40.956Z",
+        "lastLogin": "2026-09-15T18:15:40.956Z"
+      },
       "_id": "c766868d-85fb-4a46-9d71-0d34a3d0308a",
       "createdAt": "2026-09-14T03:45:08.322Z",
-      "updatedAt": "2026-09-15T07:33:40.661Z"
+      "updatedAt": "2026-09-15T19:07:54.920Z",
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seedingDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "state": "Uttar Pradesh",
+      "district": "Lucknow",
+      "aadhaarNumber": "XXXX-XXXX-1383",
+      "aadhaarVerified": true,
+      "aadhaarDetails": {
+        "name": "Rajveer Singh",
+        "dob": "12/06/1983",
+        "gender": "MALE",
+        "careOf": "Care of Farmer Family",
+        "address": "Lucknow, Uttar Pradesh",
+        "maskedAadhaar": "XXXX-XXXX-1383",
+        "verifiedAt": "2026-09-15T18:17:10.732Z",
+        "providerRef": "SANDBOX-UIDAI-1789496224954-081629",
+        "isSandbox": true
+      },
+      "kisanId": "KSN-UP-2024-8849",
+      "farmerIdNumber": "KSN-UP-2024-8849",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KSN-UP-2024-8849",
+        "farmerName": "Rajveer Singh",
+        "state": "Uttar Pradesh",
+        "district": "Lucknow",
+        "linkedMobile": "+91 ******1242",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "pmKisanStatus": "Active & DBT Linked ✓",
+        "registryDate": "15/04/2022",
+        "issuingAuthority": "Uttar Pradesh Department of Agriculture & Farmers Welfare",
+        "status": "Verified ✓",
+        "isSandbox": true,
+        "verificationType": "Government Farmer Registry (Sandbox Simulation)",
+        "verifiedAt": "2026-09-15T18:19:40.311Z"
+      },
+      "kycStatus": "Verified",
+      "kycSubmittedAt": "2026-09-15T18:19:44.178Z",
+      "kycRemarks": "Approved by District Procurement Officer"
     },
     {
       "crops": [],
@@ -1541,6 +1891,817 @@
       "_id": "9e829118-4639-455d-b593-517fbb47bc69",
       "createdAt": "2026-09-14T20:26:33.082Z",
       "updatedAt": "2026-09-14T20:26:33.082Z"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": false,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "name": "Registered Farmer",
+        "verifiedAt": "2026-09-15T17:44:03.463Z"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921"
+      },
+      "kisanId": "KSN-UP-2024-8849",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KSN-UP-2024-8849"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Registered Farmer",
+        "mobile": "9123456780",
+        "password": "$2b$12$CVIvKfCSna87gTRU73Q35u84CQEOn5.6MJ3PrnxQ7F7iPdwJ54qNO",
+        "state": "Uttar Pradesh",
+        "district": "Gorakhpur",
+        "_id": "4e5b2407-738a-4d1f-be91-38a2d1b830d0",
+        "createdAt": "2026-09-15T17:35:16.871Z",
+        "updatedAt": "2026-09-15T17:44:03.455Z",
+        "lastLogin": "2026-09-15T17:44:03.455Z"
+      },
+      "state": "Uttar Pradesh",
+      "district": "Gorakhpur",
+      "address": "",
+      "_id": "92bc8681-5268-43f4-9854-0f03578e9982",
+      "createdAt": "2026-09-15T17:35:17.185Z",
+      "updatedAt": "2026-09-15T19:08:12.954Z",
+      "aadhaarNumber": "XXXX-XXXX-5212",
+      "farmerIdNumber": "KSN-UP-2024-8849",
+      "kycSubmittedAt": "2026-09-15T17:44:03.480Z",
+      "kycRemarks": "Approved by District Procurement Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "name": "Harminder Singh",
+        "verifiedAt": "2026-09-15T19:01:43.287Z"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921"
+      },
+      "kisanId": "KSN-UP-2024-8849",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KSN-UP-2024-8849"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Harminder Singh",
+        "mobile": "9123456789",
+        "password": "$2b$12$pX.3nGYNUifdRYY6wWNL8u51wXyYbhdQPvyrHiaUn1HSgRQWvLHWi",
+        "state": "Uttar Pradesh",
+        "district": "Gorakhpur",
+        "_id": "91c3bef8-103d-435d-b9bd-7aa9822f097f",
+        "createdAt": "2026-09-15T18:57:23.474Z",
+        "updatedAt": "2026-09-15T19:01:43.279Z"
+      },
+      "state": "Uttar Pradesh",
+      "district": "Gorakhpur",
+      "address": "Vill. Pipraich",
+      "_id": "5b528af5-9f2e-4013-9ed0-d6961657414c",
+      "createdAt": "2026-09-15T19:01:43.282Z",
+      "updatedAt": "2026-09-15T19:01:43.609Z",
+      "aadhaarNumber": "XXXX-XXXX-5212",
+      "farmerIdNumber": "KSN-UP-2024-8849",
+      "kycSubmittedAt": "2026-09-15T19:01:43.299Z",
+      "kycRemarks": "Verified by District Procurement Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": false,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "maskedAadhaar": "XXXX-XXXX-7777",
+        "name": "Harpreet Singh (Amritsar)",
+        "district": "Amritsar",
+        "state": "Punjab"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-AMRITSAR-001",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-AMRITSAR-001",
+        "state": "Punjab",
+        "district": "Amritsar",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Pending",
+      "userId": "b27f2bc2-0acd-44ae-8cbd-f558b7560c5a",
+      "state": "Punjab",
+      "district": "Amritsar",
+      "address": "Golden Temple Road, Amritsar",
+      "_id": "73fb65ba-dbea-415f-a58a-49c8dc9303cf",
+      "createdAt": "2026-09-15T19:24:14.495Z",
+      "updatedAt": "2026-09-15T19:24:14.500Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-AMRITSAR-001",
+      "kycSubmittedAt": "2026-09-15T19:24:14.500Z"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": false,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "maskedAadhaar": "XXXX-XXXX-7777",
+        "name": "Harpreet Singh (Amritsar)",
+        "district": "Amritsar",
+        "state": "Punjab"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-AMRITSAR-001",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-AMRITSAR-001",
+        "state": "Punjab",
+        "district": "Amritsar",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Harpreet Singh (Amritsar)",
+        "mobile": "9546046583",
+        "password": "$2b$12$3e8VsY4z/EazSGF5o9kUY.dZLL9GEe7d19qQnyIex8cgOfR24b.ze",
+        "state": "Punjab",
+        "district": "Amritsar",
+        "_id": "70d40ff5-42c0-4f53-8aa5-86bd405f6623",
+        "createdAt": "2026-09-15T19:24:31.158Z",
+        "updatedAt": "2026-09-15T19:24:31.378Z"
+      },
+      "state": "Punjab",
+      "district": "Amritsar",
+      "address": "Golden Temple Road, Amritsar",
+      "_id": "fceb31fb-24d8-4de2-83e3-57bd20ff0ae8",
+      "createdAt": "2026-09-15T19:24:31.380Z",
+      "updatedAt": "2026-09-15T19:24:31.616Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-AMRITSAR-001",
+      "kycSubmittedAt": "2026-09-15T19:24:31.384Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": false,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "maskedAadhaar": "XXXX-XXXX-7777",
+        "name": "Gurpreet Singh (Gate Test)",
+        "district": "Ludhiana",
+        "state": "Punjab"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9296575560",
+        "password": "$2b$12$/Ys0w1xhuLP8KSF5rsDXIeYEp7pY/.O0r4EnJZ5Ztl9ADm8eKMeFC",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "a83f860a-b011-419b-9b24-8badab9f32af",
+        "createdAt": "2026-09-15T20:00:17.537Z",
+        "updatedAt": "2026-09-15T20:00:17.819Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "ac93d79f-3ee2-497e-b14e-c6f8866ae1b2",
+      "createdAt": "2026-09-15T20:00:17.821Z",
+      "updatedAt": "2026-09-15T20:00:18.059Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:00:17.825Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:00:36.158Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9789259635",
+        "password": "$2b$12$.z.FPBCjvMMzhO/A/Y1AUO3QjQBqtmGCXra4Zb4F/cdQwGcxfVphK",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "34fd3838-13d2-4f77-afe7-b7ad315ba27b",
+        "createdAt": "2026-09-15T20:00:35.930Z",
+        "updatedAt": "2026-09-15T20:00:36.154Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "7c08efde-ac63-4627-86bc-acf31cdef6e0",
+      "createdAt": "2026-09-15T20:00:36.156Z",
+      "updatedAt": "2026-09-15T20:00:36.389Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:00:36.161Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:00:48.600Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9913227707",
+        "password": "$2b$12$tGTHD2TjAtwX74oGuINum.b70GhxTfrqJvuSnmVO4OvYJ8iXDIjKC",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "fc43319f-63d2-4adb-9c5f-e588b9e56fdb",
+        "createdAt": "2026-09-15T20:00:48.371Z",
+        "updatedAt": "2026-09-15T20:00:48.596Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "b100c7d9-70b2-4c82-8eb9-b6eb70cbb3fa",
+      "createdAt": "2026-09-15T20:00:48.597Z",
+      "updatedAt": "2026-09-15T20:00:48.835Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:00:48.601Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:01:12.871Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9679076816",
+        "password": "$2b$12$z1MVzRWTjBRLcBZMFXq0vu8WSjbjxgwSHjR8hpiPekjfp2XzIhpxK",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "61384a14-9c90-440b-a68d-3e3cd3fd00c3",
+        "createdAt": "2026-09-15T20:01:12.643Z",
+        "updatedAt": "2026-09-15T20:01:12.866Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "2f69c276-54e4-4a8e-9139-1895078a6918",
+      "createdAt": "2026-09-15T20:01:12.868Z",
+      "updatedAt": "2026-09-15T20:01:13.116Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:01:12.872Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:01:39.883Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9132260999",
+        "password": "$2b$12$iZpu.lzXeUsoH9YSzOGOguXL2nNZ7NAVWQ0bbiCqhFoU.k7BWru5a",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "31d47c2b-15ed-4491-b25f-664677aaa1f2",
+        "createdAt": "2026-09-15T20:01:39.481Z",
+        "updatedAt": "2026-09-15T20:01:39.877Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "5cfee4e6-4e68-4e67-b6f7-8f2b65db3021",
+      "createdAt": "2026-09-15T20:01:39.879Z",
+      "updatedAt": "2026-09-15T20:01:40.330Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:01:39.886Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:02:17.508Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9621707368",
+        "password": "$2b$12$7G.Hx/gHDil33AjuJ4P9M.rTmVvOKXNZXRkzNstgiPpXBviXVWXqm",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "b6a00d21-3d0f-4fee-bf7c-45bcdd25b15b",
+        "createdAt": "2026-09-15T20:02:17.278Z",
+        "updatedAt": "2026-09-15T20:02:17.501Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "aa210e0c-95cd-4627-a985-4f507036599d",
+      "createdAt": "2026-09-15T20:02:17.504Z",
+      "updatedAt": "2026-09-15T20:02:17.750Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:02:17.509Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:02:52.270Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9537207392",
+        "password": "$2b$12$hHenjtaJUB0WlENNolQes.9AZ6j9hmRE5UfXO0CY9/ZW89NOaLdmu",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "cd437abb-3682-498d-866f-f5ef7b7c9683",
+        "createdAt": "2026-09-15T20:02:52.040Z",
+        "updatedAt": "2026-09-15T20:02:52.264Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "f0e1ed45-4131-4ecd-848c-446134fe7f8a",
+      "createdAt": "2026-09-15T20:02:52.267Z",
+      "updatedAt": "2026-09-15T20:02:52.511Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:02:52.272Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:03:04.040Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9934284726",
+        "password": "$2b$12$b/3tYL0BBlphJI5fP4acpuHCAMpHCGO5TYe.bIUvRJNk7KeOBDJnG",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "4d989e5c-26a8-40df-a835-0eb5b1ededc6",
+        "createdAt": "2026-09-15T20:03:03.756Z",
+        "updatedAt": "2026-09-15T20:03:04.035Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "dd3fb21f-8a94-4cfd-9f69-9aa694f1efdd",
+      "createdAt": "2026-09-15T20:03:04.037Z",
+      "updatedAt": "2026-09-15T20:03:04.274Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:03:04.042Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:03:16.517Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9555920439",
+        "password": "$2b$12$jwM03kzR4wjo6ptjiv8WwuEfInuW5w1Onbtanh9xW9I252kVB5Ac2",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "29912ea0-aa12-49d4-90f2-69fce6319699",
+        "createdAt": "2026-09-15T20:03:16.288Z",
+        "updatedAt": "2026-09-15T20:03:16.512Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "3b632a3e-0004-4b6a-9e6e-3ff1cbae5c6b",
+      "createdAt": "2026-09-15T20:03:16.514Z",
+      "updatedAt": "2026-09-15T20:03:16.753Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:03:16.519Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:03:31.075Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9279588695",
+        "password": "$2b$12$JIRoWGUqJfX.cgJcQ1V1ouDOL2jQ/yKqXW90H40dH5zB1oArryrV.",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "cbd2c68a-5b4c-4530-8ac4-5e6e0251014d",
+        "createdAt": "2026-09-15T20:03:30.845Z",
+        "updatedAt": "2026-09-15T20:03:31.071Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "9d9ac980-5cbd-4903-ba58-762559231609",
+      "createdAt": "2026-09-15T20:03:31.073Z",
+      "updatedAt": "2026-09-15T20:03:31.318Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:03:31.078Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T20:03:53.413Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9696317499",
+        "password": "$2b$12$Kuzw01Nub0wM6PnEJKe0E.alU7vbCa.iC9WTCbUFwrCsytynkC4W2",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+        "createdAt": "2026-09-15T20:03:53.185Z",
+        "updatedAt": "2026-09-15T20:03:53.407Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "e6aaace5-765f-43ec-bc21-1888dc60328d",
+      "createdAt": "2026-09-15T20:03:53.410Z",
+      "updatedAt": "2026-09-15T20:03:53.659Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T20:03:53.416Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
+    },
+    {
+      "crops": [],
+      "isProfileComplete": true,
+      "aadhaarVerified": true,
+      "aadhaarSeedingStatus": "Seeded",
+      "npciStatus": "Active / DBT Enabled",
+      "aadhaarDetails": {
+        "verifiedAt": "2026-09-15T21:02:02.150Z",
+        "name": "Gurpreet Singh (Gate Test)"
+      },
+      "bankDetails": {
+        "bankName": "State Bank of India",
+        "accountMasked": "****4921",
+        "ifsc": "SBIN0001234",
+        "seededDate": "14/08/2021",
+        "dbtStatus": "Active & Linked"
+      },
+      "kisanId": "KID-LDH-999",
+      "kisanIdVerified": true,
+      "kisanDetails": {
+        "kisanId": "KID-LDH-999",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "landHolding": "4.25 Acres (Verified in Farmer Registry)",
+        "status": "Active / Seeded"
+      },
+      "kycStatus": "Verified",
+      "userId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9799369651",
+        "password": "$2b$12$HA37YyB3Dxb0Ik9vCX0qnuqJ/OiFTmO7COwVeyLNRIxOxrH70YRW.",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+        "createdAt": "2026-09-15T21:02:01.923Z",
+        "updatedAt": "2026-09-15T21:02:02.144Z"
+      },
+      "state": "Punjab",
+      "district": "Ludhiana",
+      "address": "GT Road, Ludhiana",
+      "_id": "aa23f187-ff21-473c-8a9c-f55d551c8c97",
+      "createdAt": "2026-09-15T21:02:02.146Z",
+      "updatedAt": "2026-09-15T21:02:02.388Z",
+      "aadhaarNumber": "XXXX-XXXX-7777",
+      "farmerIdNumber": "KID-LDH-999",
+      "kycSubmittedAt": "2026-09-15T21:02:02.152Z",
+      "kycRemarks": "Approved by STATE_OFFICER Officer"
     }
   ],
   "slots": [
@@ -1929,7 +3090,7 @@
       "updatedAt": "2026-09-13T22:05:59.775Z"
     },
     {
-      "booked": 1,
+      "booked": 13,
       "status": "available",
       "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
       "date": "2026-09-14T18:30:00.000Z",
@@ -1938,7 +3099,7 @@
       "capacity": 15,
       "_id": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
       "createdAt": "2026-09-13T22:05:59.776Z",
-      "updatedAt": "2026-09-14T09:25:16.424Z"
+      "updatedAt": "2026-09-15T21:02:02.405Z"
     },
     {
       "booked": 0,
@@ -4637,10 +5798,25 @@
       "updatedAt": "2026-09-13T22:06:00.119Z"
     },
     {
-      "status": "booked",
+      "status": "arrived",
       "unit": "quintal",
       "bookingId": "BK-MU0Q0V52-4XQZ",
-      "farmerId": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
+      "farmerId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Rajveer Singh",
+        "mobile": "8005011242",
+        "email": "ankurr@gmail.com",
+        "password": "$2b$12$bX.GDhdY54FmIxP94JY7j.k1Nuw4Mozrjv0vwjbYn1rPD4kwVqQZ.",
+        "state": "Uttar Pradesh",
+        "district": "Lucknow",
+        "_id": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
+        "createdAt": "2026-09-14T03:45:07.962Z",
+        "updatedAt": "2026-09-15T19:09:38.279Z",
+        "lastLogin": "2026-09-15T19:09:38.279Z"
+      },
       "centreId": "5d594c35-f7a9-4c07-adbe-1311c8879021",
       "slotId": "560ce843-7ec1-4840-be23-363ebb1681e3",
       "cropId": "cf3c05bc-9b4c-48c2-9854-bc9801335e3c",
@@ -4652,7 +5828,7 @@
       "slotEndTime": "10:00",
       "_id": "304b299b-27cb-4b05-bbfa-08102dd6feee",
       "createdAt": "2026-09-14T04:06:30.566Z",
-      "updatedAt": "2026-09-14T04:06:30.566Z"
+      "updatedAt": "2026-09-15T20:08:02.111Z"
     },
     {
       "status": "booked",
@@ -4773,6 +5949,250 @@
       "_id": "7416f1ea-53a8-4948-87bf-c7044627e237",
       "createdAt": "2026-09-14T09:25:16.422Z",
       "updatedAt": "2026-09-14T09:25:16.422Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU31FZ2G-LNWM",
+      "farmerId": "91c3bef8-103d-435d-b9bd-7aa9822f097f",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "cropName": "Chickpea (Gram)",
+      "quantity": 10,
+      "token": "F002",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "013a30e9-6fb5-4b7d-9235-3f0fd42c51ac",
+      "createdAt": "2026-09-15T19:01:43.624Z",
+      "updatedAt": "2026-09-15T19:01:43.624Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33JOZ4-QDR9",
+      "farmerId": "34fd3838-13d2-4f77-afe7-b7ad315ba27b",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F003",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "ecda2672-3e26-4717-91fc-61071c524632",
+      "createdAt": "2026-09-15T20:00:36.400Z",
+      "updatedAt": "2026-09-15T20:00:36.400Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33JYKU-V7K3",
+      "farmerId": "fc43319f-63d2-4adb-9c5f-e588b9e56fdb",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F004",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "e2f53bad-83fc-4015-90a0-4c81dafa8dd9",
+      "createdAt": "2026-09-15T20:00:48.846Z",
+      "updatedAt": "2026-09-15T20:00:48.846Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33KHBB-U5W2",
+      "farmerId": "61384a14-9c90-440b-a68d-3e3cd3fd00c3",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F005",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "52d4265c-6737-40a7-9502-b857cac4554e",
+      "createdAt": "2026-09-15T20:01:13.127Z",
+      "updatedAt": "2026-09-15T20:01:13.127Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33L2BM-FU3Y",
+      "farmerId": "31d47c2b-15ed-4491-b25f-664677aaa1f2",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F006",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "cc8ee317-d642-4267-a5f7-0ce4a8a9aed8",
+      "createdAt": "2026-09-15T20:01:40.354Z",
+      "updatedAt": "2026-09-15T20:01:40.354Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33LV6Q-E046",
+      "farmerId": "b6a00d21-3d0f-4fee-bf7c-45bcdd25b15b",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F007",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "dc340ae7-ed7b-40c4-af83-171763e3e1bc",
+      "createdAt": "2026-09-15T20:02:17.762Z",
+      "updatedAt": "2026-09-15T20:02:17.762Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33MM0C-08Y8",
+      "farmerId": "cd437abb-3682-498d-866f-f5ef7b7c9683",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F008",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "ab40205d-f9a0-4fde-ae14-7adcc19322c4",
+      "createdAt": "2026-09-15T20:02:52.524Z",
+      "updatedAt": "2026-09-15T20:02:52.524Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33MV32-Y7KM",
+      "farmerId": "4d989e5c-26a8-40df-a835-0eb5b1ededc6",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F009",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "0ad8a682-093a-4fc1-9177-b226eac59bb1",
+      "createdAt": "2026-09-15T20:03:04.286Z",
+      "updatedAt": "2026-09-15T20:03:04.286Z"
+    },
+    {
+      "status": "booked",
+      "unit": "quintal",
+      "bookingId": "BK-MU33N4PP-KAF2",
+      "farmerId": "29912ea0-aa12-49d4-90f2-69fce6319699",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F010",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "71788fd1-ff99-4007-9910-a07dd1b11e62",
+      "createdAt": "2026-09-15T20:03:16.765Z",
+      "updatedAt": "2026-09-15T20:03:16.765Z"
+    },
+    {
+      "status": "arrived",
+      "unit": "quintal",
+      "bookingId": "BK-MU33NFYB-5QJT",
+      "farmerId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9279588695",
+        "password": "$2b$12$JIRoWGUqJfX.cgJcQ1V1ouDOL2jQ/yKqXW90H40dH5zB1oArryrV.",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "cbd2c68a-5b4c-4530-8ac4-5e6e0251014d",
+        "createdAt": "2026-09-15T20:03:30.845Z",
+        "updatedAt": "2026-09-15T20:03:31.071Z"
+      },
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F011",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "482780bf-048e-4d04-8207-0dae17d07257",
+      "createdAt": "2026-09-15T20:03:31.331Z",
+      "updatedAt": "2026-09-15T20:03:31.360Z"
+    },
+    {
+      "status": "arrived",
+      "unit": "quintal",
+      "bookingId": "BK-MU33NX6X-VVV2",
+      "farmerId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9696317499",
+        "password": "$2b$12$Kuzw01Nub0wM6PnEJKe0E.alU7vbCa.iC9WTCbUFwrCsytynkC4W2",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+        "createdAt": "2026-09-15T20:03:53.185Z",
+        "updatedAt": "2026-09-15T20:03:53.407Z"
+      },
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F012",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "5784d0e2-71aa-4177-94a8-6bf3cc125e20",
+      "createdAt": "2026-09-15T20:03:53.673Z",
+      "updatedAt": "2026-09-15T20:03:53.704Z"
+    },
+    {
+      "status": "arrived",
+      "unit": "quintal",
+      "bookingId": "BK-MU35QP42-8ML8",
+      "farmerId": {
+        "role": "farmer",
+        "isActive": true,
+        "level": 7,
+        "mustChangePassword": false,
+        "name": "Gurpreet Singh (Gate Test)",
+        "mobile": "9799369651",
+        "password": "$2b$12$HA37YyB3Dxb0Ik9vCX0qnuqJ/OiFTmO7COwVeyLNRIxOxrH70YRW.",
+        "state": "Punjab",
+        "district": "Ludhiana",
+        "_id": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+        "createdAt": "2026-09-15T21:02:01.923Z",
+        "updatedAt": "2026-09-15T21:02:02.144Z"
+      },
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "cropId": "00dd29b7-46b5-41e4-9916-916cc27b6c44",
+      "quantity": 45,
+      "token": "F013",
+      "bookingDate": "2026-09-14T18:30:00.000Z",
+      "slotStartTime": "08:30",
+      "slotEndTime": "09:30",
+      "_id": "d289b28f-6505-4a4a-897e-a05e1f8f10f8",
+      "createdAt": "2026-09-15T21:02:02.402Z",
+      "updatedAt": "2026-09-15T21:02:02.437Z"
     }
   ],
   "queue_entries": [
@@ -5009,7 +6429,7 @@
       "updatedAt": "2026-09-13T22:06:00.123Z"
     },
     {
-      "status": "waiting",
+      "status": "called",
       "bookingId": "304b299b-27cb-4b05-bbfa-08102dd6feee",
       "farmerId": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
       "centreId": "5d594c35-f7a9-4c07-adbe-1311c8879021",
@@ -5019,7 +6439,8 @@
       "queueDate": "2026-09-14T18:30:00.000Z",
       "_id": "32f6d827-94d4-41ae-89f4-ccbde85b4619",
       "createdAt": "2026-09-14T04:06:30.577Z",
-      "updatedAt": "2026-09-14T04:06:30.577Z"
+      "updatedAt": "2026-09-15T20:08:02.115Z",
+      "calledAt": "2026-09-15T20:08:02.115Z"
     },
     {
       "status": "waiting",
@@ -5085,6 +6506,165 @@
       "_id": "3984ed91-d03e-44e6-8f64-b6b815332623",
       "createdAt": "2026-09-14T09:25:16.426Z",
       "updatedAt": "2026-09-14T09:25:16.426Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "013a30e9-6fb5-4b7d-9235-3f0fd42c51ac",
+      "farmerId": "91c3bef8-103d-435d-b9bd-7aa9822f097f",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F002",
+      "position": 2,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "cdf36b7f-0796-4c94-bab3-8019226a9ea2",
+      "createdAt": "2026-09-15T19:01:43.628Z",
+      "updatedAt": "2026-09-15T19:01:43.628Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "ecda2672-3e26-4717-91fc-61071c524632",
+      "farmerId": "34fd3838-13d2-4f77-afe7-b7ad315ba27b",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F003",
+      "position": 3,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "1522f0bd-74ce-4574-abfd-2ed41e73471c",
+      "createdAt": "2026-09-15T20:00:36.404Z",
+      "updatedAt": "2026-09-15T20:00:36.404Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "e2f53bad-83fc-4015-90a0-4c81dafa8dd9",
+      "farmerId": "fc43319f-63d2-4adb-9c5f-e588b9e56fdb",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F004",
+      "position": 4,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "16d7233c-9f0f-46b1-a2ef-de350e4a4310",
+      "createdAt": "2026-09-15T20:00:48.849Z",
+      "updatedAt": "2026-09-15T20:00:48.849Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "52d4265c-6737-40a7-9502-b857cac4554e",
+      "farmerId": "61384a14-9c90-440b-a68d-3e3cd3fd00c3",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F005",
+      "position": 5,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "43073bbd-b0c2-46da-a283-40c30f4d711a",
+      "createdAt": "2026-09-15T20:01:13.130Z",
+      "updatedAt": "2026-09-15T20:01:13.131Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "cc8ee317-d642-4267-a5f7-0ce4a8a9aed8",
+      "farmerId": "31d47c2b-15ed-4491-b25f-664677aaa1f2",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F006",
+      "position": 6,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "e8f01c78-ab80-4d20-8606-ccfe37103745",
+      "createdAt": "2026-09-15T20:01:40.360Z",
+      "updatedAt": "2026-09-15T20:01:40.360Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "dc340ae7-ed7b-40c4-af83-171763e3e1bc",
+      "farmerId": "b6a00d21-3d0f-4fee-bf7c-45bcdd25b15b",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F007",
+      "position": 7,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "8a357bc6-8a7e-4539-9b3b-650eb1f405b4",
+      "createdAt": "2026-09-15T20:02:17.766Z",
+      "updatedAt": "2026-09-15T20:02:17.766Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "ab40205d-f9a0-4fde-ae14-7adcc19322c4",
+      "farmerId": "cd437abb-3682-498d-866f-f5ef7b7c9683",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F008",
+      "position": 8,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "70028518-a401-4023-8292-6b7574c9e85a",
+      "createdAt": "2026-09-15T20:02:52.527Z",
+      "updatedAt": "2026-09-15T20:02:52.527Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "0ad8a682-093a-4fc1-9177-b226eac59bb1",
+      "farmerId": "4d989e5c-26a8-40df-a835-0eb5b1ededc6",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F009",
+      "position": 9,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "66deb065-5a0b-4c36-8f9f-5db41454e98e",
+      "createdAt": "2026-09-15T20:03:04.289Z",
+      "updatedAt": "2026-09-15T20:03:04.289Z"
+    },
+    {
+      "status": "waiting",
+      "bookingId": "71788fd1-ff99-4007-9910-a07dd1b11e62",
+      "farmerId": "29912ea0-aa12-49d4-90f2-69fce6319699",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F010",
+      "position": 10,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "825e9a54-fd5f-4050-bdcc-58f2d1b92f08",
+      "createdAt": "2026-09-15T20:03:16.769Z",
+      "updatedAt": "2026-09-15T20:03:16.769Z"
+    },
+    {
+      "status": "called",
+      "bookingId": "482780bf-048e-4d04-8207-0dae17d07257",
+      "farmerId": "cbd2c68a-5b4c-4530-8ac4-5e6e0251014d",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F011",
+      "position": 11,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "1d4955ee-aa96-4922-a38a-af060cbe1572",
+      "createdAt": "2026-09-15T20:03:31.334Z",
+      "updatedAt": "2026-09-15T20:03:31.361Z",
+      "calledAt": "2026-09-15T20:03:31.361Z"
+    },
+    {
+      "status": "called",
+      "bookingId": "5784d0e2-71aa-4177-94a8-6bf3cc125e20",
+      "farmerId": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F012",
+      "position": 12,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "6359a342-2143-48aa-b9b5-c49dfa7e7016",
+      "createdAt": "2026-09-15T20:03:53.676Z",
+      "updatedAt": "2026-09-15T20:03:53.706Z",
+      "calledAt": "2026-09-15T20:03:53.706Z"
+    },
+    {
+      "status": "called",
+      "bookingId": "d289b28f-6505-4a4a-897e-a05e1f8f10f8",
+      "farmerId": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+      "centreId": "daa085bd-6b06-49ea-b3e9-01788d0bd42b",
+      "slotId": "f2e1d592-f159-4ae2-8e11-b2751891aa35",
+      "token": "F013",
+      "position": 13,
+      "queueDate": "2026-09-14T18:30:00.000Z",
+      "_id": "03c64a89-6b77-4150-9e97-b6492f22cad8",
+      "createdAt": "2026-09-15T21:02:02.407Z",
+      "updatedAt": "2026-09-15T21:02:02.439Z",
+      "calledAt": "2026-09-15T21:02:02.439Z"
     }
   ],
   "procurements": [
@@ -5657,7 +7237,7 @@
       "updatedAt": "2026-09-13T22:06:00.125Z"
     },
     {
-      "isRead": false,
+      "isRead": true,
       "deliveryStatus": {
         "inApp": true,
         "sms": false,
@@ -5673,10 +7253,10 @@
       },
       "_id": "664b7c6e-eeb0-4940-882a-dff7de6dee96",
       "createdAt": "2026-09-14T04:06:30.621Z",
-      "updatedAt": "2026-09-14T04:06:30.621Z"
+      "updatedAt": "2026-09-15T19:04:46.274Z"
     },
     {
-      "isRead": false,
+      "isRead": true,
       "deliveryStatus": {
         "inApp": true,
         "sms": false,
@@ -5692,7 +7272,7 @@
       },
       "_id": "26f62c13-2b5d-4b30-9f22-72e07a76be3b",
       "createdAt": "2026-09-14T06:43:01.055Z",
-      "updatedAt": "2026-09-14T06:43:01.055Z"
+      "updatedAt": "2026-09-15T19:04:47.416Z"
     },
     {
       "isRead": true,
@@ -5714,7 +7294,7 @@
       "updatedAt": "2026-09-14T08:57:01.634Z"
     },
     {
-      "isRead": false,
+      "isRead": true,
       "deliveryStatus": {
         "inApp": true,
         "sms": false,
@@ -5730,10 +7310,10 @@
       },
       "_id": "c0834706-dca0-4aac-963c-92217ad703b5",
       "createdAt": "2026-09-14T09:03:12.564Z",
-      "updatedAt": "2026-09-14T09:03:12.564Z"
+      "updatedAt": "2026-09-15T10:41:07.149Z"
     },
     {
-      "isRead": false,
+      "isRead": true,
       "deliveryStatus": {
         "inApp": true,
         "sms": false,
@@ -5749,10 +7329,10 @@
       },
       "_id": "9e0c6d13-2f22-49e7-9968-7c4d86a31365",
       "createdAt": "2026-09-14T09:06:08.346Z",
-      "updatedAt": "2026-09-14T09:06:08.347Z"
+      "updatedAt": "2026-09-15T10:41:05.600Z"
     },
     {
-      "isRead": false,
+      "isRead": true,
       "deliveryStatus": {
         "inApp": true,
         "sms": false,
@@ -5768,10 +7348,10 @@
       },
       "_id": "26b0e817-72c3-4cd5-a67c-95eaf5fa349e",
       "createdAt": "2026-09-14T09:21:39.769Z",
-      "updatedAt": "2026-09-14T09:21:39.769Z"
+      "updatedAt": "2026-09-15T10:41:03.305Z"
     },
     {
-      "isRead": false,
+      "isRead": true,
       "deliveryStatus": {
         "inApp": true,
         "sms": false,
@@ -5787,7 +7367,589 @@
       },
       "_id": "766e3f7e-d0ea-47aa-8b4f-3e316391ebd7",
       "createdAt": "2026-09-14T09:25:16.429Z",
-      "updatedAt": "2026-09-14T09:25:16.429Z"
+      "updatedAt": "2026-09-15T10:41:01.042Z"
+    },
+    {
+      "isRead": true,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "9f05ae12-a2b8-4dbb-a249-db25afd195e3",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Verified by District Procurement Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "201e1068-6004-4d60-8f71-7bab758878bf",
+      "createdAt": "2026-09-15T19:00:30.319Z",
+      "updatedAt": "2026-09-15T20:50:14.419Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "91c3bef8-103d-435d-b9bd-7aa9822f097f",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Verified by District Procurement Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "b4e12d33-0f8e-4c2b-b5a6-7d80aa05b543",
+      "createdAt": "2026-09-15T19:01:43.611Z",
+      "updatedAt": "2026-09-15T19:01:43.611Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "91c3bef8-103d-435d-b9bd-7aa9822f097f",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F002.",
+      "metadata": {
+        "bookingId": "013a30e9-6fb5-4b7d-9235-3f0fd42c51ac",
+        "token": "F002"
+      },
+      "_id": "0b25765c-7245-43fa-9fdd-d352ea026d3e",
+      "createdAt": "2026-09-15T19:01:43.640Z",
+      "updatedAt": "2026-09-15T19:01:43.640Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by District Procurement Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "36b24013-d709-43c6-be8d-e10a1bf96b4f",
+      "createdAt": "2026-09-15T19:07:54.925Z",
+      "updatedAt": "2026-09-15T19:07:54.925Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "4e5b2407-738a-4d1f-be91-38a2d1b830d0",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by District Procurement Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "994b9358-d0ee-4b4b-b096-6eb6fe7ff5c4",
+      "createdAt": "2026-09-15T19:08:12.960Z",
+      "updatedAt": "2026-09-15T19:08:12.960Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "70d40ff5-42c0-4f53-8aa5-86bd405f6623",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "5e11f915-bc60-4a1b-80bb-c7e5758660bc",
+      "createdAt": "2026-09-15T19:24:31.618Z",
+      "updatedAt": "2026-09-15T19:24:31.618Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "a83f860a-b011-419b-9b24-8badab9f32af",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "211106ab-4ad8-4f97-a213-379fdd771412",
+      "createdAt": "2026-09-15T20:00:18.061Z",
+      "updatedAt": "2026-09-15T20:00:18.061Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "34fd3838-13d2-4f77-afe7-b7ad315ba27b",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "cdd00ec5-8959-4628-a605-6e795c6aadeb",
+      "createdAt": "2026-09-15T20:00:36.390Z",
+      "updatedAt": "2026-09-15T20:00:36.390Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "34fd3838-13d2-4f77-afe7-b7ad315ba27b",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F003.",
+      "metadata": {
+        "bookingId": "ecda2672-3e26-4717-91fc-61071c524632",
+        "token": "F003"
+      },
+      "_id": "5543c3a3-f6fc-4566-9539-7bc78d8d3ec3",
+      "createdAt": "2026-09-15T20:00:36.418Z",
+      "updatedAt": "2026-09-15T20:00:36.418Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "fc43319f-63d2-4adb-9c5f-e588b9e56fdb",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "a6785a95-37ce-4976-9c7c-9107d3e455d6",
+      "createdAt": "2026-09-15T20:00:48.836Z",
+      "updatedAt": "2026-09-15T20:00:48.836Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "fc43319f-63d2-4adb-9c5f-e588b9e56fdb",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F004.",
+      "metadata": {
+        "bookingId": "e2f53bad-83fc-4015-90a0-4c81dafa8dd9",
+        "token": "F004"
+      },
+      "_id": "ab851dbb-2e08-4773-bd75-59783146a8d6",
+      "createdAt": "2026-09-15T20:00:48.851Z",
+      "updatedAt": "2026-09-15T20:00:48.851Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "61384a14-9c90-440b-a68d-3e3cd3fd00c3",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "7b3df191-0912-45ce-b64d-bb8ffbe348c7",
+      "createdAt": "2026-09-15T20:01:13.118Z",
+      "updatedAt": "2026-09-15T20:01:13.118Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "61384a14-9c90-440b-a68d-3e3cd3fd00c3",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F005.",
+      "metadata": {
+        "bookingId": "52d4265c-6737-40a7-9502-b857cac4554e",
+        "token": "F005"
+      },
+      "_id": "43d6a67f-37dc-4570-8940-ad376b30d6e7",
+      "createdAt": "2026-09-15T20:01:13.143Z",
+      "updatedAt": "2026-09-15T20:01:13.144Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "31d47c2b-15ed-4491-b25f-664677aaa1f2",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "382a4bc0-7259-4f75-807a-ae837e9ee103",
+      "createdAt": "2026-09-15T20:01:40.334Z",
+      "updatedAt": "2026-09-15T20:01:40.334Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "31d47c2b-15ed-4491-b25f-664677aaa1f2",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F006.",
+      "metadata": {
+        "bookingId": "cc8ee317-d642-4267-a5f7-0ce4a8a9aed8",
+        "token": "F006"
+      },
+      "_id": "dba0195f-14b9-485d-af17-309b192ac100",
+      "createdAt": "2026-09-15T20:01:40.386Z",
+      "updatedAt": "2026-09-15T20:01:40.386Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "b6a00d21-3d0f-4fee-bf7c-45bcdd25b15b",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "4a4dcf07-0dd4-4e18-8731-5ab5bd7e19a0",
+      "createdAt": "2026-09-15T20:02:17.752Z",
+      "updatedAt": "2026-09-15T20:02:17.752Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "b6a00d21-3d0f-4fee-bf7c-45bcdd25b15b",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F007.",
+      "metadata": {
+        "bookingId": "dc340ae7-ed7b-40c4-af83-171763e3e1bc",
+        "token": "F007"
+      },
+      "_id": "2a0918cc-b75b-40a6-8ac7-124bb634765e",
+      "createdAt": "2026-09-15T20:02:17.778Z",
+      "updatedAt": "2026-09-15T20:02:17.778Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "cd437abb-3682-498d-866f-f5ef7b7c9683",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "cbd08956-28c7-45c6-89df-aa30f52301a8",
+      "createdAt": "2026-09-15T20:02:52.513Z",
+      "updatedAt": "2026-09-15T20:02:52.513Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "cd437abb-3682-498d-866f-f5ef7b7c9683",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F008.",
+      "metadata": {
+        "bookingId": "ab40205d-f9a0-4fde-ae14-7adcc19322c4",
+        "token": "F008"
+      },
+      "_id": "2c4b608d-6022-4ae2-bf89-c14fdbcbb540",
+      "createdAt": "2026-09-15T20:02:52.542Z",
+      "updatedAt": "2026-09-15T20:02:52.542Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "4d989e5c-26a8-40df-a835-0eb5b1ededc6",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "42459a61-a053-45f4-a815-12fd52395c56",
+      "createdAt": "2026-09-15T20:03:04.276Z",
+      "updatedAt": "2026-09-15T20:03:04.276Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "4d989e5c-26a8-40df-a835-0eb5b1ededc6",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F009.",
+      "metadata": {
+        "bookingId": "0ad8a682-093a-4fc1-9177-b226eac59bb1",
+        "token": "F009"
+      },
+      "_id": "19b289a7-2a07-4d98-a286-2a49d76ec7c6",
+      "createdAt": "2026-09-15T20:03:04.291Z",
+      "updatedAt": "2026-09-15T20:03:04.291Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "29912ea0-aa12-49d4-90f2-69fce6319699",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "67c2367e-96c3-4df2-9e7f-ff41c3202fc3",
+      "createdAt": "2026-09-15T20:03:16.755Z",
+      "updatedAt": "2026-09-15T20:03:16.755Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "29912ea0-aa12-49d4-90f2-69fce6319699",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F010.",
+      "metadata": {
+        "bookingId": "71788fd1-ff99-4007-9910-a07dd1b11e62",
+        "token": "F010"
+      },
+      "_id": "2a72ab41-ff3e-49fc-9f66-39ac725406df",
+      "createdAt": "2026-09-15T20:03:16.786Z",
+      "updatedAt": "2026-09-15T20:03:16.786Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "cbd2c68a-5b4c-4530-8ac4-5e6e0251014d",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "44764489-8004-4732-9657-abc3c09d429f",
+      "createdAt": "2026-09-15T20:03:31.320Z",
+      "updatedAt": "2026-09-15T20:03:31.320Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "cbd2c68a-5b4c-4530-8ac4-5e6e0251014d",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F011.",
+      "metadata": {
+        "bookingId": "482780bf-048e-4d04-8207-0dae17d07257",
+        "token": "F011"
+      },
+      "_id": "0144ec23-7c52-494d-82e1-9271cfd34292",
+      "createdAt": "2026-09-15T20:03:31.348Z",
+      "updatedAt": "2026-09-15T20:03:31.348Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "0dc6a8db-de62-469b-ab43-1f662afdb56f",
+      "createdAt": "2026-09-15T20:03:53.661Z",
+      "updatedAt": "2026-09-15T20:03:53.661Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F012.",
+      "metadata": {
+        "bookingId": "5784d0e2-71aa-4177-94a8-6bf3cc125e20",
+        "token": "F012"
+      },
+      "_id": "ed52fb7d-97c8-46c2-b475-fd70c710fb22",
+      "createdAt": "2026-09-15T20:03:53.690Z",
+      "updatedAt": "2026-09-15T20:03:53.690Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "d4ffe33f-b2ff-429d-92fc-84449ebc83b0",
+      "type": "GATE_ENTRY_GRANTED",
+      "title": "Mandi Gate Entry Verified!",
+      "message": "Your token F012 has been verified at Mandi Gate. Please proceed to the quality check area.",
+      "metadata": {},
+      "_id": "adace20a-1044-4552-a2e3-de7f5a0b7eaf",
+      "createdAt": "2026-09-15T20:03:53.708Z",
+      "updatedAt": "2026-09-15T20:03:53.708Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
+      "type": "GATE_ENTRY_GRANTED",
+      "title": "Mandi Gate Entry Verified!",
+      "message": "Your token F001 has been verified at Mandi Gate. Please proceed to the quality check area.",
+      "metadata": {},
+      "_id": "43825d4e-3f04-4fc5-9ed2-14690ba3c7fe",
+      "createdAt": "2026-09-15T20:08:02.119Z",
+      "updatedAt": "2026-09-15T20:08:02.119Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+      "type": "kyc_approved",
+      "title": "KYC Application Approved ✓",
+      "message": "Your KYC application has been APPROVED by the District Procurement Officer. Remarks: Approved by STATE_OFFICER Officer You can now book procurement slots!",
+      "metadata": {
+        "status": "Verified"
+      },
+      "_id": "55868185-fb2b-4ccf-9fd7-f7a69597dc9f",
+      "createdAt": "2026-09-15T21:02:02.392Z",
+      "updatedAt": "2026-09-15T21:02:02.392Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+      "type": "booking_confirmed",
+      "title": "Booking Confirmed ✓",
+      "message": "Your slot has been booked for 15/9/2026 at 08:30. Your token number is F013.",
+      "metadata": {
+        "bookingId": "d289b28f-6505-4a4a-897e-a05e1f8f10f8",
+        "token": "F013"
+      },
+      "_id": "927353f4-4f23-4e12-bd8b-f264b6593a32",
+      "createdAt": "2026-09-15T21:02:02.422Z",
+      "updatedAt": "2026-09-15T21:02:02.422Z"
+    },
+    {
+      "isRead": false,
+      "deliveryStatus": {
+        "inApp": true,
+        "sms": false,
+        "push": false
+      },
+      "userId": "a46a6beb-4657-4e92-a745-9dd102ee0a43",
+      "type": "GATE_ENTRY_GRANTED",
+      "title": "Mandi Gate Entry Verified!",
+      "message": "Your token F013 has been verified at Mandi Gate. Please proceed to the quality check area.",
+      "metadata": {},
+      "_id": "89ae74bc-3940-4c06-bda3-334654c1538c",
+      "createdAt": "2026-09-15T21:02:02.441Z",
+      "updatedAt": "2026-09-15T21:02:02.441Z"
     }
   ]
 }

@@ -408,8 +408,15 @@ class PostgresModel {
     return { deletedCount: items.length };
   }
   async _update(filter, update, options = {}) {
-    const document = (await this._all()).find((item) => matches(item, filter));
-    if (!document) return null;
+    let document = (await this._all()).find((item) => matches(item, filter));
+    if (!document) {
+      if (options && options.upsert) {
+        const createData = { ...filter };
+        applyUpdate(createData, update);
+        return this.create(createData);
+      }
+      return null;
+    }
     applyUpdate(document, update);
     await document.save();
     return document;

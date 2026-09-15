@@ -7,6 +7,7 @@ const {
   ROLES, ROLE_LEVELS, ROLE_LABELS, ROLE_ID_PREFIX,
   CAN_CREATE, DEFAULT_PASSWORD, canCreate, isOfficerRole,
 } = require('../utils/roleHierarchy');
+const { assertJurisdictionAccess, filterByJurisdiction } = require('../utils/jurisdiction');
 
 /**
  * Auto-generate a unique Employee ID.
@@ -93,10 +94,17 @@ const createSubordinate = async (req, res, next) => {
     // ── Generate Employee ID ───────────────────────────
     const employeeId = await nextEmployeeId(targetRole, locationCode);
 
-    // ── Inherit location scope from creator ────────────
+    // ── Inherit & Enforce location scope from creator ──
     const userState = state || creator.state;
     const userDistrict = district || creator.district;
     const userCentreId = centreId || creator.centreId;
+
+    // Strict Jurisdiction Check: Cannot create officer outside creator's territory
+    assertJurisdictionAccess(creator, {
+      state: userState,
+      district: userDistrict,
+      centreId: userCentreId,
+    });
 
     // ── Create user ────────────────────────────────────
     const user = await User.create({

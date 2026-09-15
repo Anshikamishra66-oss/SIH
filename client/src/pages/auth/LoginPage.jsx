@@ -16,6 +16,7 @@ const LoginPage = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [currentDemoOtp, setCurrentDemoOtp] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -32,7 +33,7 @@ const LoginPage = () => {
         procurement_officer: '/officer/dashboard',
         quality_staff: '/officer/dashboard',
         data_staff: '/officer/dashboard',
-        gate_staff: '/officer/dashboard',
+        gate_staff: '/officer/gate-entry',
         centre_head: '/officer/dashboard',
         district_officer: '/admin/dashboard',
         state_officer: '/admin/dashboard',
@@ -62,6 +63,8 @@ const LoginPage = () => {
     try {
       const res = await authService.sendOtp({ mobile: form.mobile });
       setOtpSent(true);
+      const demo = res.data?.data?.demoOtp;
+      if (demo) setCurrentDemoOtp(demo);
       toast.success(res.data.message || `OTP dispatched to +91 ${form.mobile}`);
       setCountdown(res.data.data?.resendCooldown || 60);
     } catch (err) {
@@ -123,7 +126,7 @@ const LoginPage = () => {
           procurement_officer: '/officer/dashboard',
           quality_staff: '/officer/dashboard',
           data_staff: '/officer/dashboard',
-          gate_staff: '/officer/dashboard',
+          gate_staff: '/officer/gate-entry',
           centre_head: '/officer/dashboard',
           district_officer: '/admin/dashboard',
           state_officer: '/admin/dashboard',
@@ -307,19 +310,21 @@ const LoginPage = () => {
                       hint="Enter the 6-digit OTP sent to your registered phone"
                     />
 
-                    <div className="flex items-center justify-between text-xs pt-0.5">
-                      <span className="text-[11px] text-gray-500">Demo Testing:</span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setForm({ ...form, otp: '123456' });
-                          setErrors({ ...errors, otp: '' });
-                        }}
-                        className="text-[11px] font-bold text-primary-700 bg-primary-50 hover:bg-primary-100 border border-primary-200 px-2.5 py-0.5 rounded-full transition"
-                      >
-                        Use Demo OTP: 123456
-                      </button>
-                    </div>
+                    {currentDemoOtp && (
+                      <div className="flex items-center justify-between text-xs pt-0.5">
+                        <span className="text-[11px] text-gray-500">Active Sandbox OTP:</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setForm({ ...form, otp: currentDemoOtp });
+                            setErrors({ ...errors, otp: '' });
+                          }}
+                          className="text-[11px] font-bold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-0.5 rounded-full transition"
+                        >
+                          ⚡ Fill Random OTP: {currentDemoOtp}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

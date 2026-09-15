@@ -67,6 +67,22 @@ const farmerProfileSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    bankDetails: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+    kisanId: {
+      type: String,
+      trim: true,
+    },
+    kisanIdVerified: {
+      type: Boolean,
+      default: false,
+    },
+    kisanDetails: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
     khatauniNumber: {
       type: String,
       trim: true,
@@ -106,5 +122,9 @@ module.exports = new PostgresModel('FarmerProfile', {
   aadhaarSeedingStatus: 'Not Seeded',
   npciStatus: 'Inactive',
   aadhaarDetails: {},
+  bankDetails: {},
+  kisanId: null,
+  kisanIdVerified: false,
+  kisanDetails: {},
   kycStatus: 'Not Started',
 }, {}, farmerProfileSchema);

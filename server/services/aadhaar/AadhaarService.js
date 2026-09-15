@@ -55,6 +55,8 @@ class AadhaarService {
     this.apiKey = process.env.AADHAAR_API_KEY || '';
     this.apiSecret = process.env.AADHAAR_API_SECRET || '';
     this.baseUrl = process.env.AADHAAR_BASE_URL || 'https://api.sandbox.co.in';
+    // In-memory store for active Aadhaar verification sessions: referenceId -> { cleanAadhaar, rawOtp, expiresAt, attempts }
+    this.aadhaarOtpStore = new Map();
   }
 
   isConfigured() {
@@ -79,28 +81,49 @@ class AadhaarService {
     const cleanAadhaar = String(aadhaarNumber).replace(/\D/g, '');
 
     if (cleanAadhaar.length !== 12) {
-      throw new Error('Aadhaar number must be exactly 12 numeric digits.');
+      const err = new Error('Aadhaar number must be exactly 12 numeric digits.');
+      err.statusCode = 400;
+      throw err;
     }
 
     // UIDAI standard Verhoeff checksum validation
-    if (!validateVerhoeff(cleanAadhaar)) {
-      throw new Error('Invalid Aadhaar number format. Verhoeff checksum verification failed.');
+    if (!validateVerhoeff(cleanAadhaar) && this.isConfigured()) {
+      const err = new Error('Invalid Aadhaar number format. Verhoeff checksum verification failed.');
+      err.statusCode = 400;
+      throw err;
     }
 
     if (!this.isConfigured()) {
-      // Demo Mode enabled when live gateway API key is not configured
-      const demoRef = `DEMO-UIDAI-${Date.now()}`;
+      // Invalidate any existing sessions for this Aadhaar
+      for (const [ref, session] of this.aadhaarOtpStore.entries()) {
+        if (session.cleanAadhaar === cleanAadhaar) {
+          this.aadhaarOtpStore.delete(ref);
+        }
+      }
+
+      // Fresh cryptographically random 6-digit OTP for this session
+      const rawOtp = crypto.randomInt(100000, 1000000).toString();
+      const demoRef = `SANDBOX-UIDAI-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
+
+      this.aadhaarOtpStore.set(demoRef, {
+        cleanAadhaar,
+        rawOtp,
+        attempts: 0,
+        expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+        isSandbox: true,
+      });
+
       return {
         configured: true,
-        isDemo: true,
+        isSandbox: true,
         referenceId: demoRef,
-        demoOtp: '123456',
+        demoOtp: rawOtp,
         maskedAadhaar: this.maskAadhaar(cleanAadhaar),
-        message: 'UIDAI Aadhaar OTP sent to linked mobile! (Demo OTP: 123456)',
+        message: `UIDAI Aadhaar OTP sent to linked mobile! (Sandbox Demo OTP: ${rawOtp})`,
       };
     }
 
-    // Call authorized provider (e.g. Sandbox.co.in)
+    // Call authorized provider (e.g. Sandbox.co.in / Surepass / Setu)
     try {
       const response = await fetch(`${this.baseUrl}/kyc/aadhaar/okyc/otp`, {
         method: 'POST',
@@ -120,6 +143,7 @@ class AadhaarService {
 
       return {
         configured: true,
+        isSandbox: false,
         referenceId: data.data?.reference_id || data.data?.client_id,
         maskedAadhaar: this.maskAadhaar(cleanAadhaar),
         message: 'Official Aadhaar OTP dispatched by UIDAI to mobile linked with this Aadhaar.',
@@ -133,7 +157,7 @@ class AadhaarService {
   /**
    * Step 2: Verify official Aadhaar OTP & parse official demographic packet
    */
-  async verifyAadhaarOtp(referenceId, otp) {
+  async verifyAadhaarOtp(referenceId, otp, userContext = null) {
     if (!referenceId) {
       throw new Error('Reference ID from Aadhaar OTP generation is required.');
     }
@@ -143,29 +167,69 @@ class AadhaarService {
     }
 
     const cleanOtp = String(otp).trim();
-    if (cleanOtp === '123456' || String(referenceId).startsWith('DEMO-')) {
+
+    // Check Sandbox / Demo active session
+    if (this.aadhaarOtpStore.has(referenceId) || String(referenceId).startsWith('SANDBOX-') || String(referenceId).startsWith('DEMO-')) {
+      const session = this.aadhaarOtpStore.get(referenceId);
+
+      if (!session) {
+        throw new Error('Aadhaar OTP session has expired. Please request a new OTP.');
+      }
+
+      if (Date.now() > session.expiresAt) {
+        this.aadhaarOtpStore.delete(referenceId);
+        throw new Error('Aadhaar OTP has expired. Please request a fresh OTP.');
+      }
+
+      if (cleanOtp !== session.rawOtp) {
+        session.attempts = (session.attempts || 0) + 1;
+        const remaining = 3 - session.attempts;
+        if (remaining <= 0) {
+          this.aadhaarOtpStore.delete(referenceId);
+          throw new Error('Maximum Aadhaar OTP verification attempts exceeded. Please request a new OTP.');
+        }
+        throw new Error(`Invalid Aadhaar OTP. ${remaining} attempt${remaining === 1 ? '' : 's'} remaining.`);
+      }
+
+      // Consumed single-use session
+      this.aadhaarOtpStore.delete(referenceId);
+
+      const farmerName = userContext?.name || 'Registered Farmer';
+      const farmerState = userContext?.state || 'Uttar Pradesh';
+      const farmerDistrict = userContext?.district || 'Gorakhpur';
+      const maskedAadhaar = this.maskAadhaar(session.cleanAadhaar);
+
       return {
         verified: true,
-        isDemo: true,
+        isSandbox: true,
+        verificationType: 'Sandbox / Demo Verified',
         aadhaarDetails: {
-          name: 'Rajveer Singh',
+          name: farmerName,
           dob: '12/06/1983',
           gender: 'MALE',
-          careOf: 'S/O Shri Hariram Singh',
-          address: 'Village Pipariya, Tehsil Mohanlalganj, District Lucknow, Uttar Pradesh - 226301',
-          maskedAadhaar: 'XXXX-XXXX-9012',
+          careOf: 'Care of Farmer Family',
+          address: `${farmerDistrict}, ${farmerState}`,
+          maskedAadhaar,
           verifiedAt: new Date().toISOString(),
           providerRef: referenceId,
+          isSandbox: true,
         },
+        // Official NPCI APBS mapping & Bank Seeding Status
         aadhaarSeedingStatus: 'Seeded',
         npciStatus: 'Active / DBT Enabled',
+        bankDetails: {
+          bankName: 'State Bank of India',
+          accountMasked: '****4921',
+          ifsc: 'SBIN0001234',
+          seedingDate: '14/08/2021',
+          dbtStatus: 'Active & Linked'
+        },
+        npciNote: 'Aadhaar is linked with NPCI mapper & seeded with State Bank of India (A/C: ****4921) for Direct Benefit Transfer (DBT).',
       };
     }
 
     if (!this.isConfigured()) {
-      throw new Error(
-        'Aadhaar e-KYC provider is not configured. (Use Demo OTP: 123456)'
-      );
+      throw new Error('Aadhaar e-KYC provider is not configured. Please request an OTP first.');
     }
 
     try {
@@ -179,7 +243,7 @@ class AadhaarService {
         },
         body: JSON.stringify({
           reference_id: referenceId,
-          otp: String(otp).trim(),
+          otp: cleanOtp,
         }),
       });
 
@@ -196,6 +260,8 @@ class AadhaarService {
 
       return {
         verified: true,
+        isSandbox: false,
+        verificationType: 'Official UIDAI Verified',
         aadhaarDetails: {
           name: kycData.name || kycData.full_name,
           dob: kycData.dob || kycData.date_of_birth,
@@ -205,6 +271,7 @@ class AadhaarService {
           maskedAadhaar: kycData.masked_aadhaar || 'XXXX-XXXX-XXXX',
           verifiedAt: new Date().toISOString(),
           providerRef: referenceId,
+          isSandbox: false,
         },
         aadhaarSeedingStatus: seedingFromProvider, // null if not reported by provider
         npciStatus: npciFromProvider,             // null if not reported by provider

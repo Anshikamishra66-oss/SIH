@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  LayoutDashboard, ClipboardList, LogOut, Menu, X, Wheat, Shield, Users
+  LayoutDashboard, ClipboardList, LogOut, Menu, X, Wheat, Shield, Users, UserCheck, QrCode
 } from 'lucide-react';
 import { useAuth, CREATOR_ROLES } from '../context/AuthContext';
 
@@ -17,6 +17,8 @@ const OfficerLayout = ({ children }) => {
 
   const navItems = [
     { to: '/officer/dashboard', icon: LayoutDashboard, label: 'Dashboard & Queue' },
+    { to: '/officer/gate-entry', icon: QrCode, label: 'Gate Entry & Scan' },
+    { to: '/officer/kyc-approvals', icon: UserCheck, label: 'Farmer KYC Approvals' },
     { to: '/officer/bookings', icon: ClipboardList, label: "Today's Bookings" },
     // Show staff management for Centre Heads and higher
     ...(CREATOR_ROLES.includes(user?.role) || user?.level <= 4

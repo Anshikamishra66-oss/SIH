@@ -2,10 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   MapPin, Calendar, Clock, Package, CheckCircle, ArrowRight, ArrowLeft,
-  Building2, Wheat, AlertCircle, Info, Search, RotateCcw, ShieldCheck, Ticket
+  Building2, Wheat, AlertCircle, Info, Search, RotateCcw, ShieldCheck, Ticket, ShieldAlert
 } from 'lucide-react';
 import { FaCheck } from 'react-icons/fa';
-import { centreService, cropService, bookingService } from '../../services';
+import { centreService, cropService, bookingService, farmerService } from '../../services';
 import { formatTime, formatCurrency, extractError, formatAddress } from '../../utils/constants';
 import FarmerLayout from '../../layouts/FarmerLayout';
 import Button from '../../components/common/Button';
@@ -58,24 +58,35 @@ const BookSlotPage = () => {
     });
   }, []);
 
-  // Fetch initial Centres and Crops
+  // KYC verification lock state
+  const [kycStatus, setKycStatus] = useState(null);
+  const [kycRemarks, setKycRemarks] = useState('');
+  const [loadingKyc, setLoadingKyc] = useState(true);
+
+  // Fetch initial Centres, Crops, and Farmer KYC status
   useEffect(() => {
     let isMounted = true;
 
     const loadInitialData = async () => {
       setLoadingCentres(true);
       setLoadingCrops(true);
+      setLoadingKyc(true);
       try {
-        const [centresRes, cropsRes] = await Promise.all([
+        const [centresRes, cropsRes, kycRes] = await Promise.all([
           centreService.getCentres(),
           cropService.getCrops(),
+          farmerService.getKycStatus().catch(() => ({ data: { data: {} } })),
         ]);
         if (!isMounted) return;
 
         const allCentres = centresRes.data.data.centres || [];
         const allCrops = cropsRes.data.data.crops || [];
+        const kycData = kycRes.data?.data || {};
+
         setCentres(allCentres);
         setCrops(allCrops);
+        setKycStatus(kycData.kycStatus || 'Not Started');
+        setKycRemarks(kycData.kycRemarks || '');
 
         // Try restoring draft from sessionStorage on page refresh
         try {
@@ -414,8 +425,45 @@ const BookSlotPage = () => {
           ))}
         </div>
 
+        {/* KYC Approval Locked Alert Banner */}
+        {!loadingKyc && kycStatus !== 'Verified' && (
+          <div className="mb-6 p-5 bg-amber-50 border-2 border-amber-300 rounded-2xl shadow-sm space-y-3 animate-fadeIn text-amber-950">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-md">
+                <ShieldAlert className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-bold text-amber-900">
+                    Slot Booking Locked — District Officer KYC Approval Required
+                  </h2>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-200 text-amber-900">
+                    {kycStatus === 'Pending' ? 'Approval Pending' : kycStatus === 'Rejected' ? 'KYC Rejected' : 'KYC Mandatory'}
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-amber-800 mt-1 leading-relaxed">
+                  {kycStatus === 'Pending'
+                    ? 'Your KYC application has been submitted and is currently pending approval by your District Procurement Officer. As per Government procurement regulations, slot booking activates once your KYC is approved.'
+                    : kycStatus === 'Rejected'
+                    ? `Your KYC application was rejected by the District Procurement Officer. Reason: "${kycRemarks || 'Invalid details'}". Please update and re-submit your KYC.`
+                    : 'You must complete Aadhaar e-KYC and Kisan ID verification before you can book procurement slots.'}
+                </p>
+                <div className="mt-3 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/farmer/kyc')}
+                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-1.5"
+                  >
+                    View / Complete KYC Application <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main Card */}
-        <div className="card p-5 sm:p-7 shadow-sm border border-gray-200">
+        <div className={`card p-5 sm:p-7 shadow-sm border border-gray-200 ${kycStatus !== 'Verified' ? 'opacity-60 pointer-events-none' : ''}`}>
           {/* ────────────────────────────────────────────────────────── */}
           {/* STEP 0: CHOOSE MANDI / CENTRE                              */}
           {/* ────────────────────────────────────────────────────────── */}

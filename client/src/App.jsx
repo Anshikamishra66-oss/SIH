@@ -22,6 +22,8 @@ import FarmerKycPage from './pages/farmer/FarmerKycPage';
 // Officer Pages
 import OfficerDashboard from './pages/officer/OfficerDashboard';
 import OfficerBookingsPage from './pages/officer/OfficerBookingsPage';
+import OfficerKycApprovalsPage from './pages/officer/OfficerKycApprovalsPage';
+import GateEntryVerificationPage from './pages/officer/GateEntryVerificationPage';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -166,10 +168,26 @@ function App() {
               }
             />
             <Route
+              path="/officer/gate-entry"
+              element={
+                <ProtectedRoute allowedRoles={OFFICER_ROLES}>
+                  <GateEntryVerificationPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/officer/bookings"
               element={
                 <ProtectedRoute allowedRoles={OFFICER_ROLES}>
                   <OfficerBookingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/officer/kyc-approvals"
+              element={
+                <ProtectedRoute allowedRoles={OFFICER_ROLES}>
+                  <OfficerKycApprovalsPage />
                 </ProtectedRoute>
               }
             />
