@@ -16,6 +16,7 @@ export const farmerService = {
   getHistory: (params) => api.get('/farmers/history', { params }),
   sendAadhaarOtp: (data) => api.post('/farmers/aadhaar/send-otp', data),
   verifyAadhaarOtp: (data) => api.post('/farmers/aadhaar/verify-otp', data),
+  verifyKisanId: (data) => api.post('/farmers/verify-kisan-id', data),
   submitKyc: (data) => api.post('/farmers/submit-kyc', data),
   getKycStatus: () => api.get('/farmers/kyc-status'),
 };

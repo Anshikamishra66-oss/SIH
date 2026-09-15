@@ -6,6 +6,7 @@ const {
   getProcurementHistory,
   sendAadhaarOtp,
   verifyAadhaarOtp,
+  verifyKisanId,
   submitKyc,
   getKycStatus,
 } = require('../controllers/farmer.controller');
@@ -21,7 +22,8 @@ router.get('/history', getProcurementHistory);
 router.post('/aadhaar/send-otp', sendAadhaarOtp);
 router.post('/aadhaar/verify-otp', verifyAadhaarOtp);
 
-// Manual land details and KYC submission
+// Kisan ID verification & KYC submission
+router.post('/verify-kisan-id', verifyKisanId);
 router.post('/submit-kyc', submitKyc);
 router.get('/kyc-status', getKycStatus);
 

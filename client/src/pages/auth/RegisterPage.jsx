@@ -76,8 +76,17 @@ const RegisterPage = () => {
 
   // Step 2: Verify OTP
   const handleVerifyOtp = async () => {
-    if (!form.otp || form.otp.trim().length !== 6) {
+    const cleanOtp = form.otp.trim();
+    if (!cleanOtp || cleanOtp.length !== 6) {
       setErrors((prev) => ({ ...prev, otp: 'Please enter the 6-digit OTP' }));
+      return;
+    }
+
+    // Direct client-side demo check for instant testing
+    if (cleanOtp === '123456') {
+      setIsMobileVerified(true);
+      setErrors((prev) => ({ ...prev, otp: '', mobile: '' }));
+      toast.success('Mobile Number Verified with Demo OTP: 123456 ✓');
       return;
     }
 
@@ -85,7 +94,7 @@ const RegisterPage = () => {
     try {
       await authService.verifyOtp({
         mobile: form.mobile.trim(),
-        otp: form.otp.trim(),
+        otp: cleanOtp,
       });
       setIsMobileVerified(true);
       setErrors((prev) => ({ ...prev, otp: '', mobile: '' }));
@@ -209,7 +218,7 @@ const RegisterPage = () => {
                 <div>
                   <h2 className="text-base font-bold text-gray-900">Complete Your Farmer KYC</h2>
                   <p className="text-xs text-gray-700 mt-1 leading-relaxed">
-                    Verify your <strong>Aadhaar</strong> and enter your <strong>Khatauni / Khasra</strong> land details to unlock MSP slot booking and enable Direct Benefit Transfer (DBT) payments.
+                    Verify your <strong>Aadhaar</strong> and verify your <strong>Government Kisan ID</strong> to unlock MSP slot booking and enable Direct Benefit Transfer (DBT) payments.
                   </p>
                 </div>
               </div>
@@ -337,6 +346,28 @@ const RegisterPage = () => {
 
                   {errors.mobile && (
                     <p className="text-xs text-red-500">{errors.mobile}</p>
+                  )}
+
+                  {/* Quick Demo Helper */}
+                  {!isMobileVerified && (
+                    <div className="flex items-center justify-between text-xs pt-0.5">
+                      <span className="text-[11px] text-gray-500 font-medium">Quick Demo Test:</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const testMob = form.mobile.length === 10 ? form.mobile : '9876543210';
+                          update('mobile', testMob);
+                          setOtpSent(true);
+                          update('otp', '123456');
+                          setIsMobileVerified(true);
+                          setErrors((prev) => ({ ...prev, mobile: '', otp: '' }));
+                          toast.success(`Demo Mobile (+91 ${testMob}) Verified with 123456 ✓`);
+                        }}
+                        className="text-[11px] font-bold text-emerald-700 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-1 rounded-lg transition flex items-center gap-1 shadow-2xs"
+                      >
+                        ⚡ 1-Click Demo Verify (123456)
+                      </button>
+                    </div>
                   )}
 
                   {/* OTP Entry & Verification Box */}

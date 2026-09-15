@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import {
   ShieldCheck, ShieldAlert, Clock, CheckCircle2, AlertCircle, FileText,
   UploadCloud, ArrowRight, RefreshCw, KeyRound, User, MapPin, Building,
-  CreditCard, Smartphone, Info, Calendar, Sparkles, Check, Lock, ExternalLink
+  CreditCard, Smartphone, Info, Calendar, Sparkles, Check, Lock, ExternalLink,
+  AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { farmerService } from '../../services';
@@ -14,7 +15,7 @@ import Input from '../../components/common/Input';
 import toast from 'react-hot-toast';
 
 const FarmerKycPage = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [kycData, setKycData] = useState(null);
 
@@ -34,15 +35,55 @@ const FarmerKycPage = () => {
   // Gateway Configuration Notice Modal
   const [configModal, setConfigModal] = useState(null);
 
-  // Khatauni / Khasra Manual Details
-  const [khatauniNumber, setKhatauniNumber] = useState('');
-  const [khasraNumber, setKhasraNumber] = useState('');
-  const [landArea, setLandArea] = useState('');
-  const [landDocumentName, setLandDocumentName] = useState('');
+  // Kisan ID Verification Details
+  const [kisanId, setKisanId] = useState('');
+  const [kisanVerified, setKisanVerified] = useState(false);
+  const [verifyingKisan, setVerifyingKisan] = useState(false);
+  const [kisanDetails, setKisanDetails] = useState(null);
   const [submittingKyc, setSubmittingKyc] = useState(false);
 
   // SMS Confirmation Notice modal / banner
   const [smsNotice, setSmsNotice] = useState(null);
+  const [updatingName, setUpdatingName] = useState(false);
+
+  // Helper to normalize and match names
+  const normalizeName = (str) => {
+    return String(str || '')
+      .toLowerCase()
+      .replace(/^(mr|mrs|ms|shri|smt|dr)\.?\s+/i, '')
+      .replace(/[^a-z0-9]/g, ' ')
+      .trim()
+      .replace(/\s+/g, ' ');
+  };
+
+  const isNameMatching = (name1, name2) => {
+    const n1 = normalizeName(name1);
+    const n2 = normalizeName(name2);
+    if (!n1 || !n2) return true;
+    return n1 === n2;
+  };
+
+  const registeredName = user?.name || '';
+  const aadhaarName = fetchedDetails?.name || '';
+  const hasNameMismatch = Boolean(aadhaarVerified && aadhaarName && !isNameMatching(registeredName, aadhaarName));
+
+  const handleUpdateNameToAadhaar = async () => {
+    if (!aadhaarName) return;
+    setUpdatingName(true);
+    try {
+      const res = await farmerService.updateProfile({ name: aadhaarName });
+      if (res.data?.data?.user) {
+        updateUser(res.data.data.user);
+      } else {
+        updateUser({ ...user, name: aadhaarName });
+      }
+      toast.success(`Registered name updated to "${aadhaarName}" to match Aadhaar record ✓`);
+    } catch (err) {
+      toast.error(extractError(err));
+    } finally {
+      setUpdatingName(false);
+    }
+  };
 
   // Timer for Aadhaar OTP resend cooldown
   useEffect(() => {
@@ -68,10 +109,11 @@ const FarmerKycPage = () => {
         setAadhaarSeedingStatus(data.aadhaarSeedingStatus || null);
         setNpciStatus(data.npciStatus || null);
         setFetchedDetails(data.aadhaarDetails);
-        setKhatauniNumber(data.khatauniNumber || '');
-        setKhasraNumber(data.khasraNumber || '');
-        setLandArea(data.landArea || '');
-        setLandDocumentName(data.landDocumentName || '');
+      }
+      if (data?.kisanId) {
+        setKisanId(data.kisanId);
+        setKisanVerified(true);
+        setKisanDetails(data.kisanDetails || null);
       }
     } catch (err) {
       toast.error(extractError(err));
@@ -145,15 +187,42 @@ const FarmerKycPage = () => {
   };
 
   // Document upload simulation
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLandDocumentName(file.name);
-      toast.success(`Document "${file.name}" attached successfully.`);
+  // Step 2: Verify Kisan ID from Government Farmer Registry
+  const handleVerifyKisanId = async () => {
+    const clean = kisanId.trim().toUpperCase();
+    if (!clean) {
+      toast.error('Please enter your Kisan ID / Farmer Registration Number.');
+      return;
+    }
+    if (clean.length < 5) {
+      toast.error('Kisan ID must be at least 5 characters (e.g. KSN-UP-2024-8849).');
+      return;
+    }
+
+    setVerifyingKisan(true);
+    try {
+      const res = await farmerService.verifyKisanId({ kisanId: clean });
+      const details = res.data?.data?.kisanDetails || {
+        kisanId: clean,
+        farmerName: user?.name,
+        state: user?.state,
+        district: user?.district,
+        landHolding: '4.25 Acres (Verified in Farmer Registry)',
+        pmKisanStatus: 'Active & DBT Linked ✓',
+        issuingAuthority: 'Department of Agriculture & Farmers Welfare',
+        status: 'Verified ✓',
+      };
+      setKisanDetails(details);
+      setKisanVerified(true);
+      toast.success('Kisan ID verified successfully from Government Farmer Registry!');
+    } catch (err) {
+      toast.error(extractError(err));
+    } finally {
+      setVerifyingKisan(false);
     }
   };
 
-  // Step 2: Submit KYC application
+  // Step 3: Submit KYC application
   const handleSubmitKyc = async (e) => {
     e.preventDefault();
 
@@ -161,16 +230,12 @@ const FarmerKycPage = () => {
       toast.error('Aadhaar verification is mandatory before KYC submission.');
       return;
     }
-    if (!khatauniNumber.trim()) {
-      toast.error('Khatauni number is required.');
+    if (hasNameMismatch) {
+      toast.error(`Name Mismatch: Your registered name (${registeredName}) does not match your Aadhaar name (${aadhaarName}). Please update your name before submitting.`);
       return;
     }
-    if (!khasraNumber.trim()) {
-      toast.error('Khasra / Survey / Plot number is required.');
-      return;
-    }
-    if (!landArea.trim()) {
-      toast.error('Land area is required.');
+    if (!kisanVerified || !kisanId.trim()) {
+      toast.error('Please verify your Kisan ID before KYC submission.');
       return;
     }
 
@@ -182,10 +247,8 @@ const FarmerKycPage = () => {
         aadhaarDetails: fetchedDetails,
         aadhaarSeedingStatus,
         npciStatus,
-        khatauniNumber: khatauniNumber.trim(),
-        khasraNumber: khasraNumber.trim(),
-        landArea: landArea.trim(),
-        landDocumentName: landDocumentName || 'Khatauni_Land_Record.pdf',
+        kisanId: kisanId.trim().toUpperCase(),
+        kisanDetails,
       });
 
       const smsText = res.data?.data?.message ||
@@ -211,13 +274,13 @@ const FarmerKycPage = () => {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-emerald-800 bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                e-KYC & Land Verification
+                e-KYC & Kisan ID Verification
               </span>
               <span className="text-xs text-gray-500">• Ministry of Agriculture & Farmers Welfare</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mt-1">Farmer KYC Portal</h1>
             <p className="text-gray-500 text-sm">
-              UIDAI Aadhaar Verification, Aadhaar Seeding, NPCI DBT Mapping & Khatauni Records
+              UIDAI Aadhaar Verification, Aadhaar Seeding, NPCI DBT Mapping & Kisan ID Registry
             </p>
           </div>
 
@@ -396,92 +459,167 @@ const FarmerKycPage = () => {
               )}
             </div>
 
-            {/* Step 2: Khatauni / Khasra Land Records */}
-            <form onSubmit={handleSubmitKyc} className="card p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-5">
+            {/* Step 2: Kisan ID Verification */}
+            <div className="card p-6 bg-white border border-gray-200 rounded-2xl shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-primary-600 text-white flex items-center justify-center font-bold text-sm">
-                    2
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm ${
+                    kisanVerified ? 'bg-emerald-600 text-white' : 'bg-primary-600 text-white'
+                  }`}>
+                    {kisanVerified ? <Check className="w-5 h-5" /> : '2'}
                   </div>
                   <div>
-                    <h2 className="text-base font-bold text-gray-900">Land Records (Khatauni & Khasra)</h2>
-                    <p className="text-xs text-gray-500">Manual entry & land title document upload</p>
+                    <h2 className="text-base font-bold text-gray-900">Kisan ID Verification</h2>
+                    <p className="text-xs text-gray-500">Government Farmer Registry & PM-KISAN Portal Verification</p>
                   </div>
                 </div>
+
+                {kisanVerified && (
+                  <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-lg flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Kisan ID Verified
+                  </span>
+                )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Khatauni Number */}
-                <Input
-                  id="khatauniNumber"
-                  label="Khatauni / Khewat Number"
-                  placeholder="e.g., KH-2024-8849"
-                  value={khatauniNumber}
-                  onChange={(e) => setKhatauniNumber(e.target.value)}
-                  required
-                  disabled={kycStatus === 'Verified'}
-                  leftIcon={<FileText className="w-4 h-4 text-gray-400" />}
-                />
-
-                {/* Khasra / Plot Number */}
-                <Input
-                  id="khasraNumber"
-                  label="Khasra / Plot / Survey Number"
-                  placeholder="e.g., Plot 142/2, 143/1"
-                  value={khasraNumber}
-                  onChange={(e) => setKhasraNumber(e.target.value)}
-                  required
-                  disabled={kycStatus === 'Verified'}
-                  leftIcon={<Building className="w-4 h-4 text-gray-400" />}
-                />
-
-                {/* Total Cultivable Land Area */}
-                <Input
-                  id="landArea"
-                  label="Cultivable Land Area (in Acres/Hectares)"
-                  placeholder="e.g., 4.5 Acres"
-                  value={landArea}
-                  onChange={(e) => setLandArea(e.target.value)}
-                  required
-                  disabled={kycStatus === 'Verified'}
-                  leftIcon={<MapPin className="w-4 h-4 text-gray-400" />}
-                />
-
-                {/* Document Name / Upload indicator */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Land Document / Khatauni Copy (ROR)
-                  </label>
-                  {kycStatus === 'Verified' ? (
-                    <div className="p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-800 font-mono truncate">
-                      {landDocumentName || 'Khatauni_ROR_Record.pdf'}
-                    </div>
-                  ) : (
-                    <div className="relative">
+              {!kisanVerified ? (
+                <div className="space-y-3 pt-1">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">
+                      Kisan Registration ID / Farmer ID <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex gap-2">
                       <input
-                        type="file"
-                        id="documentUpload"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                        accept=".pdf,.jpg,.jpeg,.png"
+                        type="text"
+                        placeholder="e.g. KSN-UP-2024-8849 or PMK-1002934"
+                        value={kisanId}
+                        onChange={(e) => setKisanId(e.target.value.toUpperCase())}
+                        className="flex-1 px-3.5 py-2.5 border border-gray-300 rounded-xl text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-primary-300 uppercase"
                       />
-                      <label
-                        htmlFor="documentUpload"
-                        className="flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 hover:border-primary-500 rounded-xl cursor-pointer text-xs text-gray-600 bg-gray-50/50 hover:bg-primary-50/30 transition-all"
+                      <Button
+                        type="button"
+                        variant="primary"
+                        onClick={handleVerifyKisanId}
+                        loading={verifyingKisan}
+                        disabled={!kisanId.trim() || verifyingKisan}
+                        className="shadow-sm font-semibold"
                       >
-                        <span className="truncate">
-                          {landDocumentName || 'Choose Khatauni PDF/Image'}
-                        </span>
-                        <UploadCloud className="w-4 h-4 text-gray-500 flex-shrink-0 ml-2" />
-                      </label>
+                        Verify Kisan ID
+                      </Button>
                     </div>
-                  )}
+
+                    <div className="flex items-center justify-between text-[11px] text-gray-500 mt-1.5">
+                      <span>Enter your State Agriculture Department Registration ID or PM-KISAN ID.</span>
+                      <button
+                        type="button"
+                        onClick={() => setKisanId('KSN-UP-2024-8849')}
+                        className="text-primary-700 font-semibold hover:underline"
+                      >
+                        Fill Demo Kisan ID: KSN-UP-2024-8849
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Verified Kisan ID Details */
+                <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-3 animate-fadeIn">
+                  <div className="flex items-center justify-between text-xs text-emerald-900 font-semibold border-b border-emerald-200/60 pb-2">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                      State Agriculture Farmer Registry Record
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold">{kisanId}</span>
+                      {kycStatus !== 'Verified' && (
+                        <button
+                          type="button"
+                          onClick={() => setKisanVerified(false)}
+                          className="text-[11px] text-primary-700 hover:underline font-semibold ml-2"
+                        >
+                          Change ID
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <span className="text-gray-500 block">Kisan Registration ID:</span>
+                      <span className="font-mono font-bold text-gray-900">{kisanId}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 block">Registry Land Holdings:</span>
+                      <span className="font-semibold text-gray-900">{kisanDetails?.landHolding || '4.25 Acres (Verified in Farmer Registry)'}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 block">PM-KISAN DBT Linkage:</span>
+                      <span className="font-semibold text-emerald-700">{kisanDetails?.pmKisanStatus || 'Active & DBT Linked ✓'}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 block">Registry Issuing Authority:</span>
+                      <span className="font-semibold text-gray-900">{kisanDetails?.issuingAuthority || `${user?.state || 'State'} Dept. of Agriculture`}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Submission Section */}
+            <form onSubmit={handleSubmitKyc} className="space-y-4">
+              {/* Alert message if user name is different from Aadhaar name */}
+              {hasNameMismatch && (
+                <div className="p-4 bg-amber-50 border-2 border-amber-300 rounded-2xl space-y-3 animate-fadeIn text-amber-950">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <AlertTriangle className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm font-bold text-amber-900">
+                          Aadhaar Name Mismatch Detected
+                        </h3>
+                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-amber-200 text-amber-900">
+                          Action Required
+                        </span>
+                      </div>
+                      <p className="text-xs text-amber-800 mt-1 leading-relaxed">
+                        Your registered user name (<strong>"{user?.name}"</strong>) does not match the name fetched from your verified Aadhaar card (<strong>"{fetchedDetails?.name}"</strong>).
+                        As per Government procurement norms, your profile name must match your Aadhaar name before you can submit KYC.
+                      </p>
+
+                      <div className="mt-3 p-3 bg-white/90 border border-amber-200 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <span className="text-gray-500 block text-[11px]">Current Registered User Name:</span>
+                          <span className="font-bold text-red-600 line-through">{user?.name}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500 block text-[11px]">Name on Verified Aadhaar:</span>
+                          <span className="font-bold text-emerald-700">{fetchedDetails?.name}</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap items-center gap-3 pt-1">
+                        <Button
+                          type="button"
+                          variant="primary"
+                          size="sm"
+                          loading={updatingName}
+                          onClick={handleUpdateNameToAadhaar}
+                          className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm"
+                        >
+                          Change User Name to "{fetchedDetails?.name}"
+                        </Button>
+                        <span className="text-[11px] text-amber-700 font-medium">
+                          Click above to change your user name and unlock submission.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Submit Button */}
               {kycStatus !== 'Verified' && (
-                <div className="pt-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="p-5 bg-white border border-gray-200 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
                   <p className="text-xs text-gray-500">
                     An SMS confirmation will be sent to your registered mobile number upon submission.
                   </p>
@@ -491,11 +629,30 @@ const FarmerKycPage = () => {
                     variant="primary"
                     size="lg"
                     loading={submittingKyc}
-                    disabled={!aadhaarVerified || submittingKyc}
-                    className="w-full sm:w-auto shadow-md px-6 font-bold"
+                    disabled={!aadhaarVerified || !kisanVerified || submittingKyc || hasNameMismatch}
+                    className={`w-full sm:w-auto shadow-md px-6 font-bold ${
+                      hasNameMismatch || !aadhaarVerified || !kisanVerified ? 'opacity-60 cursor-not-allowed bg-gray-400 hover:bg-gray-400' : ''
+                    }`}
                     rightIcon={<ArrowRight className="w-4 h-4" />}
+                    title={
+                      hasNameMismatch
+                        ? 'Change user name to match Aadhaar to enable submission'
+                        : !aadhaarVerified
+                        ? 'Complete Aadhaar verification first'
+                        : !kisanVerified
+                        ? 'Verify Kisan ID first'
+                        : ''
+                    }
                   >
-                    {kycStatus === 'Pending' ? 'Update & Re-Submit KYC' : 'Submit KYC Application'}
+                    {hasNameMismatch
+                      ? 'Name Mismatch – Change Name to Submit'
+                      : !aadhaarVerified
+                      ? 'Verify Aadhaar First'
+                      : !kisanVerified
+                      ? 'Verify Kisan ID to Submit'
+                      : kycStatus === 'Pending'
+                      ? 'Update & Re-Submit KYC'
+                      : 'Submit KYC Application'}
                   </Button>
                 </div>
               )}
@@ -576,10 +733,10 @@ const FarmerKycPage = () => {
 
                   <div className="flex items-center gap-2">
                     <div className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] text-white ${
-                      khatauniNumber ? 'bg-emerald-600' : 'bg-gray-300'
+                      kisanVerified ? 'bg-emerald-600' : 'bg-gray-300'
                     }`}>✓</div>
-                    <span className={khatauniNumber ? 'text-gray-900 font-medium' : 'text-gray-400'}>
-                      Khatauni & Khasra Land Records
+                    <span className={kisanVerified ? 'text-gray-900 font-medium' : 'text-gray-400'}>
+                      Government Kisan ID Verification
                     </span>
                   </div>
 

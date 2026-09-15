@@ -566,8 +566,8 @@
       "district": "Ludhiana",
       "_id": "9f05ae12-a2b8-4dbb-a249-db25afd195e3",
       "createdAt": "2026-09-13T22:05:54.824Z",
-      "updatedAt": "2026-09-14T09:25:16.405Z",
-      "lastLogin": "2026-09-14T09:25:16.405Z"
+      "updatedAt": "2026-09-15T10:07:03.992Z",
+      "lastLogin": "2026-09-15T10:07:03.992Z"
     },
     {
       "role": "farmer",
@@ -798,15 +798,15 @@
       "isActive": true,
       "level": 7,
       "mustChangePassword": false,
-      "name": "ankur",
+      "name": "Rajveer Singh",
       "mobile": "8005011242",
       "email": "ankurr@gmail.com",
       "password": "$2b$12$bX.GDhdY54FmIxP94JY7j.k1Nuw4Mozrjv0vwjbYn1rPD4kwVqQZ.",
       "state": "Uttar Pradesh",
-      "district": "Gorakhpur",
+      "district": "Lucknow",
       "_id": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
       "createdAt": "2026-09-14T03:45:07.962Z",
-      "updatedAt": "2026-09-15T06:56:02.429Z",
+      "updatedAt": "2026-09-15T07:33:40.654Z",
       "lastLogin": "2026-09-15T06:56:02.429Z"
     },
     {
@@ -1520,16 +1520,11 @@
     },
     {
       "crops": [],
-      "isProfileComplete": true,
+      "isProfileComplete": false,
       "userId": "4f554d97-1cd8-46ad-b5ef-d027bfd02f3a",
-      "farmerIdNumber": "FMR-09-53-010",
-      "state": "Uttar Pradesh",
-      "district": "Gorakhpur",
-      "village": "",
-      "address": "",
       "_id": "c766868d-85fb-4a46-9d71-0d34a3d0308a",
       "createdAt": "2026-09-14T03:45:08.322Z",
-      "updatedAt": "2026-09-14T03:45:08.322Z"
+      "updatedAt": "2026-09-15T07:33:40.661Z"
     },
     {
       "crops": [],

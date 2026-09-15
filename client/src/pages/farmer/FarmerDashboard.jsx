@@ -136,7 +136,7 @@ const FarmerDashboard = () => {
                 <div>
                   <p className="font-bold text-gray-900 text-sm">Farmer KYC Pending Completion</p>
                   <p className="text-gray-600 mt-0.5">
-                    Complete your Aadhaar e-KYC & Khatauni land verification to ensure smooth slot booking and direct DBT payments.
+                    Complete your Aadhaar e-KYC & Kisan ID verification to ensure smooth slot booking and direct DBT payments.
                   </p>
                 </div>
               </div>
